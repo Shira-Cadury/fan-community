@@ -27,11 +27,11 @@
 ---
 
 ## Phase 2: Backend Core & Database
-- [ ] Database engine & session configuration (`database.py`).
-- [ ] SQLAlchemy Models implementation (`User`, `Post`, `Comment`, `Like`, `Report`, `Quiz`).
-- [ ] Pydantic request/response schemas.
-- [ ] Password hashing & JWT token utility functions.
-- [ ] Role-based access control (RBAC) route dependencies.
+- [x] Database engine & session configuration (`database.py`).
+- [x] SQLAlchemy Models implementation (`User`, `Post`, `Comment`, `Like`, `Report`, `Quiz`).
+- [x] Pydantic request/response schemas.
+- [x] Password hashing & JWT token utility functions.
+- [x] Role-based access control (RBAC) route dependencies.
 
 ## Phase 3: Backend API Routes
 - [ ] Auth Router: Registration, login, profile management (`/auth`, `/users/me`).

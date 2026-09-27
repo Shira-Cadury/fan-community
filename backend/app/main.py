@@ -1,5 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.database import Base, engine
+import app.models  # Ensures models are registered with Base metadata
+
+# Create database tables automatically
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Fan Community API",
