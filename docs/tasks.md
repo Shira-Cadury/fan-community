@@ -13,16 +13,16 @@
 - [x] System Architecture (`docs/architecture.md`)
 - [x] Database Schema Design (`docs/db-design.md`)
 - [x] REST API Specification (`docs/api-spec.md`)
-- [ ] Roadmap & Task Breakdown (`docs/tasks.md`)
+- [x] Roadmap & Task Breakdown (`docs/tasks.md`)
 
 ---
 
 ## Phase 1: Environment & Project Setup
-- [ ] Backend setup: Create virtual environment (`venv`) & install dependencies (FastAPI, Uvicorn, SQLAlchemy, Pydantic, Passlib, python-jose).
-- [ ] Backend structure: Initialize `backend/app` package structure.
-- [ ] Frontend setup: Scaffold Vite React app (`frontend`).
-- [ ] Frontend styling: Configure Tailwind CSS and bilingual RTL/LTR directions.
-- [ ] Git commit & push of initial project scaffolding.
+- [x] Backend setup: Create virtual environment (`venv`) & install dependencies (FastAPI, Uvicorn, SQLAlchemy, Pydantic, Passlib, python-jose).
+- [x] Backend structure: Initialize `backend/app` package structure.
+- [x] Frontend setup: Scaffold Vite React app (`frontend`).
+- [x] Frontend styling: Configure Tailwind CSS and bilingual RTL/LTR directions.
+- [x] Git commit & push of initial project scaffolding.
 
 ---
 
@@ -32,8 +32,6 @@
 - [ ] Pydantic request/response schemas.
 - [ ] Password hashing & JWT token utility functions.
 - [ ] Role-based access control (RBAC) route dependencies.
-
----
 
 ## Phase 3: Backend API Routes
 - [ ] Auth Router: Registration, login, profile management (`/auth`, `/users/me`).
