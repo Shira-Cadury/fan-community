@@ -1,0 +1,11 @@
+# Python Virtual Environment & Cache
+venv/
+backend/venv/
+__pycache__/
+*.pyc
+*.db
+
+# Node / Frontend
+node_modules/
+dist/
+.env
