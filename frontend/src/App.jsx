@@ -47,7 +47,7 @@ const TRANSLATIONS = {
     noCommentsYet: 'No replies yet. Start the conversation!',
   },
   he: {
-    tagline: 'קהילת מעריצים ומקום מפגש קסום',
+    tagline: '',
     signIn: 'התחברות',
     newPost: 'פוסט חדש',
     bannerTitle: 'ברוכים הבאים ל-Swift Secret',
