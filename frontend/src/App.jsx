@@ -50,7 +50,7 @@ const TRANSLATIONS = {
     tagline: '',
     signIn: 'התחברות',
     newPost: 'פוסט חדש',
-    bannerTitle: 'ברוכים הבאים לSwift Secret',
+    bannerTitle: 'ברוכים הבאים ל Swift Secret',
     bannerSub: 'מקום עדין ושקט לתאוריות, יצירות, ניתוחי שירים ושיחות קהילה.',
     allTopics: 'כל הנושאים',
     discussions: 'דיונים',
