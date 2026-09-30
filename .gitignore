@@ -1,11 +1,13 @@
-# Python Virtual Environment & Cache
+# Python / Backend
 venv/
-backend/venv/
+.venv/
 __pycache__/
 *.pyc
 *.db
-
-# Node / Frontend
-node_modules/
-dist/
+fan_community.db
 .env
+
+# React / Frontend
+frontend/node_modules/
+frontend/dist/
+.DS_Store

@@ -1,36 +1,14 @@
+from datetime import datetime
 import enum
-from datetime import datetime, timezone
-from sqlalchemy import (
-    Boolean,
-    Column,
-    DateTime,
-    Enum,
-    ForeignKey,
-    Integer,
-    JSON,
-    String,
-    Text,
-    UniqueConstraint,
-)
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, Enum, Boolean
 from sqlalchemy.orm import relationship
 from app.database import Base
 
 
-def utc_now():
-    return datetime.now(timezone.utc)
-
-
 class UserRole(str, enum.Enum):
-    MEMBER = "member"
-    MODERATOR = "moderator"
     ADMIN = "admin"
-
-
-class PostCategory(str, enum.Enum):
-    NEWS = "news"
-    EVENTS = "events"
-    GALLERY = "gallery"
-    DISCUSSIONS = "discussions"
+    MODERATOR = "moderator"
+    MEMBER = "member"
 
 
 class ReportStatus(str, enum.Enum):
@@ -43,36 +21,33 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50), unique=True, index=True, nullable=False)
-    email = Column(String(120), unique=True, index=True, nullable=False)
-    hashed_password = Column(String(255), nullable=False)
+    username = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
     role = Column(Enum(UserRole), default=UserRole.MEMBER, nullable=False)
-    is_active = Column(Boolean, default=True, nullable=False)
-    created_at = Column(DateTime, default=utc_now, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
-    # Relationships
     posts = relationship("Post", back_populates="author", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="author", cascade="all, delete-orphan")
     likes = relationship("Like", back_populates="user", cascade="all, delete-orphan")
-    reports_filed = relationship("Report", foreign_keys="Report.reporter_id", back_populates="reporter")
+    reports = relationship("Report", back_populates="reporter", cascade="all, delete-orphan")
 
 
 class Post(Base):
     __tablename__ = "posts"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(200), nullable=False)
-    content = Column(Text, nullable=False)
-    category = Column(Enum(PostCategory), default=PostCategory.DISCUSSIONS, nullable=False, index=True)
-    image_url = Column(String(500), nullable=True)
-    author_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    created_at = Column(DateTime, default=utc_now, nullable=False)
-    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now, nullable=False)
+    title = Column(String, nullable=True)
+    content = Column(Text, nullable=True)
+    category = Column(String, default="discussions", nullable=False)
+    image_url = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    author_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    # Relationships
     author = relationship("User", back_populates="posts")
     comments = relationship("Comment", back_populates="post", cascade="all, delete-orphan")
     likes = relationship("Like", back_populates="post", cascade="all, delete-orphan")
+    reports = relationship("Report", back_populates="post", cascade="all, delete-orphan")
 
 
 class Comment(Base):
@@ -80,30 +55,26 @@ class Comment(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     content = Column(Text, nullable=False)
-    depth = Column(Integer, default=1, nullable=False)
+    depth = Column(Integer, default=0, nullable=False)
     is_deleted = Column(Boolean, default=False, nullable=False)
-    created_at = Column(DateTime, default=utc_now, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    post_id = Column(Integer, ForeignKey("posts.id"), nullable=False)
+    author_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    parent_id = Column(Integer, ForeignKey("comments.id"), nullable=True)
 
-    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), nullable=False, index=True)
-    author_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    parent_id = Column(Integer, ForeignKey("comments.id", ondelete="CASCADE"), nullable=True, index=True)
-
-    # Relationships
     post = relationship("Post", back_populates="comments")
     author = relationship("User", back_populates="comments")
-    parent = relationship("Comment", remote_side=[id], backref="replies")
+    reports = relationship("Report", back_populates="comment", cascade="all, delete-orphan")
 
 
 class Like(Base):
     __tablename__ = "likes"
-    __table_args__ = (UniqueConstraint("user_id", "post_id", name="uq_user_post_like"),)
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), nullable=False, index=True)
-    created_at = Column(DateTime, default=utc_now, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    post_id = Column(Integer, ForeignKey("posts.id"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
-    # Relationships
     user = relationship("User", back_populates="likes")
     post = relationship("Post", back_populates="likes")
 
@@ -112,24 +83,13 @@ class Report(Base):
     __tablename__ = "reports"
 
     id = Column(Integer, primary_key=True, index=True)
-    reason = Column(String(255), nullable=False)
+    reason = Column(String, nullable=False)
     status = Column(Enum(ReportStatus), default=ReportStatus.PENDING, nullable=False)
-    created_at = Column(DateTime, default=utc_now, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    reporter_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    post_id = Column(Integer, ForeignKey("posts.id"), nullable=True)
+    comment_id = Column(Integer, ForeignKey("comments.id"), nullable=True)
 
-    reporter_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    post_id = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"), nullable=True)
-    comment_id = Column(Integer, ForeignKey("comments.id", ondelete="CASCADE"), nullable=True)
-
-    # Relationships
-    reporter = relationship("User", foreign_keys=[reporter_id], back_populates="reports_filed")
-
-
-class Quiz(Base):
-    __tablename__ = "quizzes"
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(200), nullable=False)
-    description = Column(Text, nullable=True)
-    # Storing array of question dicts: [{"question": "...", "options": [...], "correct_index": 0}]
-    questions = Column(JSON, nullable=False)
-    created_at = Column(DateTime, default=utc_now, nullable=False)
+    reporter = relationship("User", back_populates="reports")
+    post = relationship("Post", back_populates="reports")
+    comment = relationship("Comment", back_populates="reports")
