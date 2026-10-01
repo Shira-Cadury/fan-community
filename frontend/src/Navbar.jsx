@@ -64,7 +64,7 @@ export default function Navbar({
               gap: '0.3rem',
               whiteSpace: 'nowrap'
             }}>
-              Swift Secret
+              Swift Secrets
               <Sparkles size={15} color="var(--primary-rose)" />
             </h1>
             {t.tagline && (
