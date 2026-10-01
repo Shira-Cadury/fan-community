@@ -27,7 +27,7 @@ const TRANSLATIONS = {
     bannerSub: 'A gentle place for community theories, art, lyrical breakdowns, and shared tales.',
     dailySongLabel: 'Song of the Day',
     listenNow: 'Listen',
-    searchPlaceholder: 'Search posts by title or content...',
+    searchPlaceholder: 'Search posts...',
     noSearchPosts: 'No posts match your search query.',
     allTopics: 'All Topics',
     discussions: 'Discussions',
@@ -71,7 +71,7 @@ const TRANSLATIONS = {
     bannerSub: 'מקום עדין ושקט לתאוריות, יצירות, ניתוחי שירים ושיחות קהילה.',
     dailySongLabel: 'השיר היומי',
     listenNow: 'האזנה',
-    searchPlaceholder: 'חיפוש פוסטים לפי מילים, כותרת או תוכן...',
+    searchPlaceholder: 'חיפוש פוסטים...',
     noSearchPosts: 'לא נמצאו פוסטים התואמים לחיפוש שלך.',
     allTopics: 'כל הנושאים',
     discussions: 'דיונים',
@@ -391,134 +391,132 @@ export default function App() {
           </p>
         </section>
 
-        {/* ווידג'ט השיר היומי (Song of the Day) */}
+        {/* שורה קומפקטית משולבת: שיר יומי מצד אחד, חיפוש מהיר מצד שני */}
         <div style={{
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          backgroundColor: 'var(--bg-card)',
-          border: '1px solid var(--border-delicate)',
-          borderRadius: '16px',
-          padding: '0.75rem 1.15rem',
+          gap: '0.75rem',
           marginBottom: '1.25rem',
-          boxShadow: '0 2px 8px rgba(58, 46, 43, 0.03)',
-          flexWrap: 'wrap',
-          gap: '0.75rem'
+          alignItems: 'center',
+          flexWrap: 'wrap'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--bg-subtle)',
-              border: '1px solid var(--border-delicate)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--primary-rose-dark)',
-              flexShrink: 0
-            }}>
-              <Music size={18} />
-            </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
-                  {t.dailySongLabel}
-                </span>
-                <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-dark)' }}>
-                  {todaysSong.title}
-                </span>
-                <span style={{ fontSize: '0.8rem', color: 'var(--secondary-sage)', fontWeight: 600 }}>
+          {/* כרטיסיית שיר יומי קומפקטית */}
+          <div style={{
+            flex: '1 1 320px',
+            minHeight: '44px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: 'var(--bg-card)',
+            border: '1px solid var(--border-delicate)',
+            borderRadius: '16px',
+            padding: '0.35rem 0.75rem',
+            boxShadow: '0 2px 8px rgba(58, 46, 43, 0.02)',
+            gap: '0.5rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
+              <div style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--bg-subtle)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--primary-rose-dark)',
+                flexShrink: 0
+              }}>
+                <Music size={14} />
+              </div>
+              <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '0.82rem' }}>
+                <span style={{ fontWeight: 700, color: 'var(--text-dark)' }}>{todaysSong.title}</span>
+                <span style={{ color: 'var(--secondary-sage)', marginInlineStart: '0.35rem', fontSize: '0.76rem' }}>
                   ({todaysSong.album})
                 </span>
               </div>
-              <p style={{ margin: '0.15rem 0 0 0', fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                "{todaysSong.quote}"
-              </p>
             </div>
-          </div>
 
-          <a
-            href={todaysSong.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              padding: '0.4rem 0.85rem',
-              borderRadius: '20px',
-              backgroundColor: 'var(--bg-creamy)',
-              border: '1px solid var(--border-delicate)',
-              color: 'var(--primary-rose-dark)',
-              fontSize: '0.8rem',
-              fontWeight: 600,
-              textDecoration: 'none',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap'
-            }}
-          >
-            {t.listenNow}
-            <ExternalLink size={13} />
-          </a>
-        </div>
-
-        {/* שורת חיפוש בזמן אמת (Live Search Bar) */}
-        <div style={{
-          position: 'relative',
-          marginBottom: '1rem',
-          display: 'flex',
-          alignItems: 'center'
-        }}>
-          <div style={{
-            position: 'absolute',
-            [lang === 'he' ? 'right' : 'left']: '14px',
-            display: 'flex',
-            alignItems: 'center',
-            pointerEvents: 'none',
-            color: 'var(--text-muted)'
-          }}>
-            <Search size={17} />
-          </div>
-
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t.searchPlaceholder}
-            style={{
-              width: '100%',
-              padding: '0.65rem 2.4rem',
-              borderRadius: '16px',
-              border: '1px solid var(--border-delicate)',
-              backgroundColor: 'var(--bg-card)',
-              color: 'var(--text-dark)',
-              fontSize: '0.88rem',
-              boxShadow: '0 2px 6px rgba(58, 46, 43, 0.02)',
-              outline: 'none',
-              transition: 'border-color 0.2s, box-shadow 0.2s'
-            }}
-          />
-
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              type="button"
+            <a
+              href={todaysSong.link}
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
-                position: 'absolute',
-                [lang === 'he' ? 'left' : 'right']: '12px',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: 'var(--text-muted)',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
-                padding: '4px'
+                gap: '0.25rem',
+                padding: '0.25rem 0.55rem',
+                borderRadius: '12px',
+                backgroundColor: 'var(--bg-creamy)',
+                border: '1px solid var(--border-delicate)',
+                color: 'var(--primary-rose-dark)',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+                flexShrink: 0
               }}
             >
-              <X size={15} />
-            </button>
-          )}
+              {t.listenNow}
+              <ExternalLink size={11} />
+            </a>
+          </div>
+
+          {/* שורת חיפוש קומפקטית */}
+          <div style={{
+            flex: '1 1 240px',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <div style={{
+              position: 'absolute',
+              [lang === 'he' ? 'right' : 'left']: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              pointerEvents: 'none',
+              color: 'var(--text-muted)'
+            }}>
+              <Search size={15} />
+            </div>
+
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t.searchPlaceholder}
+              style={{
+                width: '100%',
+                height: '44px',
+                padding: '0 2.2rem',
+                borderRadius: '16px',
+                border: '1px solid var(--border-delicate)',
+                backgroundColor: 'var(--bg-card)',
+                color: 'var(--text-dark)',
+                fontSize: '0.85rem',
+                boxShadow: '0 2px 6px rgba(58, 46, 43, 0.02)',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
+            />
+
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                type="button"
+                style={{
+                  position: 'absolute',
+                  [lang === 'he' ? 'left' : 'right']: '10px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '3px'
+                }}
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Category Pills - עם אימוג'ים וגלילה אופקית */}
