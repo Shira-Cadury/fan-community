@@ -7,14 +7,14 @@ import CommentsSection from './CommentsSection';
 import GamesHub from './GamesHub';
 import { 
   Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, 
-  X, Music, ExternalLink, Search, Clock, Flame, Edit3, BookOpen 
+  X, Music, ExternalLink, Search, Clock, Flame, Edit3 
 } from 'lucide-react';
 
 const DEFAULT_DAILY_SONG = {
-  title: 'Enchanted (Taylor\'s Version)',
+  title: "Enchanted (Taylor's Version)",
   album: 'Speak Now',
   explanation: 'שיר אגדי שלוכד את רגע ההתאהבות הראשוני והתקווה שהצד השני מרגיש בדיוק אותו דבר. בחרנו בו היום בגלל הליריקה הקסומה וההפקה הנוסטלגית!',
-  link: 'https://open.spotify.com/track/3sW3PzcJHG9v6xM4xgZSYV',
+  link: 'https://open.spotify.com/search/Enchanted%20Taylor%27s%20Version',
   image_url: ''
 };
 
@@ -236,7 +236,6 @@ export default function App() {
         .catch(() => localStorage.removeItem('token'));
     }
 
-    // ניסיון משיכת שיר יומי מ-Backend אם קיים נתיב
     API.get('/daily-song')
       .then((res) => {
         if (res.data) {
@@ -244,9 +243,7 @@ export default function App() {
           localStorage.setItem('swift_daily_song', JSON.stringify(res.data));
         }
       })
-      .catch(() => {
-        // שימוש בנתונים מ-localStorage אם אין נתיב בשרת
-      });
+      .catch(() => {});
   }, []);
 
   const fetchPosts = async () => {
@@ -299,11 +296,10 @@ export default function App() {
     localStorage.setItem('swift_daily_song', JSON.stringify(updated));
     setIsEditSongModalOpen(false);
 
-    // ניסיון עדכון בשרת ברקע
     try {
       await API.post('/daily-song', updated);
     } catch (err) {
-      console.log('Saved locally to device.');
+      console.log('Saved to browser storage.');
     }
   };
 
@@ -489,7 +485,7 @@ export default function App() {
           alignItems: 'center',
           flexWrap: 'wrap'
         }}>
-          {/* כרטיסיית שיר יומי אינטראקטיבית */}
+          {/* כרטיסיית שיר יומי */}
           <div style={{
             flex: '1 1 300px',
             minHeight: '44px',
@@ -503,7 +499,6 @@ export default function App() {
             boxShadow: '0 2px 8px rgba(58, 46, 43, 0.02)',
             gap: '0.5rem'
           }}>
-            {/* לחיצה פותחת את סיפור השיר */}
             <div 
               onClick={() => setIsDailySongModalOpen(true)}
               style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden', cursor: 'pointer', flex: 1 }}
@@ -531,7 +526,6 @@ export default function App() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
-              {/* כפתור האזנה מוצג רק אם הוזן לינק */}
               {dailySong.link && (
                 <a
                   href={dailySong.link}
@@ -556,7 +550,6 @@ export default function App() {
                 </a>
               )}
 
-              {/* כפתור עריכה למנהלות בלבד */}
               {isAdmin && (
                 <button
                   onClick={() => {
@@ -1232,7 +1225,7 @@ export default function App() {
         )}
       </main>
 
-      {/* חלון הצגת סיפור השיר היומי (Song Story Modal) */}
+      {/* חלון הצגת סיפור השיר היומי */}
       {isDailySongModalOpen && (
         <div
           onClick={() => setIsDailySongModalOpen(false)}
@@ -1387,7 +1380,7 @@ export default function App() {
         </div>
       )}
 
-      {/* חלון עריכת השיר היומי למנהלות (Admin Edit Modal) */}
+      {/* חלון עריכת השיר היומי למנהלות */}
       {isEditSongModalOpen && (
         <div
           onClick={() => setIsEditSongModalOpen(false)}
