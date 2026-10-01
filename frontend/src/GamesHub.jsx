@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Sparkles, Music, HelpCircle, Layers, Play } from 'lucide-react';
+import { Sparkles, Music, HelpCircle, Layers, Play, Smile } from 'lucide-react';
 import ErasTrivia from './ErasTrivia';
 import LyricsMatcher from './LyricsMatcher';
 import MemoryCards from './MemoryCards';
+import MastermindClown from './MastermindClown';
 
 const GAMES = [
   {
@@ -13,10 +14,19 @@ const GAMES = [
       en: 'A chronological journey across all Eras with increasing difficulty and a 15s timer!'
     },
     icon: HelpCircle,
-    tag: { he: 'פעיל עכשיו!', en: 'Play Now!' },
     accentColor: '#A82020',
     bgColor: '#FCEAEA',
-    isReady: true,
+  },
+  {
+    id: 'mastermind-clown',
+    title: { he: 'גאון או ליצן? (Mastermind or Clown)', en: 'Mastermind or Clown?' },
+    desc: {
+      he: 'האם תיאוריית המעריצים התבררה כגאונות אמיתית של טיילור, או כקלאונינג מוחלט שלא קרה?',
+      en: 'Was the famous Swiftie theory pure Mastermind genius, or certified Clowning delusion?'
+    },
+    icon: Smile,
+    accentColor: '#0D47A1',
+    bgColor: '#E3F2FD',
   },
   {
     id: 'lyrics-matcher',
@@ -26,10 +36,8 @@ const GAMES = [
       en: 'Drag and drop iconic lyrics onto their corresponding album cover.'
     },
     icon: Music,
-    tag: { he: 'פעיל עכשיו!', en: 'Play Now!' },
     accentColor: '#5C9EAD',
     bgColor: '#EBF5F7',
-    isReady: true,
   },
   {
     id: 'swift-memory',
@@ -39,10 +47,8 @@ const GAMES = [
       en: 'Flip cards and match iconic Swiftie symbols: the red scarf, mirrorball, and more.'
     },
     icon: Layers,
-    tag: { he: 'פעיל עכשיו!', en: 'Play Now!' },
     accentColor: '#8A4B82',
     bgColor: '#F8EEF6',
-    isReady: true,
   }
 ];
 
@@ -52,6 +58,10 @@ export default function GamesHub({ lang }) {
 
   if (activeGameId === 'eras-trivia') {
     return <ErasTrivia lang={lang} onBack={() => setActiveGameId(null)} />;
+  }
+
+  if (activeGameId === 'mastermind-clown') {
+    return <MastermindClown lang={lang} onBack={() => setActiveGameId(null)} />;
   }
 
   if (activeGameId === 'lyrics-matcher') {
@@ -81,8 +91,8 @@ export default function GamesHub({ lang }) {
         </div>
         <p style={{ margin: '0.4rem 0 0 0', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
           {isHe 
-            ? 'שלושה משחקים אינטראקטיביים שנוצרו במיוחד עבור קהילת הסוויפטיז שלנו!'
-            : 'Three interactive games designed specially for our Swiftie community!'}
+            ? 'ארבעה משחקים אינטראקטיביים שנוצרו במיוחד עבור קהילת הסוויפטיז שלנו!'
+            : 'Four interactive games designed specially for our Swiftie community!'}
         </p>
       </div>
 
@@ -110,10 +120,10 @@ export default function GamesHub({ lang }) {
               }}
             >
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', marginBottom: '0.75rem' }}>
                   <div style={{
-                    width: '38px',
-                    height: '38px',
+                    width: '42px',
+                    height: '42px',
                     borderRadius: '12px',
                     backgroundColor: game.bgColor,
                     color: game.accentColor,
@@ -121,19 +131,8 @@ export default function GamesHub({ lang }) {
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}>
-                    <IconComponent size={20} />
+                    <IconComponent size={22} />
                   </div>
-                  <span style={{
-                    fontSize: '0.74rem',
-                    fontWeight: 700,
-                    padding: '0.2rem 0.6rem',
-                    borderRadius: '10px',
-                    backgroundColor: game.bgColor,
-                    color: game.accentColor,
-                    border: `1px solid ${game.accentColor}40`
-                  }}>
-                    {game.tag[lang] || game.tag.en}
-                  </span>
                 </div>
 
                 <h4 style={{ margin: '0 0 0.35rem 0', fontSize: '1.05rem', color: 'var(--text-dark)' }}>
@@ -151,12 +150,12 @@ export default function GamesHub({ lang }) {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.35rem',
-                  padding: '0.55rem',
+                  padding: '0.6rem',
                   borderRadius: '12px',
                   backgroundColor: 'var(--primary-rose)',
                   border: 'none',
                   color: '#fff',
-                  fontSize: '0.85rem',
+                  fontSize: '0.88rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   boxShadow: '0 2px 8px rgba(216, 112, 147, 0.25)'
