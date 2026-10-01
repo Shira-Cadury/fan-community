@@ -206,13 +206,11 @@ export default function App() {
 
     const isGallery = postCategory === 'gallery';
 
-    // בדיקה: אם זו לא גלריה וחובה טקסט, או אם בגלריה לא העלו אפילו תמונה
     if (isGallery && !postImageUrl.trim() && !postTitle.trim() && !postContent.trim()) {
       alert(lang === 'he' ? 'בגלריה יש לבחור תמונה' : 'Please upload an image for the gallery');
       return;
     }
 
-    // אם בגלריה לא נכתבה כותרת, נשים כותרת ברירת מחדל
     const finalTitle = postTitle.trim() || (isGallery ? (lang === 'he' ? 'יצירה מהגלריה' : 'Gallery Tale') : 'Untitled');
     const finalContent = postContent.trim() || '';
 
@@ -408,7 +406,6 @@ export default function App() {
                 <option value="gallery">{t.gallery}</option>
               </select>
 
-              {/* בגלריה הכותרת אופציונלית, בשאר הקטגוריות חובה */}
               <input
                 type="text"
                 placeholder={t.titlePlaceholder}
@@ -423,9 +420,9 @@ export default function App() {
                   backgroundColor: 'var(--bg-creamy)',
                   fontSize: '0.95rem'
                 }}
-              />
+              >
+              </input>
 
-              {/* העלאת תמונה מהמכשיר או הזנת קישור */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
                   <label style={{
@@ -468,7 +465,6 @@ export default function App() {
                   />
                 </div>
 
-                {/* תצוגה מקדימה של התמונה שנבחרה */}
                 {postImageUrl && (
                   <div style={{
                     position: 'relative',
@@ -513,7 +509,6 @@ export default function App() {
                 )}
               </div>
 
-              {/* בגלריה התוכן אופציונלי */}
               <textarea
                 placeholder={t.contentPlaceholder}
                 required={!isGalleryForm && !postImageUrl}
@@ -609,11 +604,7 @@ export default function App() {
                     </span>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-                        {t.by} @{post.author?.username || 'member'}
-                      </span>
-
-                      {/* Delete Post Button */}
+                      {/* כפתור מחיקה - גלוי למנהלים או ליוצר הפוסט בלבד */}
                       {canDelete && (
                         <button
                           onClick={() => handleDeletePost(post.id)}
