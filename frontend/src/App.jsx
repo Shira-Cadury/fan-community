@@ -107,12 +107,12 @@ const CATEGORY_THEMES = {
     badgeText: '#4A148C'
   },
   theories: {
-    bg: 'linear-gradient(135deg, #F5EFEB 0%, #FAF6F3 100%)',
-    border: '#D8C3B5',
-    text: '#5D4037',
-    title: '#4E342E',
-    badgeBg: '#EFEBE9',
-    badgeText: '#3E2723'
+    bg: 'linear-gradient(135deg, #E8EFE9 0%, #F3F7F4 100%)',
+    border: '#B2C9B5',
+    text: '#2D4B33',
+    title: '#1E3523',
+    badgeBg: '#DCE8DE',
+    badgeText: '#1E3523'
   },
   news: {
     bg: 'linear-gradient(135deg, #E6F3F7 0%, #F2F9FA 100%)',
