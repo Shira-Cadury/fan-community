@@ -89,43 +89,43 @@ const TRANSLATIONS = {
 
 const CATEGORY_THEMES = {
   all: {
-    bg: 'linear-gradient(135deg, #FDECEF 0%, #FFF5F7 100%)',
-    border: '#F8BBD0',
-    text: '#9C27B0',
-    title: '#AD1457',
-    badgeBg: '#F8BBD0',
+    bg: 'linear-gradient(135deg, #FFF0F5 0%, #FAF0F4 100%)',
+    border: '#E8B4C8',
+    text: '#8A3B58',
+    title: '#9C3D64',
+    badgeBg: '#FCE4EC',
     badgeText: '#880E4F'
   },
   discussions: {
-    bg: 'linear-gradient(135deg, #EDE7F6 0%, #F3E5F5 100%)',
-    border: '#D1C4E9',
-    text: '#5E35B1',
-    title: '#4A148C',
-    badgeBg: '#D1C4E9',
+    bg: 'linear-gradient(135deg, #F3EBF7 0%, #FAF5FC 100%)',
+    border: '#D4BEE4',
+    text: '#5B3770',
+    title: '#4D2463',
+    badgeBg: '#EDE7F6',
     badgeText: '#4A148C'
   },
   news: {
-    bg: 'linear-gradient(135deg, #E8F5E9 0%, #F1F8E9 100%)',
-    border: '#C8E6C9',
-    text: '#2E7D32',
-    title: '#1B5E20',
-    badgeBg: '#C8E6C9',
-    badgeText: '#1B5E20'
+    bg: 'linear-gradient(135deg, #E6F3F7 0%, #F2F9FA 100%)',
+    border: '#B3DCE5',
+    text: '#225B69',
+    title: '#164854',
+    badgeBg: '#E0F2F1',
+    badgeText: '#004D40'
   },
   events: {
-    bg: 'linear-gradient(135deg, #FFF9C4 0%, #FFFDE7 100%)',
-    border: '#FFE082',
-    text: '#F57F17',
-    title: '#E65100',
-    badgeBg: '#FFE082',
+    bg: 'linear-gradient(135deg, #FFF8E7 0%, #FFFDF8 100%)',
+    border: '#FFE3A8',
+    text: '#8A6218',
+    title: '#75500A',
+    badgeBg: '#FFF3E0',
     badgeText: '#E65100'
   },
   gallery: {
-    bg: 'linear-gradient(135deg, #FCE4EC 0%, #EDE7F6 50%, #E8F5E9 100%)',
-    border: '#F48FB1',
-    text: '#880E4F',
-    title: '#C2185B',
-    badgeBg: '#F48FB1',
+    bg: 'linear-gradient(135deg, #FDECEF 0%, #F5ECF7 100%)',
+    border: '#E5BFCE',
+    text: '#7A334E',
+    title: '#8C2B50',
+    badgeBg: '#FCE4EC',
     badgeText: '#880E4F'
   }
 };
@@ -306,46 +306,59 @@ export default function App() {
         t={t}
       />
 
-      <main style={{ maxWidth: '850px', width: '100%', margin: '0 auto', padding: '2rem 1rem', flex: 1 }}>
-        {/* Banner דינמי */}
+      <main style={{ maxWidth: '850px', width: '100%', margin: '0 auto', padding: '1.5rem 1rem', flex: 1 }}>
+        {/* Banner דינמי בטיפוגרפיה ספרותית (Folklore / TTPD Style) */}
         <section style={{
           background: currentTheme.bg,
-          border: `1.5px solid ${currentTheme.border}`,
+          border: `1px solid ${currentTheme.border}`,
           borderRadius: '24px',
-          padding: '2.5rem 2rem',
+          padding: '2.4rem 1.5rem',
           textAlign: 'center',
-          marginBottom: '2rem',
-          boxShadow: '0 8px 24px rgba(184, 80, 115, 0.08)',
+          marginBottom: '1.75rem',
+          boxShadow: '0 6px 20px rgba(184, 80, 115, 0.06)',
           transition: 'all 0.4s ease'
         }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.4rem' }}>
-            <Sparkles size={20} color={currentTheme.title} />
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.4rem' }}>
+            <Sparkles size={18} color={currentTheme.title} />
             <h2 style={{
-              fontSize: '2rem',
+              fontSize: '2.1rem',
               color: currentTheme.title,
               margin: 0,
-              fontFamily: 'serif',
+              fontFamily: '"Baskerville", "Georgia", "Garamond", serif',
               fontWeight: 700,
-              letterSpacing: '0.5px'
+              letterSpacing: '0.8px',
+              fontStyle: 'normal'
             }}>
               {t.bannerTitle}
             </h2>
-            <Sparkles size={20} color={currentTheme.title} />
+            <Sparkles size={18} color={currentTheme.title} />
           </div>
           <p style={{
-            margin: '0.5rem 0 0 0',
+            margin: '0.4rem 0 0 0',
             color: currentTheme.text,
-            fontSize: '1rem',
+            fontSize: '0.98rem',
             maxWidth: '620px',
             marginInline: 'auto',
-            fontWeight: 500
+            fontWeight: 500,
+            lineHeight: '1.6',
+            fontFamily: '"Georgia", serif'
           }}>
             {t.bannerSub}
           </p>
         </section>
 
-        {/* Category Pills */}
-        <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', marginBottom: '2rem', justifyContent: 'center' }}>
+        {/* Category Pills - שורה נגללת אופקית מותאמת לנייד */}
+        <div style={{
+          display: 'flex',
+          gap: '0.65rem',
+          overflowX: 'auto',
+          paddingBottom: '0.75rem',
+          marginBottom: '1.5rem',
+          justifyContent: 'flex-start',
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch'
+        }}>
           {categories.map((cat) => {
             const active = selectedCategory === cat.key;
             const theme = CATEGORY_THEMES[cat.key];
@@ -354,7 +367,7 @@ export default function App() {
                 key={cat.key}
                 onClick={() => setSelectedCategory(cat.key)}
                 style={{
-                  padding: '0.5rem 1.2rem',
+                  padding: '0.5rem 1.25rem',
                   borderRadius: '25px',
                   border: active ? `2px solid ${theme.title}` : '1px solid var(--border-delicate)',
                   backgroundColor: active ? theme.title : 'var(--bg-card)',
@@ -362,7 +375,9 @@ export default function App() {
                   fontSize: '0.88rem',
                   fontWeight: 600,
                   cursor: 'pointer',
-                  boxShadow: active ? '0 4px 12px rgba(0,0,0,0.1)' : 'none',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                  boxShadow: active ? '0 4px 12px rgba(100, 40, 70, 0.15)' : 'none',
                   transition: 'all 0.25s ease'
                 }}
               >
@@ -420,8 +435,7 @@ export default function App() {
                   backgroundColor: 'var(--bg-creamy)',
                   fontSize: '0.95rem'
                 }}
-              >
-              </input>
+              />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -555,7 +569,7 @@ export default function App() {
         )}
 
         {/* Posts List */}
-        <section style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <section style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
           {posts.length === 0 ? (
             <div style={{
               textAlign: 'center',
@@ -569,8 +583,8 @@ export default function App() {
             </div>
           ) : (
             posts.map((post) => {
-              const isAuthor = user && user.id === post.author_id;
-              const canDelete = isAuthor || (user && user.role === 'admin');
+              // הרשאת מחיקה שמורה אך ורק למנהל (Admin Only)
+              const canDelete = user && user.role === 'admin';
               const catTheme = CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all;
 
               return (
@@ -579,14 +593,14 @@ export default function App() {
                   style={{
                     backgroundColor: 'var(--bg-card)',
                     border: '1px solid var(--border-delicate)',
-                    borderRadius: '18px',
-                    padding: '1.6rem',
-                    boxShadow: '0 3px 10px rgba(58, 46, 43, 0.04)',
+                    borderRadius: '20px',
+                    padding: '1.85rem',
+                    boxShadow: '0 4px 14px rgba(58, 46, 43, 0.04)',
                     transition: 'transform 0.2s ease'
                   }}
                 >
                   {/* Post Header */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
                     <span style={{
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -596,7 +610,7 @@ export default function App() {
                       fontWeight: 700,
                       backgroundColor: catTheme.badgeBg,
                       color: catTheme.badgeText,
-                      padding: '0.28rem 0.75rem',
+                      padding: '0.3rem 0.8rem',
                       borderRadius: '14px'
                     }}>
                       <Tag size={12} />
@@ -604,7 +618,7 @@ export default function App() {
                     </span>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      {/* כפתור מחיקה - גלוי למנהלים או ליוצר הפוסט בלבד */}
+                      {/* כפתור מחיקה - גלוי למנהלים בלבד */}
                       {canDelete && (
                         <button
                           onClick={() => handleDeletePost(post.id)}
@@ -614,7 +628,7 @@ export default function App() {
                             border: 'none',
                             color: '#C2185B',
                             cursor: 'pointer',
-                            padding: '3px',
+                            padding: '4px',
                             display: 'flex',
                             alignItems: 'center',
                             opacity: 0.75,
@@ -629,7 +643,13 @@ export default function App() {
 
                   {/* מציג כותרת רק אם קיימת ואינה ברירת המחדל הריקה */}
                   {post.title && post.title !== 'Untitled' && (
-                    <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-dark)', fontSize: '1.3rem' }}>
+                    <h3 style={{
+                      margin: '0 0 0.6rem 0',
+                      color: 'var(--text-dark)',
+                      fontSize: '1.35rem',
+                      fontFamily: '"Georgia", serif',
+                      lineHeight: '1.3'
+                    }}>
                       {post.title}
                     </h3>
                   )}
@@ -637,7 +657,7 @@ export default function App() {
                   {/* הצגת תמונה אם קיימת בפוסט */}
                   {post.image_url && (
                     <div style={{
-                      marginBottom: '1.15rem',
+                      marginBottom: '1.25rem',
                       borderRadius: '14px',
                       overflow: 'hidden',
                       border: '1px solid var(--border-delicate)',
@@ -655,9 +675,17 @@ export default function App() {
                     </div>
                   )}
 
-                  {/* מציג תוכן טקסטואלי רק אם קיים */}
+                  {/* מציג תוכן טקסטואלי עם ריווח ושוליים נדיבים */}
                   {post.content && post.content.trim() !== '' && (
-                    <p style={{ margin: '0 0 1.2rem 0', color: 'var(--text-dark)', opacity: 0.85, fontSize: '0.95rem', lineHeight: '1.6' }}>
+                    <p style={{
+                      margin: '0 0 1.25rem 0',
+                      color: 'var(--text-dark)',
+                      opacity: 0.88,
+                      fontSize: '0.98rem',
+                      lineHeight: '1.7',
+                      wordBreak: 'break-word',
+                      padding: '0 0.15rem'
+                    }}>
                       {post.content}
                     </p>
                   )}
@@ -668,7 +696,7 @@ export default function App() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     borderTop: '1px solid var(--border-delicate)',
-                    paddingTop: '0.9rem'
+                    paddingTop: '0.95rem'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem' }}>
                       <button

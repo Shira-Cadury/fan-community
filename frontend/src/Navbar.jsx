@@ -24,47 +24,65 @@ export default function Navbar({
       <div style={{
         maxWidth: '1100px',
         margin: '0 auto',
-        padding: '0.75rem 1.5rem',
+        padding: '0.65rem 1rem',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        gap: '0.75rem'
       }}>
         {/* Brand & Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', cursor: 'pointer' }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '0.65rem', 
+          cursor: 'pointer',
+          flexShrink: 0
+        }}>
           <img
             src={logoImg}
             alt="Swift Secret Logo"
             style={{
-              width: '46px',
-              height: '46px',
+              width: '40px',
+              height: '40px',
+              minWidth: '40px',
               borderRadius: '50%',
               objectFit: 'cover',
               border: '2px solid var(--primary-rose-light)',
-              boxShadow: '0 2px 6px rgba(216, 112, 147, 0.25)'
+              boxShadow: '0 2px 6px rgba(216, 112, 147, 0.25)',
+              flexShrink: 0
             }}
           />
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             <h1 style={{
               margin: 0,
-              fontSize: '1.35rem',
+              fontSize: '1.2rem',
               fontWeight: 700,
               color: 'var(--primary-rose-dark)',
               letterSpacing: '0.5px',
               display: 'flex',
               alignItems: 'center',
-              gap: '0.35rem'
+              gap: '0.3rem',
+              whiteSpace: 'nowrap'
             }}>
               Swift Secret
-              <Sparkles size={16} color="var(--primary-rose)" />
+              <Sparkles size={15} color="var(--primary-rose)" />
             </h1>
-            <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              {t.tagline}
-            </p>
+            {t.tagline && (
+              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                {t.tagline}
+              </p>
+            )}
           </div>
         </div>
 
         {/* Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '0.5rem',
+          flexWrap: 'wrap',
+          justifyContent: 'flex-end'
+        }}>
           {/* כפתור החלפת שפה */}
           <button
             onClick={onToggleLang}
@@ -72,15 +90,16 @@ export default function Navbar({
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.35rem',
-              padding: '0.4rem 0.75rem',
+              gap: '0.3rem',
+              padding: '0.4rem 0.65rem',
               borderRadius: '16px',
               border: '1px solid var(--border-delicate)',
               backgroundColor: 'var(--bg-creamy)',
               color: 'var(--text-dark)',
-              fontSize: '0.82rem',
+              fontSize: '0.8rem',
               fontWeight: 600,
-              cursor: 'pointer'
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
             }}
           >
             <Globe size={14} color="var(--secondary-sage)" />
@@ -98,18 +117,19 @@ export default function Navbar({
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.35rem',
-                      padding: '0.5rem 0.85rem',
+                      gap: '0.3rem',
+                      padding: '0.4rem 0.75rem',
                       borderRadius: '20px',
                       backgroundColor: 'var(--bg-subtle)',
                       border: '1px solid var(--border-delicate)',
                       color: 'var(--primary-rose-dark)',
-                      fontSize: '0.85rem',
+                      fontSize: '0.82rem',
                       fontWeight: 600,
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap'
                     }}
                   >
-                    <Shield size={16} />
+                    <Shield size={15} />
                     {lang === 'he' ? 'ניהול' : 'Admin'}
                   </button>
 
@@ -118,18 +138,19 @@ export default function Navbar({
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.4rem',
-                      padding: '0.5rem 1rem',
+                      gap: '0.35rem',
+                      padding: '0.45rem 0.85rem',
                       borderRadius: '20px',
                       backgroundColor: 'var(--secondary-sage)',
                       color: '#fff',
                       border: 'none',
-                      fontSize: '0.9rem',
+                      fontSize: '0.85rem',
                       fontWeight: 600,
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap'
                     }}
                   >
-                    <PlusCircle size={17} />
+                    <PlusCircle size={16} />
                     {t.newPost}
                   </button>
                 </>
@@ -138,13 +159,14 @@ export default function Navbar({
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.6rem',
+                gap: '0.5rem',
                 backgroundColor: 'var(--bg-subtle)',
-                padding: '0.35rem 0.85rem',
+                padding: '0.3rem 0.7rem',
                 borderRadius: '16px',
-                border: '1px solid var(--border-delicate)'
+                border: '1px solid var(--border-delicate)',
+                whiteSpace: 'nowrap'
               }}>
-                <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-dark)' }}>
+                <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-dark)' }}>
                   @{user.username}
                 </span>
                 <button
@@ -160,7 +182,7 @@ export default function Navbar({
                     padding: '2px'
                   }}
                 >
-                  <LogOut size={16} />
+                  <LogOut size={15} />
                 </button>
               </div>
             </>
@@ -170,19 +192,20 @@ export default function Navbar({
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.4rem',
-                padding: '0.5rem 1.15rem',
+                gap: '0.35rem',
+                padding: '0.45rem 0.95rem',
                 borderRadius: '20px',
                 backgroundColor: 'var(--primary-rose)',
                 color: '#fff',
                 border: 'none',
-                fontSize: '0.9rem',
+                fontSize: '0.85rem',
                 fontWeight: 600,
                 cursor: 'pointer',
-                boxShadow: '0 2px 6px rgba(216, 112, 147, 0.3)'
+                boxShadow: '0 2px 6px rgba(216, 112, 147, 0.3)',
+                whiteSpace: 'nowrap'
               }}
             >
-              <LogIn size={16} />
+              <LogIn size={15} />
               {t.signIn}
             </button>
           )}

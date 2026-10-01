@@ -6,6 +6,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, lang = 'he' 
   const [isRegister, setIsRegister] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -13,18 +14,44 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, lang = 'he' 
 
   const isHe = lang === 'he';
 
+  const resetForm = () => {
+    setUsername('');
+    setPassword('');
+    setConfirmPassword('');
+    setErrorMsg('');
+  };
+
+  const handleToggleMode = () => {
+    setIsRegister(!isRegister);
+    resetForm();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
+
+    // בדיקות תקינות במצב הרשמה
+    if (isRegister) {
+      if (password.length < 6) {
+        setErrorMsg(isHe ? 'הסיסמה חייבת להכיל לפחות 6 תווים.' : 'Password must be at least 6 characters.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setErrorMsg(isHe ? 'הסיסמאות אינן תואמות. אנא נסי שוב.' : 'Passwords do not match. Please try again.');
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
       if (isRegister) {
-        await API.post('/auth/register', { username, password });
+        await API.post('/auth/register', { username: username.trim(), password });
       }
 
       const params = new URLSearchParams();
-      params.append('username', username);
+      params.append('username', username.trim());
       params.append('password', password);
 
       const res = await API.post('/auth/login', params, {
@@ -39,7 +66,18 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, lang = 'he' 
       onClose();
     } catch (err) {
       const detail = err.response?.data?.detail;
-      setErrorMsg(typeof detail === 'string' ? detail : (isHe ? 'ההתחברות נכשלה. אנא בדקי את הפרטים.' : 'Authentication failed. Please check credentials.'));
+      let displayError = isHe ? 'ההתחברות נכשלה. אנא בדקי את הפרטים.' : 'Authentication failed. Please check credentials.';
+
+      if (typeof detail === 'string') {
+        if (detail.toLowerCase().includes('already exists') || detail.toLowerCase().includes('registered')) {
+          displayError = isHe ? 'שם משתמש זה כבר תפוס. אנא בחרי שם אחר.' : 'Username is already taken.';
+        } else if (detail.toLowerCase().includes('incorrect') || detail.toLowerCase().includes('not found')) {
+          displayError = isHe ? 'שם משתמש או סיסמה שגויים.' : 'Incorrect username or password.';
+        } else {
+          displayError = detail;
+        }
+      }
+      setErrorMsg(displayError);
     } finally {
       setLoading(false);
     }
@@ -86,7 +124,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, lang = 'he' 
           </h2>
           <p style={{ margin: '0.3rem 0 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
             {isRegister
-              ? (isHe ? 'צרי חשבון עם שם משתמש וסיסמה בלבד' : 'Create an account to join the discussion')
+              ? (isHe ? 'צרי חשבון עם שם משתמש וסיסמה' : 'Create an account to join the discussion')
               : (isHe ? 'התחברי כדי לשתף ולהגיב' : 'Sign in to share your thoughts')}
           </p>
         </div>
@@ -99,7 +137,8 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, lang = 'he' 
             borderRadius: '10px',
             fontSize: '0.85rem',
             marginBottom: '1rem',
-            textAlign: 'center'
+            textAlign: 'center',
+            border: '1px solid #FFCDD2'
           }}>
             {errorMsg}
           </div>
@@ -148,6 +187,30 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, lang = 'he' 
             />
           </div>
 
+          {/* שדה אישור סיסמה - מוצג רק בהרשמה */}
+          {isRegister && (
+            <div>
+              <label style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-dark)' }}>
+                {isHe ? 'אישור סיסמה' : 'Confirm Password'}
+              </label>
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.65rem 0.8rem',
+                  borderRadius: '10px',
+                  border: '1px solid var(--border-delicate)',
+                  backgroundColor: 'var(--bg-creamy)',
+                  marginTop: '0.25rem',
+                  fontSize: '0.9rem'
+                }}
+              />
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}
@@ -174,7 +237,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess, lang = 'he' 
           </span>
           <button
             type="button"
-            onClick={() => { setIsRegister(!isRegister); setErrorMsg(''); }}
+            onClick={handleToggleMode}
             style={{
               background: 'none',
               border: 'none',
