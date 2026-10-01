@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 import AuthModal from './AuthModal';
 import AdminModal from './AdminModal';
 import CommentsSection from './CommentsSection';
-import { Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, X, Music, ExternalLink } from 'lucide-react';
+import { Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, X, Music, ExternalLink, Search } from 'lucide-react';
 
 const DAILY_SONGS = [
   { title: 'Cardigan', album: 'folklore', quote: 'When you are young, they assume you know nothing...', link: 'https://open.spotify.com/track/4R2kfaDFslZEMLoQUTdoVJ' },
@@ -14,7 +14,7 @@ const DAILY_SONGS = [
   { title: 'Enchanted (Taylor\'s Version)', album: 'Speak Now', quote: 'Please don\'t be in love with someone else...', link: 'https://open.spotify.com/track/3sW3PzcJHG9v6xM4xgZSYV' },
   { title: 'Cruel Summer', album: 'Lover', quote: 'I love you, ain\'t that the worst thing you ever heard?', link: 'https://open.spotify.com/track/1BxfuPKGuaTgP7aM0fbdwr' },
   { title: 'Style', album: '1989 (Taylor\'s Version)', quote: 'You got that James Dean daydream look in your eye...', link: 'https://open.spotify.com/track/0ug5ULuhfgCrqdBuWuZqvD' },
-  { title: 'The Fate of Ophelia', album: 'The Tortured Poets Department', quote: 'Down bad crying at the gym...', link: 'https://open.spotify.com/track/2OzhngLzyJQ4uW90Fcf546' },
+  { title: 'Down Bad', album: 'The Tortured Poets Department', quote: 'Down bad crying at the gym...', link: 'https://open.spotify.com/track/2OzhngLzyJQ4uW90Fcf546' },
   { title: 'Fearless (Taylor\'s Version)', album: 'Fearless', quote: '\'Cause I don\'t know how it gets better than this...', link: 'https://open.spotify.com/track/77sMIMGoAcBe0ZRaCL97aF' }
 ];
 
@@ -27,6 +27,8 @@ const TRANSLATIONS = {
     bannerSub: 'A gentle place for community theories, art, lyrical breakdowns, and shared tales.',
     dailySongLabel: 'Song of the Day',
     listenNow: 'Listen',
+    searchPlaceholder: 'Search posts by title or content...',
+    noSearchPosts: 'No posts match your search query.',
     allTopics: 'All Topics',
     discussions: 'Discussions',
     theories: 'Theories & Analyses',
@@ -69,6 +71,8 @@ const TRANSLATIONS = {
     bannerSub: 'מקום עדין ושקט לתאוריות, יצירות, ניתוחי שירים ושיחות קהילה.',
     dailySongLabel: 'השיר היומי',
     listenNow: 'האזנה',
+    searchPlaceholder: 'חיפוש פוסטים לפי מילים, כותרת או תוכן...',
+    noSearchPosts: 'לא נמצאו פוסטים התואמים לחיפוש שלך.',
     allTopics: 'כל הנושאים',
     discussions: 'דיונים',
     theories: 'תיאוריות וניתוחים',
@@ -163,6 +167,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
@@ -319,6 +324,15 @@ export default function App() {
 
   const isGalleryForm = postCategory === 'gallery';
 
+  // סינון פוסטים בזמן אמת לפי שורת החיפוש
+  const filteredPosts = posts.filter((post) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    const titleMatch = post.title ? post.title.toLowerCase().includes(query) : false;
+    const contentMatch = post.content ? post.content.toLowerCase().includes(query) : false;
+    return titleMatch || contentMatch;
+  });
+
   return (
     <div dir={lang === 'he' ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar
@@ -386,7 +400,7 @@ export default function App() {
           border: '1px solid var(--border-delicate)',
           borderRadius: '16px',
           padding: '0.75rem 1.15rem',
-          marginBottom: '1.5rem',
+          marginBottom: '1.25rem',
           boxShadow: '0 2px 8px rgba(58, 46, 43, 0.03)',
           flexWrap: 'wrap',
           gap: '0.75rem'
@@ -447,6 +461,64 @@ export default function App() {
             {t.listenNow}
             <ExternalLink size={13} />
           </a>
+        </div>
+
+        {/* שורת חיפוש בזמן אמת (Live Search Bar) */}
+        <div style={{
+          position: 'relative',
+          marginBottom: '1rem',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <div style={{
+            position: 'absolute',
+            [lang === 'he' ? 'right' : 'left']: '14px',
+            display: 'flex',
+            alignItems: 'center',
+            pointerEvents: 'none',
+            color: 'var(--text-muted)'
+          }}>
+            <Search size={17} />
+          </div>
+
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t.searchPlaceholder}
+            style={{
+              width: '100%',
+              padding: '0.65rem 2.4rem',
+              borderRadius: '16px',
+              border: '1px solid var(--border-delicate)',
+              backgroundColor: 'var(--bg-card)',
+              color: 'var(--text-dark)',
+              fontSize: '0.88rem',
+              boxShadow: '0 2px 6px rgba(58, 46, 43, 0.02)',
+              outline: 'none',
+              transition: 'border-color 0.2s, box-shadow 0.2s'
+            }}
+          />
+
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              type="button"
+              style={{
+                position: 'absolute',
+                [lang === 'he' ? 'left' : 'right']: '12px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--text-muted)',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '4px'
+              }}
+            >
+              <X size={15} />
+            </button>
+          )}
         </div>
 
         {/* Category Pills - עם אימוג'ים וגלילה אופקית */}
@@ -677,7 +749,7 @@ export default function App() {
 
         {/* Posts List */}
         <section style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
-          {posts.length === 0 ? (
+          {filteredPosts.length === 0 ? (
             <div style={{
               textAlign: 'center',
               padding: '3.5rem 1rem',
@@ -686,10 +758,10 @@ export default function App() {
               border: '2px dashed var(--border-delicate)',
               color: 'var(--text-muted)'
             }}>
-              {t.noPosts}
+              {searchQuery ? t.noSearchPosts : t.noPosts}
             </div>
           ) : (
-            posts.map((post) => {
+            filteredPosts.map((post) => {
               const canDelete = user && user.role === 'admin';
               const catTheme = CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all;
 
