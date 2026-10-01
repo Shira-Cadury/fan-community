@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import AuthModal from './AuthModal';
 import AdminModal from './AdminModal';
 import CommentsSection from './CommentsSection';
+import GamesHub from './GamesHub';
 import { Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, X, Music, ExternalLink, Search } from 'lucide-react';
 
 const DAILY_SONGS = [
@@ -35,6 +36,7 @@ const TRANSLATIONS = {
     news: 'News & Updates',
     events: 'Events',
     gallery: 'Gallery',
+    games: 'Games',
     createTitle: 'Create a New Tale / Post',
     titlePlaceholder: 'Post title (optional for gallery)...',
     contentPlaceholder: 'Write your story or thoughts (optional for gallery)...',
@@ -79,6 +81,7 @@ const TRANSLATIONS = {
     news: 'חדשות ועדכונים',
     events: 'אירועים',
     gallery: 'גלריה',
+    games: 'משחקים',
     createTitle: 'יצירת פוסט חדש',
     titlePlaceholder: 'כותרת הפוסט (אופציונלי בגלריה)...',
     contentPlaceholder: 'כתבי את המחשבות שלך (אופציונלי בגלריה)...',
@@ -157,6 +160,14 @@ const CATEGORY_THEMES = {
     title: '#8C2B50',
     badgeBg: '#FCE4EC',
     badgeText: '#880E4F'
+  },
+  games: {
+    bg: 'linear-gradient(135deg, #F5EFFB 0%, #FAF6FD 100%)',
+    border: '#D7C2EC',
+    text: '#6A3E91',
+    title: '#562580',
+    badgeBg: '#EDE5F7',
+    badgeText: '#4A148C'
   }
 };
 
@@ -180,7 +191,6 @@ export default function App() {
 
   const currentTheme = CATEGORY_THEMES[selectedCategory] || CATEGORY_THEMES.all;
 
-  // חישוב שיר יומי קבוע לפי יום בשנה
   const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
   const todaysSong = DAILY_SONGS[dayOfYear % DAILY_SONGS.length];
 
@@ -191,6 +201,7 @@ export default function App() {
     { key: 'news', label: t.news, icon: '📰' },
     { key: 'events', label: t.events, icon: '📅' },
     { key: 'gallery', label: t.gallery, icon: '🎨' },
+    { key: 'games', label: t.games, icon: '🎮' },
   ];
 
   useEffect(() => {
@@ -203,6 +214,7 @@ export default function App() {
   }, []);
 
   const fetchPosts = async () => {
+    if (selectedCategory === 'games') return;
     try {
       const url = selectedCategory === 'all' ? '/posts' : `/posts?category=${selectedCategory}`;
       const res = await API.get(url);
@@ -324,7 +336,6 @@ export default function App() {
 
   const isGalleryForm = postCategory === 'gallery';
 
-  // סינון פוסטים בזמן אמת לפי שורת החיפוש
   const filteredPosts = posts.filter((post) => {
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase();
@@ -341,8 +352,10 @@ export default function App() {
         onLogout={handleLogout}
         onOpenNewPost={() => {
           setIsCreatingPost(true);
-          if (selectedCategory !== 'all') {
+          if (selectedCategory !== 'all' && selectedCategory !== 'games') {
             setPostCategory(selectedCategory);
+          } else {
+            setPostCategory('discussions');
           }
         }}
         onOpenAdmin={() => setIsAdminOpen(true)}
@@ -352,7 +365,7 @@ export default function App() {
       />
 
       <main style={{ maxWidth: '850px', width: '100%', margin: '0 auto', padding: '1.5rem 1rem', flex: 1 }}>
-        {/* Banner דינמי בטיפוגרפיה ספרותית */}
+        {/* Banner */}
         <section style={{
           background: currentTheme.bg,
           border: `1px solid ${currentTheme.border}`,
@@ -391,7 +404,7 @@ export default function App() {
           </p>
         </section>
 
-        {/* שורה קומפקטית משולבת: שיר יומי מצד אחד, חיפוש מהיר מצד שני */}
+        {/* שורת שיר יומי וחיפוש קומפקטית */}
         <div style={{
           display: 'flex',
           gap: '0.75rem',
@@ -399,7 +412,6 @@ export default function App() {
           alignItems: 'center',
           flexWrap: 'wrap'
         }}>
-          {/* כרטיסיית שיר יומי קומפקטית */}
           <div style={{
             flex: '1 1 320px',
             minHeight: '44px',
@@ -459,67 +471,68 @@ export default function App() {
             </a>
           </div>
 
-          {/* שורת חיפוש קומפקטית */}
-          <div style={{
-            flex: '1 1 240px',
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center'
-          }}>
+          {selectedCategory !== 'games' && (
             <div style={{
-              position: 'absolute',
-              [lang === 'he' ? 'right' : 'left']: '12px',
+              flex: '1 1 240px',
+              position: 'relative',
               display: 'flex',
-              alignItems: 'center',
-              pointerEvents: 'none',
-              color: 'var(--text-muted)'
+              alignItems: 'center'
             }}>
-              <Search size={15} />
-            </div>
+              <div style={{
+                position: 'absolute',
+                [lang === 'he' ? 'right' : 'left']: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                pointerEvents: 'none',
+                color: 'var(--text-muted)'
+              }}>
+                <Search size={15} />
+              </div>
 
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t.searchPlaceholder}
-              style={{
-                width: '100%',
-                height: '44px',
-                padding: '0 2.2rem',
-                borderRadius: '16px',
-                border: '1px solid var(--border-delicate)',
-                backgroundColor: 'var(--bg-card)',
-                color: 'var(--text-dark)',
-                fontSize: '0.85rem',
-                boxShadow: '0 2px 6px rgba(58, 46, 43, 0.02)',
-                outline: 'none',
-                boxSizing: 'border-box'
-              }}
-            />
-
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                type="button"
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t.searchPlaceholder}
                 style={{
-                  position: 'absolute',
-                  [lang === 'he' ? 'left' : 'right']: '10px',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: 'var(--text-muted)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '3px'
+                  width: '100%',
+                  height: '44px',
+                  padding: '0 2.2rem',
+                  borderRadius: '16px',
+                  border: '1px solid var(--border-delicate)',
+                  backgroundColor: 'var(--bg-card)',
+                  color: 'var(--text-dark)',
+                  fontSize: '0.85rem',
+                  boxShadow: '0 2px 6px rgba(58, 46, 43, 0.02)',
+                  outline: 'none',
+                  boxSizing: 'border-box'
                 }}
-              >
-                <X size={14} />
-              </button>
-            )}
-          </div>
+              />
+
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  type="button"
+                  style={{
+                    position: 'absolute',
+                    [lang === 'he' ? 'left' : 'right']: '10px',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: 'var(--text-muted)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '3px'
+                  }}
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
-        {/* Category Pills - עם אימוג'ים וגלילה אופקית */}
+        {/* Category Pills */}
         <div style={{
           display: 'flex',
           gap: '0.65rem',
@@ -564,7 +577,7 @@ export default function App() {
         </div>
 
         {/* Create Post Form */}
-        {isCreatingPost && (
+        {isCreatingPost && selectedCategory !== 'games' && (
           <form
             onSubmit={handleCreatePost}
             style={{
@@ -745,209 +758,208 @@ export default function App() {
           </form>
         )}
 
-        {/* Posts List */}
-        <section style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
-          {filteredPosts.length === 0 ? (
-            <div style={{
-              textAlign: 'center',
-              padding: '3.5rem 1rem',
-              backgroundColor: 'var(--bg-card)',
-              borderRadius: '20px',
-              border: '2px dashed var(--border-delicate)',
-              color: 'var(--text-muted)'
-            }}>
-              {searchQuery ? t.noSearchPosts : t.noPosts}
-            </div>
-          ) : (
-            filteredPosts.map((post) => {
-              const canDelete = user && user.role === 'admin';
-              const catTheme = CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all;
+        {/* תצוגה מותנית: לובי משחקים או רשימת פוסטים */}
+        {selectedCategory === 'games' ? (
+          <GamesHub lang={lang} />
+        ) : (
+          <section style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
+            {filteredPosts.length === 0 ? (
+              <div style={{
+                textAlign: 'center',
+                padding: '3.5rem 1rem',
+                backgroundColor: 'var(--bg-card)',
+                borderRadius: '20px',
+                border: '2px dashed var(--border-delicate)',
+                color: 'var(--text-muted)'
+              }}>
+                {searchQuery ? t.noSearchPosts : t.noPosts}
+              </div>
+            ) : (
+              filteredPosts.map((post) => {
+                const canDelete = user && user.role === 'admin';
+                const catTheme = CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all;
 
-              return (
-                <article
-                  key={post.id}
-                  style={{
-                    backgroundColor: 'var(--bg-card)',
-                    border: '1px solid var(--border-delicate)',
-                    borderRadius: '20px',
-                    padding: '1.85rem',
-                    boxShadow: '0 4px 14px rgba(58, 46, 43, 0.04)',
-                    transition: 'transform 0.2s ease'
-                  }}
-                >
-                  {/* Post Header */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                    <span style={{
-                      display: 'inline-flex',
+                return (
+                  <article
+                    key={post.id}
+                    style={{
+                      backgroundColor: 'var(--bg-card)',
+                      border: '1px solid var(--border-delicate)',
+                      borderRadius: '20px',
+                      padding: '1.85rem',
+                      boxShadow: '0 4px 14px rgba(58, 46, 43, 0.04)',
+                      transition: 'transform 0.2s ease'
+                    }}
+                  >
+                    {/* Post Header */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.35rem',
+                        fontSize: '0.75rem',
+                        textTransform: 'uppercase',
+                        fontWeight: 700,
+                        backgroundColor: catTheme.badgeBg,
+                        color: catTheme.badgeText,
+                        padding: '0.3rem 0.8rem',
+                        borderRadius: '14px'
+                      }}>
+                        <Tag size={12} />
+                        {t[post.category] || post.category}
+                      </span>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        {canDelete && (
+                          <button
+                            onClick={() => handleDeletePost(post.id)}
+                            title={t.deletePost}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              color: '#C2185B',
+                              cursor: 'pointer',
+                              padding: '4px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              opacity: 0.75,
+                              transition: 'opacity 0.2s'
+                            }}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {post.title && post.title !== 'Untitled' && (
+                      <h3 style={{
+                        margin: '0 0 0.6rem 0',
+                        color: 'var(--text-dark)',
+                        fontSize: '1.35rem',
+                        fontFamily: '"Georgia", serif',
+                        lineHeight: '1.3'
+                      }}>
+                        {post.title}
+                      </h3>
+                    )}
+
+                    {post.image_url && (
+                      <div style={{
+                        marginBottom: '1.25rem',
+                        borderRadius: '14px',
+                        overflow: 'hidden',
+                        border: '1px solid var(--border-delicate)',
+                        maxHeight: '480px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        backgroundColor: '#fafafa'
+                      }}>
+                        <img
+                          src={post.image_url}
+                          alt={post.title || "Post image"}
+                          style={{ width: '100%', maxHeight: '480px', objectFit: 'contain' }}
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      </div>
+                    )}
+
+                    {post.content && post.content.trim() !== '' && (
+                      <p style={{
+                        margin: '0 0 1.25rem 0',
+                        color: 'var(--text-dark)',
+                        opacity: 0.88,
+                        fontSize: '0.98rem',
+                        lineHeight: '1.7',
+                        wordBreak: 'break-word',
+                        padding: '0 0.15rem'
+                      }}>
+                        {post.content}
+                      </p>
+                    )}
+
+                    <div style={{
+                      display: 'flex',
                       alignItems: 'center',
-                      gap: '0.35rem',
-                      fontSize: '0.75rem',
-                      textTransform: 'uppercase',
-                      fontWeight: 700,
-                      backgroundColor: catTheme.badgeBg,
-                      color: catTheme.badgeText,
-                      padding: '0.3rem 0.8rem',
-                      borderRadius: '14px'
+                      justifyContent: 'space-between',
+                      borderTop: '1px solid var(--border-delicate)',
+                      paddingTop: '0.95rem'
                     }}>
-                      <Tag size={12} />
-                      {t[post.category] || post.category}
-                    </span>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      {canDelete && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem' }}>
                         <button
-                          onClick={() => handleDeletePost(post.id)}
-                          title={t.deletePost}
+                          onClick={() => handleToggleLike(post.id)}
                           style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#C2185B',
-                            cursor: 'pointer',
-                            padding: '4px',
                             display: 'flex',
                             alignItems: 'center',
-                            opacity: 0.75,
-                            transition: 'opacity 0.2s'
+                            gap: '0.4rem',
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--primary-rose-dark)',
+                            cursor: 'pointer',
+                            fontSize: '0.9rem',
+                            fontWeight: 600
                           }}
                         >
-                          <Trash2 size={16} />
+                          <Heart
+                            size={17}
+                            fill={post.likes_count > 0 ? "var(--primary-rose)" : "none"}
+                            color="var(--primary-rose-dark)"
+                          />
+                          {post.likes_count || 0} {t.likes}
                         </button>
-                      )}
+
+                        <button
+                          onClick={() => setOpenCommentsPostId(openCommentsPostId === post.id ? null : post.id)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.4rem',
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--secondary-sage-dark)',
+                            cursor: 'pointer',
+                            fontSize: '0.9rem',
+                            fontWeight: 600
+                          }}
+                        >
+                          <MessageCircle size={17} />
+                          {openCommentsPostId === post.id ? t.hideComments : t.comments}
+                        </button>
+                      </div>
+
+                      <button
+                        onClick={() => handleReportPost(post.id)}
+                        title={t.report}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'var(--text-muted)',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          fontSize: '0.8rem'
+                        }}
+                      >
+                        <Flag size={14} />
+                        {t.report}
+                      </button>
                     </div>
-                  </div>
 
-                  {/* כותרת הפוסט */}
-                  {post.title && post.title !== 'Untitled' && (
-                    <h3 style={{
-                      margin: '0 0 0.6rem 0',
-                      color: 'var(--text-dark)',
-                      fontSize: '1.35rem',
-                      fontFamily: '"Georgia", serif',
-                      lineHeight: '1.3'
-                    }}>
-                      {post.title}
-                    </h3>
-                  )}
-
-                  {/* הצגת תמונה אם קיימת בפוסט */}
-                  {post.image_url && (
-                    <div style={{
-                      marginBottom: '1.25rem',
-                      borderRadius: '14px',
-                      overflow: 'hidden',
-                      border: '1px solid var(--border-delicate)',
-                      maxHeight: '480px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      backgroundColor: '#fafafa'
-                    }}>
-                      <img
-                        src={post.image_url}
-                        alt={post.title || "Post image"}
-                        style={{ width: '100%', maxHeight: '480px', objectFit: 'contain' }}
-                        onError={(e) => { e.target.style.display = 'none'; }}
+                    {openCommentsPostId === post.id && (
+                      <CommentsSection
+                        postId={post.id}
+                        user={user}
+                        onRequireAuth={() => setIsAuthOpen(true)}
+                        t={t}
                       />
-                    </div>
-                  )}
-
-                  {/* תוכן הפוסט */}
-                  {post.content && post.content.trim() !== '' && (
-                    <p style={{
-                      margin: '0 0 1.25rem 0',
-                      color: 'var(--text-dark)',
-                      opacity: 0.88,
-                      fontSize: '0.98rem',
-                      lineHeight: '1.7',
-                      wordBreak: 'break-word',
-                      padding: '0 0.15rem'
-                    }}>
-                      {post.content}
-                    </p>
-                  )}
-
-                  {/* כפתורי פעולות */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    borderTop: '1px solid var(--border-delicate)',
-                    paddingTop: '0.95rem'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem' }}>
-                      <button
-                        onClick={() => handleToggleLike(post.id)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.4rem',
-                          background: 'none',
-                          border: 'none',
-                          color: 'var(--primary-rose-dark)',
-                          cursor: 'pointer',
-                          fontSize: '0.9rem',
-                          fontWeight: 600
-                        }}
-                      >
-                        <Heart
-                          size={17}
-                          fill={post.likes_count > 0 ? "var(--primary-rose)" : "none"}
-                          color="var(--primary-rose-dark)"
-                        />
-                        {post.likes_count || 0} {t.likes}
-                      </button>
-
-                      <button
-                        onClick={() => setOpenCommentsPostId(openCommentsPostId === post.id ? null : post.id)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.4rem',
-                          background: 'none',
-                          border: 'none',
-                          color: 'var(--secondary-sage-dark)',
-                          cursor: 'pointer',
-                          fontSize: '0.9rem',
-                          fontWeight: 600
-                        }}
-                      >
-                        <MessageCircle size={17} />
-                        {openCommentsPostId === post.id ? t.hideComments : t.comments}
-                      </button>
-                    </div>
-
-                    <button
-                      onClick={() => handleReportPost(post.id)}
-                      title={t.report}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: 'var(--text-muted)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.25rem',
-                        fontSize: '0.8rem'
-                      }}
-                    >
-                      <Flag size={14} />
-                      {t.report}
-                    </button>
-                  </div>
-
-                  {/* Comments Section */}
-                  {openCommentsPostId === post.id && (
-                    <CommentsSection
-                      postId={post.id}
-                      user={user}
-                      onRequireAuth={() => setIsAuthOpen(true)}
-                      t={t}
-                    />
-                  )}
-                </article>
-              );
-            })
-          )}
-        </section>
+                    )}
+                  </article>
+                );
+              })
+            )}
+          </section>
+        )}
       </main>
 
       <AuthModal
