@@ -5,7 +5,7 @@ import AuthModal from './AuthModal';
 import AdminModal from './AdminModal';
 import CommentsSection from './CommentsSection';
 import GamesHub from './GamesHub';
-import { Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, X, Music, ExternalLink, Search, Clock, Flame } from 'lucide-react';
+import { Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, X, Music, ExternalLink, Search, Clock, Flame, ZoomIn } from 'lucide-react';
 
 const DAILY_SONGS = [
   { title: 'Cardigan', album: 'folklore', quote: 'When you are young, they assume you know nothing...', link: 'https://open.spotify.com/track/4R2kfaDFslZEMLoQUTdoVJ' },
@@ -188,6 +188,7 @@ export default function App() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
   const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
+  const [selectedImageModalPost, setSelectedImageModalPost] = useState(null);
 
   const [postTitle, setPostTitle] = useState('');
   const [postContent, setPostContent] = useState('');
@@ -297,6 +298,9 @@ export default function App() {
     try {
       await API.delete(`/posts/${postId}`);
       setPosts((prevPosts) => prevPosts.filter((p) => p.id !== postId));
+      if (selectedImageModalPost && selectedImageModalPost.id === postId) {
+        setSelectedImageModalPost(null);
+      }
     } catch (err) {
       alert(err.response?.data?.detail || 'Failed to delete post');
     }
@@ -317,6 +321,13 @@ export default function App() {
             : p
         )
       );
+      if (selectedImageModalPost && selectedImageModalPost.id === postId) {
+        setSelectedImageModalPost((prev) => ({
+          ...prev,
+          likes_count: res.data.likes_count,
+          is_liked: res.data.liked
+        }));
+      }
     } catch (err) {
       console.error('Failed to toggle like', err);
       fetchPosts();
@@ -341,7 +352,6 @@ export default function App() {
 
   const isGalleryForm = postCategory === 'gallery';
 
-  // סינון ומיון פוסטים בזמן אמת
   const processedPosts = posts
     .filter((post) => {
       if (!searchQuery.trim()) return true;
@@ -354,7 +364,6 @@ export default function App() {
       if (sortBy === 'popular') {
         return (b.likes_count || 0) - (a.likes_count || 0);
       }
-      // latest (default)
       return (b.id || 0) - (a.id || 0);
     });
 
@@ -426,7 +435,7 @@ export default function App() {
           alignItems: 'center',
           flexWrap: 'wrap'
         }}>
-          {/* כרטיסיית שיר יומי קומפקטית */}
+          {/* שיר יומי */}
           <div style={{
             flex: '1 1 300px',
             minHeight: '44px',
@@ -552,7 +561,7 @@ export default function App() {
                 )}
               </div>
 
-              {/* כפתורי מיון: הכי חדשים / הכי אהובים */}
+              {/* כפתורי מיון */}
               <div style={{
                 display: 'inline-flex',
                 backgroundColor: 'var(--bg-card)',
@@ -839,10 +848,105 @@ export default function App() {
           </form>
         )}
 
-        {/* תצוגה מותנית: לובי משחקים או רשימת פוסטים ממוינת */}
+        {/* תצוגה מותנית: משחקים / גלריית תמונות טלפונית / רשימת פוסטים רגילה */}
         {selectedCategory === 'games' ? (
           <GamesHub lang={lang} />
+        ) : selectedCategory === 'gallery' ? (
+          /* תצוגת גלריה טלפונית - Photo Grid */
+          <div>
+            {processedPosts.length === 0 ? (
+              <div style={{
+                textAlign: 'center',
+                padding: '3.5rem 1rem',
+                backgroundColor: 'var(--bg-card)',
+                borderRadius: '20px',
+                border: '2px dashed var(--border-delicate)',
+                color: 'var(--text-muted)'
+              }}>
+                {searchQuery ? t.noSearchPosts : t.noPosts}
+              </div>
+            ) : (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                gap: '12px'
+              }}>
+                {processedPosts.map((post) => (
+                  <div
+                    key={post.id}
+                    onClick={() => setSelectedImageModalPost(post)}
+                    style={{
+                      position: 'relative',
+                      borderRadius: '16px',
+                      overflow: 'hidden',
+                      aspectRatio: '1 / 1',
+                      backgroundColor: 'var(--bg-subtle)',
+                      border: '1px solid var(--border-delicate)',
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.08)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
+                    }}
+                  >
+                    {post.image_url ? (
+                      <img
+                        src={post.image_url}
+                        alt={post.title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '1rem',
+                        textAlign: 'center',
+                        color: 'var(--text-muted)',
+                        fontSize: '0.85rem'
+                      }}>
+                        {post.title}
+                      </div>
+                    )}
+
+                    {/* שכבת מידע צפה בתחתית התמונה */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      background: 'linear-gradient(to top, rgba(0,0,0,0.65), transparent)',
+                      padding: '0.6rem 0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      color: '#fff',
+                      fontSize: '0.78rem'
+                    }}>
+                      <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '65%' }}>
+                        {post.title && post.title !== 'Untitled' ? post.title : '✨'}
+                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                          <Heart size={12} fill="#fff" /> {post.likes_count || 0}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         ) : (
+          /* רשימת פוסטים רגילה */
           <section style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
             {processedPosts.length === 0 ? (
               <div style={{
@@ -872,7 +976,6 @@ export default function App() {
                       transition: 'transform 0.2s ease'
                     }}
                   >
-                    {/* Post Header */}
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
                       <span style={{
                         display: 'inline-flex',
@@ -1042,6 +1145,121 @@ export default function App() {
           </section>
         )}
       </main>
+
+      {/* חלונית הגדלת תמונה מהגלריה (Lightbox Modal) */}
+      {selectedImageModalPost && (
+        <div
+          onClick={() => setSelectedImageModalPost(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.25rem',
+            zIndex: 1000,
+            backdropFilter: 'blur(4px)'
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'var(--bg-card)',
+              borderRadius: '24px',
+              maxWidth: '650px',
+              width: '100%',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <button
+              onClick={() => setSelectedImageModalPost(null)}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                [lang === 'he' ? 'left' : 'right']: '12px',
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                zIndex: 10
+              }}
+            >
+              <X size={18} />
+            </button>
+
+            {selectedImageModalPost.image_url && (
+              <div style={{ backgroundColor: '#000', display: 'flex', justifyContent: 'center' }}>
+                <img
+                  src={selectedImageModalPost.image_url}
+                  alt={selectedImageModalPost.title}
+                  style={{ maxWidth: '100%', maxHeight: '55vh', objectFit: 'contain' }}
+                />
+              </div>
+            )}
+
+            <div style={{ padding: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                <h3 style={{ margin: 0, fontSize: '1.25rem', color: 'var(--text-dark)', fontFamily: '"Georgia", serif' }}>
+                  {selectedImageModalPost.title}
+                </h3>
+                {user && user.role === 'admin' && (
+                  <button
+                    onClick={() => handleDeletePost(selectedImageModalPost.id)}
+                    style={{ background: 'none', border: 'none', color: '#C2185B', cursor: 'pointer' }}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
+              </div>
+
+              {selectedImageModalPost.content && (
+                <p style={{ margin: '0 0 1rem 0', color: 'var(--text-dark)', opacity: 0.85, fontSize: '0.92rem' }}>
+                  {selectedImageModalPost.content}
+                </p>
+              )}
+
+              <div style={{ display: 'flex', gap: '1rem', borderTop: '1px solid var(--border-delicate)', paddingTop: '0.75rem', marginBottom: '1rem' }}>
+                <button
+                  onClick={() => handleToggleLike(selectedImageModalPost.id)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--primary-rose-dark)',
+                    cursor: 'pointer',
+                    fontWeight: 600
+                  }}
+                >
+                  <Heart size={16} fill={selectedImageModalPost.likes_count > 0 ? "var(--primary-rose)" : "none"} />
+                  {selectedImageModalPost.likes_count || 0} {t.likes}
+                </button>
+              </div>
+
+              {/* תגובות בתוך המודל */}
+              <CommentsSection
+                postId={selectedImageModalPost.id}
+                user={user}
+                onRequireAuth={() => setIsAuthOpen(true)}
+                t={t}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <AuthModal
         isOpen={isAuthOpen}
