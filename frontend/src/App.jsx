@@ -5,9 +5,10 @@ import AuthModal from './AuthModal';
 import AdminModal from './AdminModal';
 import CommentsSection from './CommentsSection';
 import GamesHub from './GamesHub';
+import AdminFeedbackBoard from './AdminFeedbackBoard';
 import { 
   Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, 
-  X, Music, ExternalLink, Search, Clock, Flame, Edit3 
+  X, Music, ExternalLink, Search, Clock, Flame, Edit3, ShieldAlert 
 } from 'lucide-react';
 
 const DEFAULT_DAILY_SONG = {
@@ -40,6 +41,7 @@ const TRANSLATIONS = {
     events: 'Events',
     gallery: 'Gallery',
     games: 'Games',
+    adminBoard: 'Admin Board',
     createTitle: 'Create a New Tale / Post',
     titlePlaceholder: 'Post title (optional for gallery)...',
     contentPlaceholder: 'Write your story or thoughts (optional for gallery)...',
@@ -90,6 +92,7 @@ const TRANSLATIONS = {
     events: 'אירועים',
     gallery: 'גלריה',
     games: 'משחקים',
+    adminBoard: 'לוח מנהלות 🛠️',
     createTitle: 'יצירת פוסט חדש',
     titlePlaceholder: 'כותרת הפוסט (אופציונלי בגלריה)...',
     contentPlaceholder: 'כתבי את המחשבות שלך (אופציונלי בגלריה)...',
@@ -177,6 +180,14 @@ const CATEGORY_THEMES = {
     title: '#562580',
     badgeBg: '#EDE5F7',
     badgeText: '#4A148C'
+  },
+  adminBoard: {
+    bg: 'linear-gradient(135deg, #FFFDF0 0%, #FFF8E7 100%)',
+    border: '#FFE3A8',
+    text: '#8A6218',
+    title: '#75500A',
+    badgeBg: '#FFF3E0',
+    badgeText: '#E65100'
   }
 };
 
@@ -195,7 +206,6 @@ export default function App() {
   const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
   const [selectedImageModalPost, setSelectedImageModalPost] = useState(null);
 
-  // ניהול השיר היומי
   const [dailySong, setDailySong] = useState(() => {
     const saved = localStorage.getItem('swift_daily_song');
     return saved ? JSON.parse(saved) : DEFAULT_DAILY_SONG;
@@ -203,19 +213,18 @@ export default function App() {
   const [isDailySongModalOpen, setIsDailySongModalOpen] = useState(false);
   const [isEditSongModalOpen, setIsEditSongModalOpen] = useState(false);
 
-  // שדות טופס עריכת שיר יומי
   const [songTitle, setSongTitle] = useState(dailySong.title);
   const [songAlbum, setSongAlbum] = useState(dailySong.album);
   const [songExplanation, setSongExplanation] = useState(dailySong.explanation || '');
   const [songLink, setSongLink] = useState(dailySong.link || '');
   const [songImageUrl, setSongImageUrl] = useState(dailySong.image_url || '');
 
-  // שדות טופס יצירת פוסט
   const [postTitle, setPostTitle] = useState('');
   const [postContent, setPostContent] = useState('');
   const [postCategory, setPostCategory] = useState('discussions');
   const [postImageUrl, setPostImageUrl] = useState('');
 
+  const isAdmin = user && user.role === 'admin';
   const currentTheme = CATEGORY_THEMES[selectedCategory] || CATEGORY_THEMES.all;
 
   const categories = [
@@ -226,6 +235,7 @@ export default function App() {
     { key: 'events', label: t.events, icon: '📅' },
     { key: 'gallery', label: t.gallery, icon: '🎨' },
     { key: 'games', label: t.games, icon: '🎮' },
+    ...(isAdmin ? [{ key: 'adminBoard', label: t.adminBoard, icon: '🔒' }] : [])
   ];
 
   useEffect(() => {
@@ -247,7 +257,7 @@ export default function App() {
   }, []);
 
   const fetchPosts = async () => {
-    if (selectedCategory === 'games') return;
+    if (selectedCategory === 'games' || selectedCategory === 'adminBoard') return;
     try {
       const url = selectedCategory === 'all' ? '/posts' : `/posts?category=${selectedCategory}`;
       const res = await API.get(url);
@@ -264,6 +274,7 @@ export default function App() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
+    if (selectedCategory === 'adminBoard') setSelectedCategory('all');
   };
 
   const handleImageFileChange = (e, setTarget) => {
@@ -415,8 +426,6 @@ export default function App() {
       return (b.id || 0) - (a.id || 0);
     });
 
-  const isAdmin = user && user.role === 'admin';
-
   return (
     <div dir={lang === 'he' ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar
@@ -425,7 +434,7 @@ export default function App() {
         onLogout={handleLogout}
         onOpenNewPost={() => {
           setIsCreatingPost(true);
-          if (selectedCategory !== 'all' && selectedCategory !== 'games') {
+          if (selectedCategory !== 'all' && selectedCategory !== 'games' && selectedCategory !== 'adminBoard') {
             setPostCategory(selectedCategory);
           } else {
             setPostCategory('discussions');
@@ -485,7 +494,6 @@ export default function App() {
           alignItems: 'center',
           flexWrap: 'wrap'
         }}>
-          {/* כרטיסיית שיר יומי */}
           <div style={{
             flex: '1 1 300px',
             minHeight: '44px',
@@ -577,14 +585,13 @@ export default function App() {
             </div>
           </div>
 
-          {selectedCategory !== 'games' && (
+          {selectedCategory !== 'games' && selectedCategory !== 'adminBoard' && (
             <div style={{
               display: 'flex',
               gap: '0.5rem',
               flex: '1 1 320px',
               alignItems: 'center'
             }}>
-              {/* חיפוש */}
               <div style={{
                 flex: 1,
                 position: 'relative',
@@ -643,7 +650,6 @@ export default function App() {
                 )}
               </div>
 
-              {/* כפתורי מיון */}
               <div style={{
                 display: 'inline-flex',
                 backgroundColor: 'var(--bg-card)',
@@ -704,7 +710,7 @@ export default function App() {
           )}
         </div>
 
-        {/* Category Pills */}
+        {/* שורת הטאבים / קטגוריות (כולל הטאב הסודי למנהלות) */}
         <div style={{
           display: 'flex',
           gap: '0.65rem',
@@ -718,7 +724,7 @@ export default function App() {
         }}>
           {categories.map((cat) => {
             const active = selectedCategory === cat.key;
-            const theme = CATEGORY_THEMES[cat.key];
+            const theme = CATEGORY_THEMES[cat.key] || CATEGORY_THEMES.all;
             return (
               <button
                 key={cat.key}
@@ -749,7 +755,7 @@ export default function App() {
         </div>
 
         {/* Create Post Form */}
-        {isCreatingPost && selectedCategory !== 'games' && (
+        {isCreatingPost && selectedCategory !== 'games' && selectedCategory !== 'adminBoard' && (
           <form
             onSubmit={handleCreatePost}
             style={{
@@ -930,8 +936,10 @@ export default function App() {
           </form>
         )}
 
-        {/* תצוגה מותנית: משחקים / גלריה / רשימת פוסטים */}
-        {selectedCategory === 'games' ? (
+        {/* תצוגה מותנית לפי הטאב הנבחר */}
+        {selectedCategory === 'adminBoard' && isAdmin ? (
+          <AdminFeedbackBoard user={user} lang={lang} />
+        ) : selectedCategory === 'games' ? (
           <GamesHub lang={lang} />
         ) : selectedCategory === 'gallery' ? (
           <div>
