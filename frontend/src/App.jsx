@@ -5,7 +5,7 @@ import AuthModal from './AuthModal';
 import AdminModal from './AdminModal';
 import CommentsSection from './CommentsSection';
 import GamesHub from './GamesHub';
-import { Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, X, Music, ExternalLink, Search } from 'lucide-react';
+import { Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, X, Music, ExternalLink, Search, Clock, Flame } from 'lucide-react';
 
 const DAILY_SONGS = [
   { title: 'Cardigan', album: 'folklore', quote: 'When you are young, they assume you know nothing...', link: 'https://open.spotify.com/track/4R2kfaDFslZEMLoQUTdoVJ' },
@@ -30,6 +30,8 @@ const TRANSLATIONS = {
     listenNow: 'Listen',
     searchPlaceholder: 'Search posts...',
     noSearchPosts: 'No posts match your search query.',
+    sortLatest: 'Latest',
+    sortPopular: 'Popular',
     allTopics: 'All Topics',
     discussions: 'Discussions',
     theories: 'Theories & Analyses',
@@ -75,6 +77,8 @@ const TRANSLATIONS = {
     listenNow: 'האזנה',
     searchPlaceholder: 'חיפוש פוסטים...',
     noSearchPosts: 'לא נמצאו פוסטים התואמים לחיפוש שלך.',
+    sortLatest: 'הכי חדשים',
+    sortPopular: 'הכי אהובים',
     allTopics: 'כל הנושאים',
     discussions: 'דיונים',
     theories: 'תיאוריות וניתוחים',
@@ -179,6 +183,7 @@ export default function App() {
   const [posts, setPosts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('latest');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
@@ -336,13 +341,22 @@ export default function App() {
 
   const isGalleryForm = postCategory === 'gallery';
 
-  const filteredPosts = posts.filter((post) => {
-    if (!searchQuery.trim()) return true;
-    const query = searchQuery.toLowerCase();
-    const titleMatch = post.title ? post.title.toLowerCase().includes(query) : false;
-    const contentMatch = post.content ? post.content.toLowerCase().includes(query) : false;
-    return titleMatch || contentMatch;
-  });
+  // סינון ומיון פוסטים בזמן אמת
+  const processedPosts = posts
+    .filter((post) => {
+      if (!searchQuery.trim()) return true;
+      const query = searchQuery.toLowerCase();
+      const titleMatch = post.title ? post.title.toLowerCase().includes(query) : false;
+      const contentMatch = post.content ? post.content.toLowerCase().includes(query) : false;
+      return titleMatch || contentMatch;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'popular') {
+        return (b.likes_count || 0) - (a.likes_count || 0);
+      }
+      // latest (default)
+      return (b.id || 0) - (a.id || 0);
+    });
 
   return (
     <div dir={lang === 'he' ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -404,7 +418,7 @@ export default function App() {
           </p>
         </section>
 
-        {/* שורת שיר יומי וחיפוש קומפקטית */}
+        {/* שורת שיר יומי, חיפוש וכפתורי מיון */}
         <div style={{
           display: 'flex',
           gap: '0.75rem',
@@ -412,8 +426,9 @@ export default function App() {
           alignItems: 'center',
           flexWrap: 'wrap'
         }}>
+          {/* כרטיסיית שיר יומי קומפקטית */}
           <div style={{
-            flex: '1 1 320px',
+            flex: '1 1 300px',
             minHeight: '44px',
             display: 'flex',
             alignItems: 'center',
@@ -473,61 +488,127 @@ export default function App() {
 
           {selectedCategory !== 'games' && (
             <div style={{
-              flex: '1 1 240px',
-              position: 'relative',
               display: 'flex',
+              gap: '0.5rem',
+              flex: '1 1 320px',
               alignItems: 'center'
             }}>
+              {/* חיפוש */}
               <div style={{
-                position: 'absolute',
-                [lang === 'he' ? 'right' : 'left']: '12px',
+                flex: 1,
+                position: 'relative',
                 display: 'flex',
-                alignItems: 'center',
-                pointerEvents: 'none',
-                color: 'var(--text-muted)'
+                alignItems: 'center'
               }}>
-                <Search size={15} />
+                <div style={{
+                  position: 'absolute',
+                  [lang === 'he' ? 'right' : 'left']: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  pointerEvents: 'none',
+                  color: 'var(--text-muted)'
+                }}>
+                  <Search size={15} />
+                </div>
+
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t.searchPlaceholder}
+                  style={{
+                    width: '100%',
+                    height: '44px',
+                    padding: '0 2.2rem',
+                    borderRadius: '16px',
+                    border: '1px solid var(--border-delicate)',
+                    backgroundColor: 'var(--bg-card)',
+                    color: 'var(--text-dark)',
+                    fontSize: '0.85rem',
+                    boxShadow: '0 2px 6px rgba(58, 46, 43, 0.02)',
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
+                />
+
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    type="button"
+                    style={{
+                      position: 'absolute',
+                      [lang === 'he' ? 'left' : 'right']: '10px',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: 'var(--text-muted)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '3px'
+                    }}
+                  >
+                    <X size={14} />
+                  </button>
+                )}
               </div>
 
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t.searchPlaceholder}
-                style={{
-                  width: '100%',
-                  height: '44px',
-                  padding: '0 2.2rem',
-                  borderRadius: '16px',
-                  border: '1px solid var(--border-delicate)',
-                  backgroundColor: 'var(--bg-card)',
-                  color: 'var(--text-dark)',
-                  fontSize: '0.85rem',
-                  boxShadow: '0 2px 6px rgba(58, 46, 43, 0.02)',
-                  outline: 'none',
-                  boxSizing: 'border-box'
-                }}
-              />
-
-              {searchQuery && (
+              {/* כפתורי מיון: הכי חדשים / הכי אהובים */}
+              <div style={{
+                display: 'inline-flex',
+                backgroundColor: 'var(--bg-card)',
+                border: '1px solid var(--border-delicate)',
+                borderRadius: '16px',
+                padding: '3px',
+                height: '44px',
+                boxSizing: 'border-box',
+                flexShrink: 0
+              }}>
                 <button
-                  onClick={() => setSearchQuery('')}
                   type="button"
+                  onClick={() => setSortBy('latest')}
+                  title={t.sortLatest}
                   style={{
-                    position: 'absolute',
-                    [lang === 'he' ? 'left' : 'right']: '10px',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: 'var(--text-muted)',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '3px'
+                    gap: '0.3rem',
+                    padding: '0 0.65rem',
+                    borderRadius: '13px',
+                    border: 'none',
+                    backgroundColor: sortBy === 'latest' ? 'var(--primary-rose)' : 'transparent',
+                    color: sortBy === 'latest' ? '#fff' : 'var(--text-muted)',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
                   }}
                 >
-                  <X size={14} />
+                  <Clock size={13} />
+                  <span>{t.sortLatest}</span>
                 </button>
-              )}
+
+                <button
+                  type="button"
+                  onClick={() => setSortBy('popular')}
+                  title={t.sortPopular}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.3rem',
+                    padding: '0 0.65rem',
+                    borderRadius: '13px',
+                    border: 'none',
+                    backgroundColor: sortBy === 'popular' ? 'var(--primary-rose)' : 'transparent',
+                    color: sortBy === 'popular' ? '#fff' : 'var(--text-muted)',
+                    fontSize: '0.78rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <Flame size={13} />
+                  <span>{t.sortPopular}</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -758,12 +839,12 @@ export default function App() {
           </form>
         )}
 
-        {/* תצוגה מותנית: לובי משחקים או רשימת פוסטים */}
+        {/* תצוגה מותנית: לובי משחקים או רשימת פוסטים ממוינת */}
         {selectedCategory === 'games' ? (
           <GamesHub lang={lang} />
         ) : (
           <section style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
-            {filteredPosts.length === 0 ? (
+            {processedPosts.length === 0 ? (
               <div style={{
                 textAlign: 'center',
                 padding: '3.5rem 1rem',
@@ -775,7 +856,7 @@ export default function App() {
                 {searchQuery ? t.noSearchPosts : t.noPosts}
               </div>
             ) : (
-              filteredPosts.map((post) => {
+              processedPosts.map((post) => {
                 const canDelete = user && user.role === 'admin';
                 const catTheme = CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all;
 
