@@ -8,7 +8,7 @@ import GamesHub from './GamesHub';
 import AdminFeedbackBoard from './AdminFeedbackBoard';
 import { 
   Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, 
-  X, Music, ExternalLink, Search, Clock, Flame, Edit3, ShieldAlert 
+  X, Music, ExternalLink, Search, Clock, Flame, Edit3 
 } from 'lucide-react';
 
 const DEFAULT_DAILY_SONG = {
@@ -41,7 +41,6 @@ const TRANSLATIONS = {
     events: 'Events',
     gallery: 'Gallery',
     games: 'Games',
-    adminBoard: 'Admin Board',
     createTitle: 'Create a New Tale / Post',
     titlePlaceholder: 'Post title (optional for gallery)...',
     contentPlaceholder: 'Write your story or thoughts (optional for gallery)...',
@@ -92,7 +91,6 @@ const TRANSLATIONS = {
     events: 'אירועים',
     gallery: 'גלריה',
     games: 'משחקים',
-    adminBoard: 'לוח מנהלות 🛠️',
     createTitle: 'יצירת פוסט חדש',
     titlePlaceholder: 'כותרת הפוסט (אופציונלי בגלריה)...',
     contentPlaceholder: 'כתבי את המחשבות שלך (אופציונלי בגלריה)...',
@@ -180,14 +178,6 @@ const CATEGORY_THEMES = {
     title: '#562580',
     badgeBg: '#EDE5F7',
     badgeText: '#4A148C'
-  },
-  adminBoard: {
-    bg: 'linear-gradient(135deg, #FFFDF0 0%, #FFF8E7 100%)',
-    border: '#FFE3A8',
-    text: '#8A6218',
-    title: '#75500A',
-    badgeBg: '#FFF3E0',
-    badgeText: '#E65100'
   }
 };
 
@@ -202,6 +192,7 @@ export default function App() {
   const [sortBy, setSortBy] = useState('latest');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isFeedbackBoardOpen, setIsFeedbackBoardOpen] = useState(false);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
   const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
   const [selectedImageModalPost, setSelectedImageModalPost] = useState(null);
@@ -224,7 +215,8 @@ export default function App() {
   const [postCategory, setPostCategory] = useState('discussions');
   const [postImageUrl, setPostImageUrl] = useState('');
 
-  const isAdmin = user && user.role === 'admin';
+  // וידוא הרשאת אדמין תמיד גם עבור שירה
+  const isAdmin = user && (user.role === 'admin' || user.username?.toLowerCase() === 'shira');
   const currentTheme = CATEGORY_THEMES[selectedCategory] || CATEGORY_THEMES.all;
 
   const categories = [
@@ -234,8 +226,7 @@ export default function App() {
     { key: 'news', label: t.news, icon: '📰' },
     { key: 'events', label: t.events, icon: '📅' },
     { key: 'gallery', label: t.gallery, icon: '🎨' },
-    { key: 'games', label: t.games, icon: '🎮' },
-    ...(isAdmin ? [{ key: 'adminBoard', label: t.adminBoard, icon: '🔒' }] : [])
+    { key: 'games', label: t.games, icon: '🎮' }
   ];
 
   useEffect(() => {
@@ -257,7 +248,7 @@ export default function App() {
   }, []);
 
   const fetchPosts = async () => {
-    if (selectedCategory === 'games' || selectedCategory === 'adminBoard') return;
+    if (selectedCategory === 'games') return;
     try {
       const url = selectedCategory === 'all' ? '/posts' : `/posts?category=${selectedCategory}`;
       const res = await API.get(url);
@@ -274,7 +265,6 @@ export default function App() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    if (selectedCategory === 'adminBoard') setSelectedCategory('all');
   };
 
   const handleImageFileChange = (e, setTarget) => {
@@ -434,13 +424,14 @@ export default function App() {
         onLogout={handleLogout}
         onOpenNewPost={() => {
           setIsCreatingPost(true);
-          if (selectedCategory !== 'all' && selectedCategory !== 'games' && selectedCategory !== 'adminBoard') {
+          if (selectedCategory !== 'all' && selectedCategory !== 'games') {
             setPostCategory(selectedCategory);
           } else {
             setPostCategory('discussions');
           }
         }}
         onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenFeedbackBoard={() => setIsFeedbackBoardOpen(true)}
         lang={lang}
         onToggleLang={() => setLang(lang === 'en' ? 'he' : 'en')}
         t={t}
@@ -585,7 +576,7 @@ export default function App() {
             </div>
           </div>
 
-          {selectedCategory !== 'games' && selectedCategory !== 'adminBoard' && (
+          {selectedCategory !== 'games' && (
             <div style={{
               display: 'flex',
               gap: '0.5rem',
@@ -710,7 +701,7 @@ export default function App() {
           )}
         </div>
 
-        {/* שורת הטאבים / קטגוריות (כולל הטאב הסודי למנהלות) */}
+        {/* שורת קטגוריות */}
         <div style={{
           display: 'flex',
           gap: '0.65rem',
@@ -754,8 +745,8 @@ export default function App() {
           })}
         </div>
 
-        {/* Create Post Form */}
-        {isCreatingPost && selectedCategory !== 'games' && selectedCategory !== 'adminBoard' && (
+        {/* טופס פוסט חדש */}
+        {isCreatingPost && selectedCategory !== 'games' && (
           <form
             onSubmit={handleCreatePost}
             style={{
@@ -936,10 +927,8 @@ export default function App() {
           </form>
         )}
 
-        {/* תצוגה מותנית לפי הטאב הנבחר */}
-        {selectedCategory === 'adminBoard' && isAdmin ? (
-          <AdminFeedbackBoard user={user} lang={lang} />
-        ) : selectedCategory === 'games' ? (
+        {/* תוכן ראשי: משחקים / גלריה / פוסטים */}
+        {selectedCategory === 'games' ? (
           <GamesHub lang={lang} />
         ) : selectedCategory === 'gallery' ? (
           <div>
@@ -974,14 +963,6 @@ export default function App() {
                       cursor: 'pointer',
                       boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                       transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.08)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)';
                     }}
                   >
                     {post.image_url ? (
@@ -1048,7 +1029,7 @@ export default function App() {
               </div>
             ) : (
               processedPosts.map((post) => {
-                const canDelete = user && user.role === 'admin';
+                const canDelete = isAdmin;
                 const catTheme = CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all;
 
                 return (
@@ -1059,8 +1040,7 @@ export default function App() {
                       border: '1px solid var(--border-delicate)',
                       borderRadius: '20px',
                       padding: '1.85rem',
-                      boxShadow: '0 4px 14px rgba(58, 46, 43, 0.04)',
-                      transition: 'transform 0.2s ease'
+                      boxShadow: '0 4px 14px rgba(58, 46, 43, 0.04)'
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
@@ -1080,27 +1060,24 @@ export default function App() {
                         {t[post.category] || post.category}
                       </span>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        {canDelete && (
-                          <button
-                            onClick={() => handleDeletePost(post.id)}
-                            title={t.deletePost}
-                            style={{
-                              background: 'none',
-                              border: 'none',
-                              color: '#C2185B',
-                              cursor: 'pointer',
-                              padding: '4px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              opacity: 0.75,
-                              transition: 'opacity 0.2s'
-                            }}
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        )}
-                      </div>
+                      {canDelete && (
+                        <button
+                          onClick={() => handleDeletePost(post.id)}
+                          title={t.deletePost}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#C2185B',
+                            cursor: 'pointer',
+                            padding: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            opacity: 0.75
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
                     </div>
 
                     {post.title && post.title !== 'Untitled' && (
@@ -1233,7 +1210,62 @@ export default function App() {
         )}
       </main>
 
-      {/* חלון הצגת סיפור השיר היומי */}
+      {/* פופאפ מודל: לוח משימות ובקשות (נפתח מהכפתור העליון) */}
+      {isFeedbackBoardOpen && isAdmin && (
+        <div
+          onClick={() => setIsFeedbackBoardOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.65)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.25rem',
+            zIndex: 1000,
+            backdropFilter: 'blur(4px)'
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'var(--bg-card)',
+              borderRadius: '24px',
+              maxWidth: '680px',
+              width: '100%',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              padding: '1.75rem',
+              boxShadow: '0 12px 36px rgba(0,0,0,0.2)',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--text-dark)', fontFamily: '"Georgia", serif' }}>
+                {lang === 'he' ? 'לוח משימות ובקשות' : 'Tasks & Requests Board'}
+              </h3>
+              <button
+                onClick={() => setIsFeedbackBoardOpen(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer'
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <AdminFeedbackBoard user={user} lang={lang} />
+          </div>
+        </div>
+      )}
+
+      {/* חלון סיפור השיר היומי */}
       {isDailySongModalOpen && (
         <div
           onClick={() => setIsDailySongModalOpen(false)}
@@ -1388,7 +1420,7 @@ export default function App() {
         </div>
       )}
 
-      {/* חלון עריכת השיר היומי למנהלות */}
+      {/* חלון עריכת שיר יומי */}
       {isEditSongModalOpen && (
         <div
           onClick={() => setIsEditSongModalOpen(false)}
@@ -1501,7 +1533,7 @@ export default function App() {
 
             <div>
               <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-dark)' }}>
-                {lang === 'he' ? 'קישור להאזנה (אופציונלי - ספוטיפיי/יוטיוב)' : 'Listen Link (Optional)'}
+                {lang === 'he' ? 'קישור להאזנה (אופציונלי)' : 'Listen Link (Optional)'}
               </label>
               <input
                 type="url"
@@ -1697,7 +1729,7 @@ export default function App() {
                 <h3 style={{ margin: 0, fontSize: '1.25rem', color: 'var(--text-dark)', fontFamily: '"Georgia", serif' }}>
                   {selectedImageModalPost.title}
                 </h3>
-                {user && user.role === 'admin' && (
+                {isAdmin && (
                   <button
                     onClick={() => handleDeletePost(selectedImageModalPost.id)}
                     style={{ background: 'none', border: 'none', color: '#C2185B', cursor: 'pointer' }}

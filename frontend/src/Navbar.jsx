@@ -1,6 +1,5 @@
 import React from 'react';
-import logoImg from './assets/logo.png';
-import { LogIn, LogOut, PlusCircle, Sparkles, Globe, Shield } from 'lucide-react';
+import { Shield, Sparkles, PlusCircle, LogIn, LogOut, Globe, ClipboardList } from 'lucide-react';
 
 export default function Navbar({
   user,
@@ -8,189 +7,167 @@ export default function Navbar({
   onLogout,
   onOpenNewPost,
   onOpenAdmin,
+  onOpenFeedbackBoard,
   lang,
   onToggleLang,
   t
 }) {
+  const isHe = lang === 'he';
+  const isAdmin = user && (user.role === 'admin' || user.username?.toLowerCase() === 'shira');
+
   return (
     <header style={{
       backgroundColor: 'var(--bg-card)',
       borderBottom: '1px solid var(--border-delicate)',
       position: 'sticky',
       top: 0,
-      zIndex: 40,
-      boxShadow: '0 2px 8px rgba(58, 46, 43, 0.05)'
+      zIndex: 100,
+      boxShadow: '0 2px 8px rgba(58, 46, 43, 0.02)'
     }}>
       <div style={{
-        maxWidth: '1100px',
+        maxWidth: '1000px',
         margin: '0 auto',
-        padding: '0.65rem 1rem',
+        padding: '0.75rem 1.25rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        flexWrap: 'wrap',
         gap: '0.75rem'
       }}>
-        {/* Brand & Logo */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '0.65rem', 
-          cursor: 'pointer',
-          flexShrink: 0
-        }}>
-          <img
-            src={logoImg}
-            alt="Swift Secrets Logo"
-            style={{
-              width: '40px',
-              height: '40px',
-              minWidth: '40px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: '2px solid var(--primary-rose-light)',
-              boxShadow: '0 2px 6px rgba(216, 112, 147, 0.25)',
-              flexShrink: 0
-            }}
-          />
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <h1 style={{
-              margin: 0,
-              fontSize: '1.2rem',
-              fontWeight: 700,
-              color: 'var(--primary-rose-dark)',
-              letterSpacing: '0.5px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem',
-              whiteSpace: 'nowrap'
-            }}>
-              Swift Secrets
-              <Sparkles size={15} color="var(--primary-rose)" />
-            </h1>
-            {t.tagline && (
-              <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
-                {t.tagline}
-              </p>
-            )}
-          </div>
+        {/* לוגו האתר */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Sparkles size={22} color="var(--primary-rose-dark)" />
+          <h1 style={{
+            margin: 0,
+            fontSize: '1.45rem',
+            fontFamily: '"Baskerville", "Georgia", serif',
+            fontWeight: 700,
+            color: 'var(--primary-rose-dark)',
+            letterSpacing: '0.5px'
+          }}>
+            Swift Secrets
+          </h1>
         </div>
 
-        {/* Actions */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '0.5rem',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-end'
-        }}>
+        {/* פעולות וכפתורים עליונים */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
           {/* כפתור החלפת שפה */}
           <button
             onClick={onToggleLang}
-            title="Change language / החלף שפה"
             style={{
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.3rem',
-              padding: '0.4rem 0.65rem',
-              borderRadius: '16px',
-              border: '1px solid var(--border-delicate)',
+              gap: '0.35rem',
+              padding: '0.45rem 0.85rem',
+              borderRadius: '20px',
               backgroundColor: 'var(--bg-creamy)',
+              border: '1px solid var(--border-delicate)',
               color: 'var(--text-dark)',
-              fontSize: '0.8rem',
-              fontWeight: 600,
+              fontSize: '0.85rem',
               cursor: 'pointer',
-              whiteSpace: 'nowrap'
+              fontWeight: 500
             }}
           >
-            <Globe size={14} color="var(--secondary-sage)" />
-            {lang === 'en' ? 'עברית' : 'English'}
+            <Globe size={15} />
+            {lang === 'he' ? 'English' : 'עברית'}
           </button>
 
-          {user ? (
-            <>
-              {/* כפתורי מנהל בלבד */}
-              {user.role === 'admin' && (
-                <>
-                  <button
-                    onClick={onOpenAdmin}
-                    title="Admin Panel / פאנל ניהול"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.3rem',
-                      padding: '0.4rem 0.75rem',
-                      borderRadius: '20px',
-                      backgroundColor: 'var(--bg-subtle)',
-                      border: '1px solid var(--border-delicate)',
-                      color: 'var(--primary-rose-dark)',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    <Shield size={15} />
-                    {lang === 'he' ? 'ניהול' : 'Admin'}
-                  </button>
-
-                  <button
-                    onClick={onOpenNewPost}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.35rem',
-                      padding: '0.45rem 0.85rem',
-                      borderRadius: '20px',
-                      backgroundColor: 'var(--secondary-sage)',
-                      color: '#fff',
-                      border: 'none',
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    <PlusCircle size={16} />
-                    {t.newPost}
-                  </button>
-                </>
-              )}
-
-              <div style={{
-                display: 'flex',
+          {/* כפתור לוח משימות נקי למנהלות */}
+          {isAdmin && (
+            <button
+              onClick={onOpenFeedbackBoard}
+              title={isHe ? 'לוח בקשות ושינויים' : 'Tasks & Requests Board'}
+              style={{
+                display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.5rem',
+                gap: '0.35rem',
+                padding: '0.45rem 0.85rem',
+                borderRadius: '20px',
                 backgroundColor: 'var(--bg-subtle)',
-                padding: '0.3rem 0.7rem',
-                borderRadius: '16px',
                 border: '1px solid var(--border-delicate)',
-                whiteSpace: 'nowrap'
-              }}>
-                <span style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-dark)' }}>
-                  @{user.username}
-                </span>
-                <button
-                  onClick={onLogout}
-                  title="Logout"
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: 'var(--text-muted)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '2px'
-                  }}
-                >
-                  <LogOut size={15} />
-                </button>
-              </div>
-            </>
+                color: 'var(--secondary-sage-dark)',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              <ClipboardList size={15} />
+              <span>{isHe ? 'לוח משימות' : 'Tasks Board'}</span>
+            </button>
+          )}
+
+          {/* כפתור פאנל ניהול */}
+          {isAdmin && (
+            <button
+              onClick={onOpenAdmin}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '0.45rem 0.85rem',
+                borderRadius: '20px',
+                backgroundColor: 'var(--bg-subtle)',
+                border: '1px solid var(--border-delicate)',
+                color: 'var(--primary-rose-dark)',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              <Shield size={15} />
+              <span>{isHe ? 'ניהול' : 'Admin'}</span>
+            </button>
+          )}
+
+          {/* כפתור פוסט חדש */}
+          {user && (
+            <button
+              onClick={onOpenNewPost}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '0.45rem 0.95rem',
+                borderRadius: '20px',
+                backgroundColor: 'var(--secondary-sage-dark)',
+                color: '#fff',
+                border: 'none',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                boxShadow: '0 2px 6px rgba(46, 125, 50, 0.2)'
+              }}
+            >
+              <PlusCircle size={15} />
+              <span>{t.newPost}</span>
+            </button>
+          )}
+
+          {/* כפתור התחברות / ניתוק */}
+          {user ? (
+            <button
+              onClick={onLogout}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                padding: '0.45rem 0.85rem',
+                borderRadius: '20px',
+                backgroundColor: 'var(--bg-creamy)',
+                border: '1px solid var(--border-delicate)',
+                color: 'var(--text-dark)',
+                fontSize: '0.85rem',
+                cursor: 'pointer'
+              }}
+            >
+              <LogOut size={14} />
+              <span>{user.username}@</span>
+            </button>
           ) : (
             <button
               onClick={onOpenAuth}
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.35rem',
                 padding: '0.45rem 0.95rem',
@@ -200,13 +177,11 @@ export default function Navbar({
                 border: 'none',
                 fontSize: '0.85rem',
                 fontWeight: 600,
-                cursor: 'pointer',
-                boxShadow: '0 2px 6px rgba(216, 112, 147, 0.3)',
-                whiteSpace: 'nowrap'
+                cursor: 'pointer'
               }}
             >
               <LogIn size={15} />
-              {t.signIn}
+              <span>{t.signIn}</span>
             </button>
           )}
         </div>
