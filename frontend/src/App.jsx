@@ -160,12 +160,12 @@ export default function App() {
   const currentTheme = CATEGORY_THEMES[selectedCategory] || CATEGORY_THEMES.all;
 
   const categories = [
-    { key: 'all', label: t.allTopics },
-    { key: 'discussions', label: t.discussions },
-    { key: 'theories', label: t.theories },
-    { key: 'news', label: t.news },
-    { key: 'events', label: t.events },
-    { key: 'gallery', label: t.gallery },
+    { key: 'all', label: t.allTopics, icon: '✨' },
+    { key: 'discussions', label: t.discussions, icon: '💭' },
+    { key: 'theories', label: t.theories, icon: '🔍' },
+    { key: 'news', label: t.news, icon: '📰' },
+    { key: 'events', label: t.events, icon: '📅' },
+    { key: 'gallery', label: t.gallery, icon: '🎨' },
   ];
 
   useEffect(() => {
@@ -357,7 +357,7 @@ export default function App() {
           </p>
         </section>
 
-        {/* Category Pills - שורה נגללת אופקית */}
+        {/* Category Pills - עם אימוג'ים וגלילה אופקית */}
         <div style={{
           display: 'flex',
           gap: '0.65rem',
@@ -377,7 +377,10 @@ export default function App() {
                 key={cat.key}
                 onClick={() => setSelectedCategory(cat.key)}
                 style={{
-                  padding: '0.5rem 1.25rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.5rem 1.15rem',
                   borderRadius: '25px',
                   border: active ? `2px solid ${theme.title}` : '1px solid var(--border-delicate)',
                   backgroundColor: active ? theme.title : 'var(--bg-card)',
@@ -391,7 +394,8 @@ export default function App() {
                   transition: 'all 0.25s ease'
                 }}
               >
-                {cat.label}
+                <span>{cat.icon}</span>
+                <span>{cat.label}</span>
               </button>
             );
           })}
@@ -650,7 +654,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* מציג כותרת */}
+                  {/* כותרת הפוסט */}
                   {post.title && post.title !== 'Untitled' && (
                     <h3 style={{
                       margin: '0 0 0.6rem 0',
