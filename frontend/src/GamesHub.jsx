@@ -1,47 +1,66 @@
-import React from 'react';
-import { Sparkles, Music, HelpCircle, Puzzle, HeartHandshake, Play } from 'lucide-react';
+import React, { useState } from 'react';
+import { Sparkles, Music, HelpCircle, Layers, Play } from 'lucide-react';
+import ErasTrivia from './ErasTrivia';
+import LyricsMatcher from './LyricsMatcher';
+import MemoryCards from './MemoryCards';
 
 const GAMES = [
   {
-    id: 'lyrics-guesser',
-    title: { he: 'נחשי את השיר לפי הליריקה', en: 'Guess the Song by Lyric' },
-    desc: { he: 'מבחן מהיר: מאיזה שיר לקוחה השורה הזו?', en: 'Test your knowledge: which track is this line from?' },
-    icon: Music,
-    tag: { he: 'בקרוב', en: 'Coming Soon' },
-    accentColor: '#9C3D64',
-    bgColor: '#FFF0F5'
-  },
-  {
-    id: 'era-trivia',
-    title: { he: 'חידון האלבומים (Era Trivia)', en: 'Era Trivia Quiz' },
-    desc: { he: 'שאלות טריוויה מכל האלבומים והסיבובים.', en: 'Trivia questions covering every album and tour era.' },
+    id: 'eras-trivia',
+    title: { he: 'טריוויית אלבומים כרונולוגית (The Eras Trivia)', en: 'The Eras Trivia' },
+    desc: {
+      he: 'מסע כרונולוגי בין כל האלבומים של טיילור עם שאלות ברמת קושי עולה וטיימר של 15 שניות!',
+      en: 'A chronological journey across all Eras with increasing difficulty and a 15s timer!'
+    },
     icon: HelpCircle,
-    tag: { he: 'בקרוב', en: 'Coming Soon' },
-    accentColor: '#5B3770',
-    bgColor: '#F3EBF7'
+    tag: { he: 'פעיל עכשיו!', en: 'Play Now!' },
+    accentColor: '#A82020',
+    bgColor: '#FCEAEA',
+    isReady: true,
   },
   {
-    id: 'swiftle',
-    title: { he: 'סוויפטל (Swiftle)', en: 'Swiftle Daily' },
-    desc: { he: 'ניחוש שיר יומי במספר ניסיונות קצוב.', en: 'Daily song guessing game in limited tries.' },
-    icon: Puzzle,
-    tag: { he: 'בתכנון', en: 'In Planning' },
-    accentColor: '#1B4965',
-    bgColor: '#E3EEF8'
+    id: 'lyrics-matcher',
+    title: { he: 'התאימו את הציטוט לאלבום (Lyrics Matcher)', en: 'Lyrics Matcher' },
+    desc: {
+      he: 'גררו שורות וציטוטים מוכרים מתוך שירים ישירות אל עטיפת האלבום הנכונה.',
+      en: 'Drag and drop iconic lyrics onto their corresponding album cover.'
+    },
+    icon: Music,
+    tag: { he: 'פעיל עכשיו!', en: 'Play Now!' },
+    accentColor: '#5C9EAD',
+    bgColor: '#EBF5F7',
+    isReady: true,
   },
   {
-    id: 'bracelet-creator',
-    title: { he: 'בונה צמידי חברות', en: 'Friendship Bracelet Builder' },
-    desc: { he: 'עצבי צמיד חברות דיגיטלי אישי ושתפי בגלריה!', en: 'Design a digital friendship bracelet to share in the gallery!' },
-    icon: HeartHandshake,
-    tag: { he: 'בתכנון', en: 'In Planning' },
-    accentColor: '#7A2E19',
-    bgColor: '#FFEBE5'
+    id: 'swift-memory',
+    title: { he: 'משחק הזיכרון (Swift Memory Cards)', en: 'Swift Memory Cards' },
+    desc: {
+      he: 'הפכו קלפים וגלו זוגות תואמים של פריטים אייקוניים: הצעיף האדום, כדור הדיסקו ועוד.',
+      en: 'Flip cards and match iconic Swiftie symbols: the red scarf, mirrorball, and more.'
+    },
+    icon: Layers,
+    tag: { he: 'פעיל עכשיו!', en: 'Play Now!' },
+    accentColor: '#8A4B82',
+    bgColor: '#F8EEF6',
+    isReady: true,
   }
 ];
 
 export default function GamesHub({ lang }) {
   const isHe = lang === 'he';
+  const [activeGameId, setActiveGameId] = useState(null);
+
+  if (activeGameId === 'eras-trivia') {
+    return <ErasTrivia lang={lang} onBack={() => setActiveGameId(null)} />;
+  }
+
+  if (activeGameId === 'lyrics-matcher') {
+    return <LyricsMatcher lang={lang} onBack={() => setActiveGameId(null)} />;
+  }
+
+  if (activeGameId === 'swift-memory') {
+    return <MemoryCards lang={lang} onBack={() => setActiveGameId(null)} />;
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -56,18 +75,17 @@ export default function GamesHub({ lang }) {
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'var(--primary-rose-dark)' }}>
           <Sparkles size={18} />
           <h3 style={{ margin: 0, fontSize: '1.35rem', fontFamily: '"Georgia", serif' }}>
-            {isHe ? 'פינת המשחקים והחידונים' : 'Games & Trivia Lounge'}
+            {isHe ? 'פינת המשחקים של Swift Secrets' : 'Swift Secrets Games Lounge'}
           </h3>
           <Sparkles size={18} />
         </div>
         <p style={{ margin: '0.4rem 0 0 0', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
           {isHe 
-            ? 'אנחנו בונות בימים אלו מגוון משחקים וחידונים ייחודיים לקהילה. הנה הצצה למה שמחכה לכן כאן בקרוב!'
-            : 'We are crafting fun games and trivia challenges for the community. Here is a preview of what is coming!'}
+            ? 'שלושה משחקים אינטראקטיביים שנוצרו במיוחד עבור קהילת הסוויפטיז שלנו!'
+            : 'Three interactive games designed specially for our Swiftie community!'}
         </p>
       </div>
 
-      {/* Grid של כרטיסיות המשחקים */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -82,7 +100,7 @@ export default function GamesHub({ lang }) {
                 backgroundColor: 'var(--bg-card)',
                 border: '1px solid var(--border-delicate)',
                 borderRadius: '18px',
-                padding: '1.25rem',
+                padding: '1.35rem',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -106,13 +124,13 @@ export default function GamesHub({ lang }) {
                     <IconComponent size={20} />
                   </div>
                   <span style={{
-                    fontSize: '0.72rem',
+                    fontSize: '0.74rem',
                     fontWeight: 700,
-                    padding: '0.2rem 0.55rem',
+                    padding: '0.2rem 0.6rem',
                     borderRadius: '10px',
-                    backgroundColor: 'var(--bg-subtle)',
-                    color: 'var(--text-muted)',
-                    border: '1px solid var(--border-delicate)'
+                    backgroundColor: game.bgColor,
+                    color: game.accentColor,
+                    border: `1px solid ${game.accentColor}40`
                   }}>
                     {game.tag[lang] || game.tag.en}
                   </span>
@@ -127,25 +145,25 @@ export default function GamesHub({ lang }) {
               </div>
 
               <button
-                disabled
+                onClick={() => setActiveGameId(game.id)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.35rem',
-                  padding: '0.5rem',
+                  padding: '0.55rem',
                   borderRadius: '12px',
-                  backgroundColor: 'var(--bg-creamy)',
-                  border: '1px solid var(--border-delicate)',
-                  color: 'var(--text-muted)',
-                  fontSize: '0.82rem',
+                  backgroundColor: 'var(--primary-rose)',
+                  border: 'none',
+                  color: '#fff',
+                  fontSize: '0.85rem',
                   fontWeight: 600,
-                  cursor: 'not-allowed',
-                  opacity: 0.8
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(216, 112, 147, 0.25)'
                 }}
               >
-                <Play size={13} />
-                {isHe ? 'בקרוב...' : 'Coming Soon...'}
+                <Play size={14} />
+                {isHe ? 'שחקי עכשיו!' : 'Play Now!'}
               </button>
             </div>
           );
