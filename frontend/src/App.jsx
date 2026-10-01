@@ -5,19 +5,18 @@ import AuthModal from './AuthModal';
 import AdminModal from './AdminModal';
 import CommentsSection from './CommentsSection';
 import GamesHub from './GamesHub';
-import { Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, X, Music, ExternalLink, Search, Clock, Flame, ZoomIn } from 'lucide-react';
+import { 
+  Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, 
+  X, Music, ExternalLink, Search, Clock, Flame, Edit3, BookOpen 
+} from 'lucide-react';
 
-const DAILY_SONGS = [
-  { title: 'Cardigan', album: 'folklore', quote: 'When you are young, they assume you know nothing...', link: 'https://open.spotify.com/track/4R2kfaDFslZEMLoQUTdoVJ' },
-  { title: 'Lover', album: 'Lover', quote: 'Can I go where you go? Can we always be this close?', link: 'https://open.spotify.com/track/1dGr1nsAZkt7ReEHGNYHpO' },
-  { title: 'All Too Well (10 Minute Version)', album: 'Red (Taylor\'s Version)', quote: 'You kept me like a secret, but I kept you like an oath...', link: 'https://open.spotify.com/track/5enxwA8aAbwZbf5aCHqvzq' },
-  { title: 'August', album: 'folklore', quote: 'Meet me behind the mall...', link: 'https://open.spotify.com/track/3n3Ppam7vgaVa1iaRUc9Lp' },
-  { title: 'Enchanted (Taylor\'s Version)', album: 'Speak Now', quote: 'Please don\'t be in love with someone else...', link: 'https://open.spotify.com/track/3sW3PzcJHG9v6xM4xgZSYV' },
-  { title: 'Cruel Summer', album: 'Lover', quote: 'I love you, ain\'t that the worst thing you ever heard?', link: 'https://open.spotify.com/track/1BxfuPKGuaTgP7aM0fbdwr' },
-  { title: 'Style', album: '1989 (Taylor\'s Version)', quote: 'You got that James Dean daydream look in your eye...', link: 'https://open.spotify.com/track/0ug5ULuhfgCrqdBuWuZqvD' },
-  { title: 'Down Bad', album: 'The Tortured Poets Department', quote: 'Down bad crying at the gym...', link: 'https://open.spotify.com/track/2OzhngLzyJQ4uW90Fcf546' },
-  { title: 'Fearless (Taylor\'s Version)', album: 'Fearless', quote: '\'Cause I don\'t know how it gets better than this...', link: 'https://open.spotify.com/track/77sMIMGoAcBe0ZRaCL97aF' }
-];
+const DEFAULT_DAILY_SONG = {
+  title: 'Enchanted (Taylor\'s Version)',
+  album: 'Speak Now',
+  explanation: 'שיר אגדי שלוכד את רגע ההתאהבות הראשוני והתקווה שהצד השני מרגיש בדיוק אותו דבר. בחרנו בו היום בגלל הליריקה הקסומה וההפקה הנוסטלגית!',
+  link: 'https://open.spotify.com/track/3sW3PzcJHG9v6xM4xgZSYV',
+  image_url: ''
+};
 
 const TRANSLATIONS = {
   en: {
@@ -28,6 +27,8 @@ const TRANSLATIONS = {
     bannerSub: 'A gentle place for community theories, art, lyrical breakdowns, and shared tales.',
     dailySongLabel: 'Song of the Day',
     listenNow: 'Listen',
+    viewExplanation: 'Read Story',
+    editDailySong: 'Edit Song of the Day',
     searchPlaceholder: 'Search posts...',
     noSearchPosts: 'No posts match your search query.',
     sortLatest: 'Latest',
@@ -47,6 +48,7 @@ const TRANSLATIONS = {
     removeImage: 'Remove image',
     cancel: 'Cancel',
     publish: 'Publish',
+    save: 'Save',
     noPosts: 'No posts found in this category yet. Be the first to share one!',
     by: 'by',
     likes: 'Likes',
@@ -75,6 +77,8 @@ const TRANSLATIONS = {
     bannerSub: 'מקום עדין ושקט לתאוריות, יצירות, ניתוחי שירים ושיחות קהילה.',
     dailySongLabel: 'השיר היומי',
     listenNow: 'האזנה',
+    viewExplanation: 'לסיפור מאחורי השיר',
+    editDailySong: 'עריכת השיר היומי',
     searchPlaceholder: 'חיפוש פוסטים...',
     noSearchPosts: 'לא נמצאו פוסטים התואמים לחיפוש שלך.',
     sortLatest: 'הכי חדשים',
@@ -94,6 +98,7 @@ const TRANSLATIONS = {
     removeImage: 'הסרת תמונה',
     cancel: 'ביטול',
     publish: 'פרסום',
+    save: 'שמירה',
     noPosts: 'עדיין אין פוסטים בקטגוריה זו. היי הראשונה לשתף!',
     by: 'מאת',
     likes: 'לייקים',
@@ -190,15 +195,28 @@ export default function App() {
   const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
   const [selectedImageModalPost, setSelectedImageModalPost] = useState(null);
 
+  // ניהול השיר היומי
+  const [dailySong, setDailySong] = useState(() => {
+    const saved = localStorage.getItem('swift_daily_song');
+    return saved ? JSON.parse(saved) : DEFAULT_DAILY_SONG;
+  });
+  const [isDailySongModalOpen, setIsDailySongModalOpen] = useState(false);
+  const [isEditSongModalOpen, setIsEditSongModalOpen] = useState(false);
+
+  // שדות טופס עריכת שיר יומי
+  const [songTitle, setSongTitle] = useState(dailySong.title);
+  const [songAlbum, setSongAlbum] = useState(dailySong.album);
+  const [songExplanation, setSongExplanation] = useState(dailySong.explanation || '');
+  const [songLink, setSongLink] = useState(dailySong.link || '');
+  const [songImageUrl, setSongImageUrl] = useState(dailySong.image_url || '');
+
+  // שדות טופס יצירת פוסט
   const [postTitle, setPostTitle] = useState('');
   const [postContent, setPostContent] = useState('');
   const [postCategory, setPostCategory] = useState('discussions');
   const [postImageUrl, setPostImageUrl] = useState('');
 
   const currentTheme = CATEGORY_THEMES[selectedCategory] || CATEGORY_THEMES.all;
-
-  const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
-  const todaysSong = DAILY_SONGS[dayOfYear % DAILY_SONGS.length];
 
   const categories = [
     { key: 'all', label: t.allTopics, icon: '✨' },
@@ -217,6 +235,18 @@ export default function App() {
         .then((res) => setUser(res.data))
         .catch(() => localStorage.removeItem('token'));
     }
+
+    // ניסיון משיכת שיר יומי מ-Backend אם קיים נתיב
+    API.get('/daily-song')
+      .then((res) => {
+        if (res.data) {
+          setDailySong(res.data);
+          localStorage.setItem('swift_daily_song', JSON.stringify(res.data));
+        }
+      })
+      .catch(() => {
+        // שימוש בנתונים מ-localStorage אם אין נתיב בשרת
+      });
   }, []);
 
   const fetchPosts = async () => {
@@ -239,7 +269,7 @@ export default function App() {
     setUser(null);
   };
 
-  const handleImageFileChange = (e) => {
+  const handleImageFileChange = (e, setTarget) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -250,9 +280,31 @@ export default function App() {
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPostImageUrl(reader.result);
+      setTarget(reader.result);
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleSaveDailySong = async (e) => {
+    e.preventDefault();
+    const updated = {
+      title: songTitle.trim(),
+      album: songAlbum.trim(),
+      explanation: songExplanation.trim(),
+      link: songLink.trim() || null,
+      image_url: songImageUrl.trim() || null
+    };
+
+    setDailySong(updated);
+    localStorage.setItem('swift_daily_song', JSON.stringify(updated));
+    setIsEditSongModalOpen(false);
+
+    // ניסיון עדכון בשרת ברקע
+    try {
+      await API.post('/daily-song', updated);
+    } catch (err) {
+      console.log('Saved locally to device.');
+    }
   };
 
   const handleCreatePost = async (e) => {
@@ -367,6 +419,8 @@ export default function App() {
       return (b.id || 0) - (a.id || 0);
     });
 
+  const isAdmin = user && user.role === 'admin';
+
   return (
     <div dir={lang === 'he' ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar
@@ -427,7 +481,7 @@ export default function App() {
           </p>
         </section>
 
-        {/* שורת שיר יומי, חיפוש וכפתורי מיון */}
+        {/* שורת שיר יומי וחיפוש */}
         <div style={{
           display: 'flex',
           gap: '0.75rem',
@@ -435,7 +489,7 @@ export default function App() {
           alignItems: 'center',
           flexWrap: 'wrap'
         }}>
-          {/* שיר יומי */}
+          {/* כרטיסיית שיר יומי אינטראקטיבית */}
           <div style={{
             flex: '1 1 300px',
             minHeight: '44px',
@@ -449,7 +503,12 @@ export default function App() {
             boxShadow: '0 2px 8px rgba(58, 46, 43, 0.02)',
             gap: '0.5rem'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
+            {/* לחיצה פותחת את סיפור השיר */}
+            <div 
+              onClick={() => setIsDailySongModalOpen(true)}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden', cursor: 'pointer', flex: 1 }}
+              title={lang === 'he' ? 'לחצי לקריאת ההסבר על השיר' : 'Click to read story'}
+            >
               <div style={{
                 width: '28px',
                 height: '28px',
@@ -464,35 +523,65 @@ export default function App() {
                 <Music size={14} />
               </div>
               <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontSize: '0.82rem' }}>
-                <span style={{ fontWeight: 700, color: 'var(--text-dark)' }}>{todaysSong.title}</span>
+                <span style={{ fontWeight: 700, color: 'var(--text-dark)' }}>{dailySong.title}</span>
                 <span style={{ color: 'var(--secondary-sage)', marginInlineStart: '0.35rem', fontSize: '0.76rem' }}>
-                  ({todaysSong.album})
+                  ({dailySong.album})
                 </span>
               </div>
             </div>
 
-            <a
-              href={todaysSong.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.25rem',
-                padding: '0.25rem 0.55rem',
-                borderRadius: '12px',
-                backgroundColor: 'var(--bg-creamy)',
-                border: '1px solid var(--border-delicate)',
-                color: 'var(--primary-rose-dark)',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                textDecoration: 'none',
-                flexShrink: 0
-              }}
-            >
-              {t.listenNow}
-              <ExternalLink size={11} />
-            </a>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexShrink: 0 }}>
+              {/* כפתור האזנה מוצג רק אם הוזן לינק */}
+              {dailySong.link && (
+                <a
+                  href={dailySong.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    padding: '0.25rem 0.55rem',
+                    borderRadius: '12px',
+                    backgroundColor: 'var(--bg-creamy)',
+                    border: '1px solid var(--border-delicate)',
+                    color: 'var(--primary-rose-dark)',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    textDecoration: 'none'
+                  }}
+                >
+                  {t.listenNow}
+                  <ExternalLink size={11} />
+                </a>
+              )}
+
+              {/* כפתור עריכה למנהלות בלבד */}
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    setSongTitle(dailySong.title);
+                    setSongAlbum(dailySong.album);
+                    setSongExplanation(dailySong.explanation || '');
+                    setSongLink(dailySong.link || '');
+                    setSongImageUrl(dailySong.image_url || '');
+                    setIsEditSongModalOpen(true);
+                  }}
+                  title={t.editDailySong}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-muted)',
+                    cursor: 'pointer',
+                    padding: '3px',
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Edit3 size={14} />
+                </button>
+              )}
+            </div>
           </div>
 
           {selectedCategory !== 'games' && (
@@ -737,7 +826,7 @@ export default function App() {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={handleImageFileChange}
+                      onChange={(e) => handleImageFileChange(e, setPostImageUrl)}
                       style={{ display: 'none' }}
                     />
                   </label>
@@ -848,11 +937,10 @@ export default function App() {
           </form>
         )}
 
-        {/* תצוגה מותנית: משחקים / גלריית תמונות טלפונית / רשימת פוסטים רגילה */}
+        {/* תצוגה מותנית: משחקים / גלריה / רשימת פוסטים */}
         {selectedCategory === 'games' ? (
           <GamesHub lang={lang} />
         ) : selectedCategory === 'gallery' ? (
-          /* תצוגת גלריה טלפונית - Photo Grid */
           <div>
             {processedPosts.length === 0 ? (
               <div style={{
@@ -917,7 +1005,6 @@ export default function App() {
                       </div>
                     )}
 
-                    {/* שכבת מידע צפה בתחתית התמונה */}
                     <div style={{
                       position: 'absolute',
                       bottom: 0,
@@ -946,7 +1033,6 @@ export default function App() {
             )}
           </div>
         ) : (
-          /* רשימת פוסטים רגילה */
           <section style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
             {processedPosts.length === 0 ? (
               <div style={{
@@ -1146,7 +1232,403 @@ export default function App() {
         )}
       </main>
 
-      {/* חלונית הגדלת תמונה מהגלריה (Lightbox Modal) */}
+      {/* חלון הצגת סיפור השיר היומי (Song Story Modal) */}
+      {isDailySongModalOpen && (
+        <div
+          onClick={() => setIsDailySongModalOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.25rem',
+            zIndex: 1000,
+            backdropFilter: 'blur(4px)'
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'var(--bg-card)',
+              borderRadius: '24px',
+              maxWidth: '520px',
+              width: '100%',
+              padding: '2rem',
+              boxShadow: '0 12px 36px rgba(0,0,0,0.15)',
+              position: 'relative',
+              textAlign: 'center'
+            }}
+          >
+            <button
+              onClick={() => setIsDailySongModalOpen(false)}
+              style={{
+                position: 'absolute',
+                top: '14px',
+                [lang === 'he' ? 'left' : 'right']: '14px',
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted)',
+                cursor: 'pointer'
+              }}
+            >
+              <X size={20} />
+            </button>
+
+            {dailySong.image_url ? (
+              <div style={{
+                width: '120px',
+                height: '120px',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                margin: '0 auto 1.25rem',
+                border: '1.5px solid var(--border-delicate)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.06)'
+              }}>
+                <img
+                  src={dailySong.image_url}
+                  alt={dailySong.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </div>
+            ) : (
+              <div style={{
+                width: '54px',
+                height: '54px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--bg-subtle)',
+                color: 'var(--primary-rose-dark)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1.25rem'
+              }}>
+                <Music size={26} />
+              </div>
+            )}
+
+            <span style={{
+              fontSize: '0.78rem',
+              textTransform: 'uppercase',
+              fontWeight: 700,
+              color: 'var(--secondary-sage-dark)',
+              letterSpacing: '0.5px'
+            }}>
+              {t.dailySongLabel} • {dailySong.album}
+            </span>
+
+            <h3 style={{
+              margin: '0.35rem 0 1rem',
+              fontSize: '1.5rem',
+              color: 'var(--text-dark)',
+              fontFamily: '"Georgia", serif'
+            }}>
+              {dailySong.title}
+            </h3>
+
+            {dailySong.explanation && (
+              <div style={{
+                backgroundColor: 'var(--bg-creamy)',
+                border: '1px solid var(--border-delicate)',
+                borderRadius: '16px',
+                padding: '1.25rem',
+                marginBottom: '1.5rem',
+                textAlign: lang === 'he' ? 'right' : 'left',
+                fontSize: '0.92rem',
+                lineHeight: '1.65',
+                color: 'var(--text-dark)',
+                opacity: 0.9
+              }}>
+                {dailySong.explanation}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+              {dailySong.link && (
+                <a
+                  href={dailySong.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    padding: '0.65rem 1.4rem',
+                    borderRadius: '20px',
+                    backgroundColor: 'var(--primary-rose)',
+                    color: '#fff',
+                    textDecoration: 'none',
+                    fontWeight: 600,
+                    fontSize: '0.88rem'
+                  }}
+                >
+                  {t.listenNow}
+                  <ExternalLink size={14} />
+                </a>
+              )}
+              <button
+                onClick={() => setIsDailySongModalOpen(false)}
+                style={{
+                  padding: '0.65rem 1.2rem',
+                  borderRadius: '20px',
+                  backgroundColor: 'var(--bg-creamy)',
+                  border: '1px solid var(--border-delicate)',
+                  color: 'var(--text-dark)',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: '0.88rem'
+                }}
+              >
+                {t.cancel}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* חלון עריכת השיר היומי למנהלות (Admin Edit Modal) */}
+      {isEditSongModalOpen && (
+        <div
+          onClick={() => setIsEditSongModalOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.65)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1.25rem',
+            zIndex: 1000,
+            backdropFilter: 'blur(4px)'
+          }}
+        >
+          <form
+            onSubmit={handleSaveDailySong}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: 'var(--bg-card)',
+              borderRadius: '24px',
+              maxWidth: '520px',
+              width: '100%',
+              padding: '1.75rem',
+              boxShadow: '0 12px 36px rgba(0,0,0,0.15)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.85rem'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+              <h3 style={{ margin: 0, color: 'var(--primary-rose-dark)', fontSize: '1.25rem', fontFamily: '"Georgia", serif' }}>
+                {t.editDailySong}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsEditSongModalOpen(false)}
+                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-dark)' }}>
+                {lang === 'he' ? 'שם השיר' : 'Song Title'}
+              </label>
+              <input
+                type="text"
+                required
+                value={songTitle}
+                onChange={(e) => setSongTitle(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.6rem 0.8rem',
+                  borderRadius: '10px',
+                  border: '1px solid var(--border-delicate)',
+                  backgroundColor: 'var(--bg-creamy)',
+                  fontSize: '0.9rem',
+                  boxSizing: 'border-box',
+                  marginTop: '0.25rem'
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-dark)' }}>
+                {lang === 'he' ? 'אלבום / Era' : 'Album / Era'}
+              </label>
+              <input
+                type="text"
+                required
+                value={songAlbum}
+                onChange={(e) => setSongAlbum(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.6rem 0.8rem',
+                  borderRadius: '10px',
+                  border: '1px solid var(--border-delicate)',
+                  backgroundColor: 'var(--bg-creamy)',
+                  fontSize: '0.9rem',
+                  boxSizing: 'border-box',
+                  marginTop: '0.25rem'
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-dark)' }}>
+                {lang === 'he' ? 'הסבר / ניתוח על השיר של היום' : 'Explanation & Thoughts'}
+              </label>
+              <textarea
+                rows={3}
+                value={songExplanation}
+                onChange={(e) => setSongExplanation(e.target.value)}
+                placeholder={lang === 'he' ? 'למה בחרתן את השיר הזה? מה המשמעות שלו...' : 'Why did you pick this song?'}
+                style={{
+                  width: '100%',
+                  padding: '0.6rem 0.8rem',
+                  borderRadius: '10px',
+                  border: '1px solid var(--border-delicate)',
+                  backgroundColor: 'var(--bg-creamy)',
+                  fontSize: '0.9rem',
+                  boxSizing: 'border-box',
+                  marginTop: '0.25rem',
+                  resize: 'vertical'
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-dark)' }}>
+                {lang === 'he' ? 'קישור להאזנה (אופציונלי - ספוטיפיי/יוטיוב)' : 'Listen Link (Optional)'}
+              </label>
+              <input
+                type="url"
+                value={songLink}
+                onChange={(e) => setSongLink(e.target.value)}
+                placeholder="https://..."
+                style={{
+                  width: '100%',
+                  padding: '0.6rem 0.8rem',
+                  borderRadius: '10px',
+                  border: '1px solid var(--border-delicate)',
+                  backgroundColor: 'var(--bg-creamy)',
+                  fontSize: '0.9rem',
+                  boxSizing: 'border-box',
+                  marginTop: '0.25rem'
+                }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-dark)' }}>
+                {lang === 'he' ? 'תמונה של השיר/האלבום (אופציונלי)' : 'Song/Album Image (Optional)'}
+              </label>
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginTop: '0.25rem', flexWrap: 'wrap' }}>
+                <label style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  padding: '0.5rem 0.85rem',
+                  borderRadius: '10px',
+                  backgroundColor: 'var(--bg-subtle)',
+                  border: '1px dashed var(--secondary-sage)',
+                  color: 'var(--secondary-sage-dark)',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}>
+                  <ImageIcon size={15} />
+                  {t.chooseImage}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageFileChange(e, setSongImageUrl)}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+
+                <input
+                  type="url"
+                  placeholder={t.orEnterUrl}
+                  value={songImageUrl.startsWith('data:') ? '' : songImageUrl}
+                  onChange={(e) => setSongImageUrl(e.target.value)}
+                  style={{
+                    flex: 1,
+                    minWidth: '180px',
+                    padding: '0.5rem 0.75rem',
+                    borderRadius: '10px',
+                    border: '1px solid var(--border-delicate)',
+                    backgroundColor: 'var(--bg-creamy)',
+                    fontSize: '0.85rem'
+                  }}
+                />
+              </div>
+
+              {songImageUrl && (
+                <div style={{
+                  position: 'relative',
+                  marginTop: '0.5rem',
+                  borderRadius: '10px',
+                  overflow: 'hidden',
+                  width: '70px',
+                  height: '70px',
+                  border: '1px solid var(--border-delicate)'
+                }}>
+                  <img src={songImageUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <button
+                    type="button"
+                    onClick={() => setSongImageUrl('')}
+                    style={{
+                      position: 'absolute',
+                      top: '3px',
+                      right: '3px',
+                      background: 'rgba(0,0,0,0.6)',
+                      border: 'none',
+                      color: '#fff',
+                      borderRadius: '50%',
+                      width: '20px',
+                      height: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <button
+                type="button"
+                onClick={() => setIsEditSongModalOpen(false)}
+                style={{ padding: '0.5rem 1rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+              >
+                {t.cancel}
+              </button>
+              <button
+                type="submit"
+                style={{
+                  padding: '0.5rem 1.35rem',
+                  borderRadius: '16px',
+                  backgroundColor: 'var(--primary-rose)',
+                  color: '#fff',
+                  border: 'none',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                {t.save}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* חלון הגדלת תמונה בגלריה */}
       {selectedImageModalPost && (
         <div
           onClick={() => setSelectedImageModalPost(null)}
@@ -1249,7 +1731,6 @@ export default function App() {
                 </button>
               </div>
 
-              {/* תגובות בתוך המודל */}
               <CommentsSection
                 postId={selectedImageModalPost.id}
                 user={user}
