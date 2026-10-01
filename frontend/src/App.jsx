@@ -11,10 +11,11 @@ const TRANSLATIONS = {
     tagline: 'Fan Community & Safe Haven',
     signIn: 'Sign In',
     newPost: 'New Post',
-    bannerTitle: 'Welcome to Swift Secret',
+    bannerTitle: 'Welcome to Swift Secrets',
     bannerSub: 'A gentle place for community theories, art, lyrical breakdowns, and shared tales.',
     allTopics: 'All Topics',
     discussions: 'Discussions',
+    theories: 'Theories & Analyses',
     news: 'News & Updates',
     events: 'Events',
     gallery: 'Gallery',
@@ -50,10 +51,11 @@ const TRANSLATIONS = {
     tagline: '',
     signIn: 'התחברות',
     newPost: 'פוסט חדש',
-    bannerTitle: 'ברוכים הבאים ל Swift Secret',
+    bannerTitle: 'ברוכים הבאים ל-Swift Secrets',
     bannerSub: 'מקום עדין ושקט לתאוריות, יצירות, ניתוחי שירים ושיחות קהילה.',
     allTopics: 'כל הנושאים',
     discussions: 'דיונים',
+    theories: 'תיאוריות וניתוחים',
     news: 'חדשות ועדכונים',
     events: 'אירועים',
     gallery: 'גלריה',
@@ -104,6 +106,14 @@ const CATEGORY_THEMES = {
     badgeBg: '#EDE7F6',
     badgeText: '#4A148C'
   },
+  theories: {
+    bg: 'linear-gradient(135deg, #EAE4F2 0%, #F5EEF8 100%)',
+    border: '#CBB2DE',
+    text: '#4A154B',
+    title: '#3D0C40',
+    badgeBg: '#E1D5EC',
+    badgeText: '#3D0C40'
+  },
   news: {
     bg: 'linear-gradient(135deg, #E6F3F7 0%, #F2F9FA 100%)',
     border: '#B3DCE5',
@@ -152,6 +162,7 @@ export default function App() {
   const categories = [
     { key: 'all', label: t.allTopics },
     { key: 'discussions', label: t.discussions },
+    { key: 'theories', label: t.theories },
     { key: 'news', label: t.news },
     { key: 'events', label: t.events },
     { key: 'gallery', label: t.gallery },
@@ -307,7 +318,7 @@ export default function App() {
       />
 
       <main style={{ maxWidth: '850px', width: '100%', margin: '0 auto', padding: '1.5rem 1rem', flex: 1 }}>
-        {/* Banner דינמי בטיפוגרפיה ספרותית (Folklore / TTPD Style) */}
+        {/* Banner דינמי בטיפוגרפיה ספרותית */}
         <section style={{
           background: currentTheme.bg,
           border: `1px solid ${currentTheme.border}`,
@@ -326,8 +337,7 @@ export default function App() {
               margin: 0,
               fontFamily: '"Baskerville", "Georgia", "Garamond", serif',
               fontWeight: 700,
-              letterSpacing: '0.8px',
-              fontStyle: 'normal'
+              letterSpacing: '0.8px'
             }}>
               {t.bannerTitle}
             </h2>
@@ -347,7 +357,7 @@ export default function App() {
           </p>
         </section>
 
-        {/* Category Pills - שורה נגללת אופקית מותאמת לנייד */}
+        {/* Category Pills - שורה נגללת אופקית */}
         <div style={{
           display: 'flex',
           gap: '0.65rem',
@@ -416,6 +426,7 @@ export default function App() {
                 }}
               >
                 <option value="discussions">{t.discussions}</option>
+                <option value="theories">{t.theories}</option>
                 <option value="news">{t.news}</option>
                 <option value="events">{t.events}</option>
                 <option value="gallery">{t.gallery}</option>
@@ -583,7 +594,6 @@ export default function App() {
             </div>
           ) : (
             posts.map((post) => {
-              // הרשאת מחיקה שמורה אך ורק למנהל (Admin Only)
               const canDelete = user && user.role === 'admin';
               const catTheme = CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all;
 
@@ -618,7 +628,6 @@ export default function App() {
                     </span>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      {/* כפתור מחיקה - גלוי למנהלים בלבד */}
                       {canDelete && (
                         <button
                           onClick={() => handleDeletePost(post.id)}
@@ -641,7 +650,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* מציג כותרת רק אם קיימת ואינה ברירת המחדל הריקה */}
+                  {/* מציג כותרת */}
                   {post.title && post.title !== 'Untitled' && (
                     <h3 style={{
                       margin: '0 0 0.6rem 0',
@@ -675,7 +684,7 @@ export default function App() {
                     </div>
                   )}
 
-                  {/* מציג תוכן טקסטואלי עם ריווח ושוליים נדיבים */}
+                  {/* תוכן הפוסט */}
                   {post.content && post.content.trim() !== '' && (
                     <p style={{
                       margin: '0 0 1.25rem 0',
@@ -690,7 +699,7 @@ export default function App() {
                     </p>
                   )}
 
-                  {/* Card Actions */}
+                  {/* כפתורי פעולות */}
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',

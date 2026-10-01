@@ -40,7 +40,7 @@ export default function Navbar({
         }}>
           <img
             src={logoImg}
-            alt="Swift Secret Logo"
+            alt="Swift Secrets Logo"
             style={{
               width: '40px',
               height: '40px',

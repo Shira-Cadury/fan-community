@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API from './api';
-import { Send, CornerDownRight, Trash2, Flag } from 'lucide-react';
+import { Send, CornerDownRight, Trash2, Flag, ShieldCheck } from 'lucide-react';
 
 export default function CommentsSection({ postId, user, onRequireAuth, t }) {
   const [comments, setComments] = useState([]);
@@ -81,6 +81,8 @@ export default function CommentsSection({ postId, user, onRequireAuth, t }) {
         ) : (
           comments.map((c) => {
             const commentDepth = c.depth || 0;
+            const isCommentAdmin = c.author?.role === 'admin';
+
             return (
               <div
                 key={c.id}
@@ -94,11 +96,34 @@ export default function CommentsSection({ postId, user, onRequireAuth, t }) {
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-                  <span style={{ fontWeight: 600, color: 'var(--primary-rose-dark)', fontSize: '0.8rem' }}>
-                    @{c.author?.username || 'member'}
-                  </span>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--primary-rose-dark)', fontSize: '0.82rem' }}>
+                      @{c.author?.username || 'member'}
+                    </span>
+
+                    {/* תגית Admin מעוצבת למנהלות */}
+                    {isCommentAdmin && (
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.2rem',
+                        fontSize: '0.68rem',
+                        fontWeight: 700,
+                        backgroundColor: '#EDE7F6',
+                        color: '#4A148C',
+                        border: '1px solid #D1C4E9',
+                        padding: '0.12rem 0.45rem',
+                        borderRadius: '10px',
+                        letterSpacing: '0.3px',
+                      }}>
+                        <ShieldCheck size={11} />
+                        Admin
+                      </span>
+                    )}
+                  </div>
+
                   <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-                    {/* כפתור תגובה (מוצג לכל משתמש מחובר עד רמת עומק 3) */}
+                    {/* כפתור תגובה */}
                     {commentDepth < 3 && user && (
                       <button
                         onClick={() => {
@@ -139,8 +164,8 @@ export default function CommentsSection({ postId, user, onRequireAuth, t }) {
                       <Flag size={12} />
                     </button>
 
-                    {/* מחיקת תגובה */}
-                    {user && (user.id === c.author_id || user.role === 'admin' || user.role === 'moderator') && !c.is_deleted && (
+                    {/* מחיקת תגובה - מוגבלת למנהלים בלבד */}
+                    {user && user.role === 'admin' && !c.is_deleted && (
                       <button
                         onClick={() => handleDelete(c.id)}
                         title="Delete"
