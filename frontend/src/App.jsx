@@ -4,7 +4,19 @@ import Navbar from './Navbar';
 import AuthModal from './AuthModal';
 import AdminModal from './AdminModal';
 import CommentsSection from './CommentsSection';
-import { Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, X } from 'lucide-react';
+import { Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, X, Music, ExternalLink } from 'lucide-react';
+
+const DAILY_SONGS = [
+  { title: 'Cardigan', album: 'folklore', quote: 'When you are young, they assume you know nothing...', link: 'https://open.spotify.com/track/4R2kfaDFslZEMLoQUTdoVJ' },
+  { title: 'Lover', album: 'Lover', quote: 'Can I go where you go? Can we always be this close?', link: 'https://open.spotify.com/track/1dGr1nsAZkt7ReEHGNYHpO' },
+  { title: 'All Too Well (10 Minute Version)', album: 'Red (Taylor\'s Version)', quote: 'You kept me like a secret, but I kept you like an oath...', link: 'https://open.spotify.com/track/5enxwA8aAbwZbf5aCHqvzq' },
+  { title: 'August', album: 'folklore', quote: 'Meet me behind the mall...', link: 'https://open.spotify.com/track/3n3Ppam7vgaVa1iaRUc9Lp' },
+  { title: 'Enchanted (Taylor\'s Version)', album: 'Speak Now', quote: 'Please don\'t be in love with someone else...', link: 'https://open.spotify.com/track/3sW3PzcJHG9v6xM4xgZSYV' },
+  { title: 'Cruel Summer', album: 'Lover', quote: 'I love you, ain\'t that the worst thing you ever heard?', link: 'https://open.spotify.com/track/1BxfuPKGuaTgP7aM0fbdwr' },
+  { title: 'Style', album: '1989 (Taylor\'s Version)', quote: 'You got that James Dean daydream look in your eye...', link: 'https://open.spotify.com/track/0ug5ULuhfgCrqdBuWuZqvD' },
+  { title: 'The Fate of Ophelia', album: 'The Tortured Poets Department', quote: 'Down bad crying at the gym...', link: 'https://open.spotify.com/track/2OzhngLzyJQ4uW90Fcf546' },
+  { title: 'Fearless (Taylor\'s Version)', album: 'Fearless', quote: '\'Cause I don\'t know how it gets better than this...', link: 'https://open.spotify.com/track/77sMIMGoAcBe0ZRaCL97aF' }
+];
 
 const TRANSLATIONS = {
   en: {
@@ -13,6 +25,8 @@ const TRANSLATIONS = {
     newPost: 'New Post',
     bannerTitle: 'Welcome to Swift Secrets',
     bannerSub: 'A gentle place for community theories, art, lyrical breakdowns, and shared tales.',
+    dailySongLabel: 'Song of the Day',
+    listenNow: 'Listen',
     allTopics: 'All Topics',
     discussions: 'Discussions',
     theories: 'Theories & Analyses',
@@ -53,6 +67,8 @@ const TRANSLATIONS = {
     newPost: 'פוסט חדש',
     bannerTitle: 'ברוכים הבאים ל-Swift Secrets',
     bannerSub: 'מקום עדין ושקט לתאוריות, יצירות, ניתוחי שירים ושיחות קהילה.',
+    dailySongLabel: 'השיר היומי',
+    listenNow: 'האזנה',
     allTopics: 'כל הנושאים',
     discussions: 'דיונים',
     theories: 'תיאוריות וניתוחים',
@@ -158,6 +174,10 @@ export default function App() {
   const [postImageUrl, setPostImageUrl] = useState('');
 
   const currentTheme = CATEGORY_THEMES[selectedCategory] || CATEGORY_THEMES.all;
+
+  // חישוב שיר יומי קבוע לפי יום בשנה
+  const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+  const todaysSong = DAILY_SONGS[dayOfYear % DAILY_SONGS.length];
 
   const categories = [
     { key: 'all', label: t.allTopics, icon: '✨' },
@@ -325,7 +345,7 @@ export default function App() {
           borderRadius: '24px',
           padding: '2.4rem 1.5rem',
           textAlign: 'center',
-          marginBottom: '1.75rem',
+          marginBottom: '1.25rem',
           boxShadow: '0 6px 20px rgba(184, 80, 115, 0.06)',
           transition: 'all 0.4s ease'
         }}>
@@ -356,6 +376,78 @@ export default function App() {
             {t.bannerSub}
           </p>
         </section>
+
+        {/* ווידג'ט השיר היומי (Song of the Day) */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: 'var(--bg-card)',
+          border: '1px solid var(--border-delicate)',
+          borderRadius: '16px',
+          padding: '0.75rem 1.15rem',
+          marginBottom: '1.5rem',
+          boxShadow: '0 2px 8px rgba(58, 46, 43, 0.03)',
+          flexWrap: 'wrap',
+          gap: '0.75rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--bg-subtle)',
+              border: '1px solid var(--border-delicate)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--primary-rose-dark)',
+              flexShrink: 0
+            }}>
+              <Music size={18} />
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                  {t.dailySongLabel}
+                </span>
+                <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-dark)' }}>
+                  {todaysSong.title}
+                </span>
+                <span style={{ fontSize: '0.8rem', color: 'var(--secondary-sage)', fontWeight: 600 }}>
+                  ({todaysSong.album})
+                </span>
+              </div>
+              <p style={{ margin: '0.15rem 0 0 0', fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                "{todaysSong.quote}"
+              </p>
+            </div>
+          </div>
+
+          <a
+            href={todaysSong.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              padding: '0.4rem 0.85rem',
+              borderRadius: '20px',
+              backgroundColor: 'var(--bg-creamy)',
+              border: '1px solid var(--border-delicate)',
+              color: 'var(--primary-rose-dark)',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              textDecoration: 'none',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {t.listenNow}
+            <ExternalLink size={13} />
+          </a>
+        </div>
 
         {/* Category Pills - עם אימוג'ים וגלילה אופקית */}
         <div style={{
