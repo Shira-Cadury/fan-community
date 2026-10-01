@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lightbulb, RotateCcw, ArrowRight, ArrowLeft, CheckCircle2, XCircle, Award } from 'lucide-react';
+import { RotateCcw, ArrowRight, ArrowLeft, CheckCircle2, XCircle, Award } from 'lucide-react';
 
 const THEORIES_DATA = [
   {
@@ -58,7 +58,7 @@ export default function MastermindClown({ lang, onBack }) {
   const isHe = lang === 'he';
   const [currentIdx, setCurrentIdx] = useState(0);
   const [score, setScore] = useState(0);
-  const [userChoice, setUserChoice] = useState(null); // true = Mastermind, false = Clown
+  const [userChoice, setUserChoice] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
 
@@ -101,7 +101,7 @@ export default function MastermindClown({ lang, onBack }) {
     if (score >= 8) {
       rankTitle = 'The Mastermind 🧠✨';
       rankSubtitle = isHe ? 'אתם קוראים את המחשבות של טיילור! אי אפשר לעבוד עליכם.' : 'You read Taylor\'s mind! True genius.';
-      rankColor = '#1976D2';
+      rankColor = '#1565C0';
     } else if (score >= 4) {
       rankTitle = 'Casual Swiftie 🎶';
       rankSubtitle = isHe ? 'מעריצים טובים באמצע הדרך, לפעמים גאונים ולפעמים עם אף אדום!' : 'Great balance between facts and fun theories!';
@@ -109,7 +109,7 @@ export default function MastermindClown({ lang, onBack }) {
     } else {
       rankTitle = 'Certified Clown 🤡🎈';
       rankSubtitle = isHe ? 'ליצנים מוסמכים! אתם מאמינים לכל פוסט ולכל תיאוריה בטיקטוק...' : 'You believe every single TikTok theory!';
-      rankColor = '#D32F2F';
+      rankColor = '#C62828';
     }
 
     return (
@@ -121,11 +121,11 @@ export default function MastermindClown({ lang, onBack }) {
         textAlign: 'center',
         maxWidth: '560px',
         margin: '0 auto',
-        boxShadow: '0 6px 20px rgba(58, 46, 43, 0.05)'
+        boxShadow: '0 4px 18px rgba(58, 46, 43, 0.04)'
       }}>
         <div style={{
-          width: '64px',
-          height: '64px',
+          width: '60px',
+          height: '60px',
           borderRadius: '50%',
           backgroundColor: '#F3EBF7',
           color: rankColor,
@@ -134,16 +134,16 @@ export default function MastermindClown({ lang, onBack }) {
           justifyContent: 'center',
           margin: '0 auto 1.25rem'
         }}>
-          <Award size={36} />
+          <Award size={32} />
         </div>
 
-        <h3 style={{ fontSize: '1.65rem', margin: '0 0 0.5rem', color: rankColor, fontFamily: '"Georgia", serif' }}>
+        <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.5rem', color: rankColor, fontFamily: '"Georgia", serif' }}>
           {rankTitle}
         </h3>
-        <p style={{ color: 'var(--text-dark)', fontSize: '1rem', fontWeight: 600, margin: '0 0 0.5rem' }}>
+        <p style={{ color: 'var(--text-dark)', fontSize: '0.98rem', fontWeight: 600, margin: '0 0 0.5rem' }}>
           {isHe ? `ענית נכון על ${score} מתוך ${THEORIES_DATA.length} תיאוריות!` : `You got ${score} out of ${THEORIES_DATA.length} theories correct!`}
         </p>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', margin: '0 0 1.75rem' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', margin: '0 0 1.75rem' }}>
           {rankSubtitle}
         </p>
 
@@ -151,7 +151,7 @@ export default function MastermindClown({ lang, onBack }) {
           <button
             onClick={handleRestart}
             style={{
-              padding: '0.65rem 1.4rem',
+              padding: '0.6rem 1.35rem',
               borderRadius: '20px',
               backgroundColor: 'var(--primary-rose)',
               color: '#fff',
@@ -169,7 +169,7 @@ export default function MastermindClown({ lang, onBack }) {
           <button
             onClick={onBack}
             style={{
-              padding: '0.65rem 1.4rem',
+              padding: '0.6rem 1.35rem',
               borderRadius: '20px',
               backgroundColor: 'var(--bg-creamy)',
               border: '1px solid var(--border-delicate)',
@@ -214,9 +214,8 @@ export default function MastermindClown({ lang, onBack }) {
         border: '1px solid var(--border-delicate)',
         borderRadius: '24px',
         padding: '1.75rem',
-        boxShadow: '0 6px 20px rgba(58, 46, 43, 0.04)'
+        boxShadow: '0 4px 18px rgba(58, 46, 43, 0.03)'
       }}>
-        {/* ראש הכרטיסייה: מונה שאלות וציון */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
           <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--secondary-sage-dark)' }}>
             {isHe ? `תיאוריה ${currentIdx + 1}/${THEORIES_DATA.length}` : `Theory ${currentIdx + 1}/${THEORIES_DATA.length}`}
@@ -226,31 +225,31 @@ export default function MastermindClown({ lang, onBack }) {
           </span>
         </div>
 
-        {/* כרטיסיית התיאוריה */}
+        {/* כרטיסיית התיאוריה בגוון פסטלי חמים */}
         <div style={{
           backgroundColor: '#FFFDF9',
-          border: '1.5px solid #F0E6D8',
+          border: '1px solid #F0E6D8',
           borderRadius: '20px',
-          padding: '2rem 1.4rem',
+          padding: '1.85rem 1.4rem',
           textAlign: 'center',
-          marginBottom: '1.75rem',
-          boxShadow: '0 3px 10px rgba(0,0,0,0.02)'
+          marginBottom: '1.5rem',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
         }}>
           <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted)', fontWeight: 700 }}>
             {isHe ? 'האם התיאוריה נכונה או קלאונינג?' : 'Is it real or just clowning?'}
           </span>
           <h3 style={{
-            fontSize: '1.3rem',
+            fontSize: '1.25rem',
             lineHeight: '1.5',
             color: 'var(--text-dark)',
             fontFamily: '"Georgia", serif',
-            margin: '0.85rem 0 0'
+            margin: '0.75rem 0 0'
           }}>
             "{current.theory}"
           </h3>
         </div>
 
-        {/* שני כפתורי ענק: Mastermind מול Clown */}
+        {/* שני כפתורים פסטליים וקריאים */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
@@ -262,26 +261,26 @@ export default function MastermindClown({ lang, onBack }) {
             disabled={isAnswered}
             onClick={() => handleChoice(true)}
             style={{
-              padding: '1.2rem 1rem',
-              borderRadius: '20px',
+              padding: '1.1rem 0.85rem',
+              borderRadius: '18px',
               border: isAnswered && current.isMastermind
-                ? '2.5px solid #1E88E5'
-                : '1.5px solid #BBDEFB',
-              backgroundColor: isAnswered && current.isMastermind ? '#E3F2FD' : '#F5F9FF',
+                ? '2px solid #1E88E5'
+                : '1px solid #C9DCF2',
+              backgroundColor: isAnswered && current.isMastermind ? '#E3F2FD' : '#F4F8FD',
               color: '#0D47A1',
               cursor: isAnswered ? 'default' : 'pointer',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '0.5rem',
+              gap: '0.35rem',
               transition: 'all 0.2s',
-              opacity: isAnswered && !current.isMastermind ? 0.5 : 1
+              opacity: isAnswered && !current.isMastermind ? 0.45 : 1
             }}
           >
-            <span style={{ fontSize: '2rem' }}>🧠</span>
-            <span style={{ fontSize: '1.05rem', fontWeight: 700 }}>Mastermind</span>
-            <span style={{ fontSize: '0.78rem', color: '#1565C0', fontWeight: 500 }}>
-              {isHe ? '(גאונות - קרה במציאות!)' : '(It actually happened!)'}
+            <span style={{ fontSize: '1.8rem' }}>🧠</span>
+            <span style={{ fontSize: '1rem', fontWeight: 700 }}>Mastermind</span>
+            <span style={{ fontSize: '0.76rem', color: '#1976D2', fontWeight: 500 }}>
+              {isHe ? '(גאונות - קרה במציאות!)' : '(Actually happened!)'}
             </span>
           </button>
 
@@ -290,76 +289,76 @@ export default function MastermindClown({ lang, onBack }) {
             disabled={isAnswered}
             onClick={() => handleChoice(false)}
             style={{
-              padding: '1.2rem 1rem',
-              borderRadius: '20px',
+              padding: '1.1rem 0.85rem',
+              borderRadius: '18px',
               border: isAnswered && !current.isMastermind
-                ? '2.5px solid #E53935'
-                : '1.5px solid #FFCDD2',
-              backgroundColor: isAnswered && !current.isMastermind ? '#FFEBEE' : '#FFF8F8',
+                ? '2px solid #E53935'
+                : '1px solid #F8D3D3',
+              backgroundColor: isAnswered && !current.isMastermind ? '#FFEBEE' : '#FDF6F6',
               color: '#B71C1C',
               cursor: isAnswered ? 'default' : 'pointer',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '0.5rem',
+              gap: '0.35rem',
               transition: 'all 0.2s',
-              opacity: isAnswered && current.isMastermind ? 0.5 : 1
+              opacity: isAnswered && current.isMastermind ? 0.45 : 1
             }}
           >
-            <span style={{ fontSize: '2rem' }}>🤡</span>
-            <span style={{ fontSize: '1.05rem', fontWeight: 700 }}>Clown</span>
-            <span style={{ fontSize: '0.78rem', color: '#C62828', fontWeight: 500 }}>
-              {isHe ? '(ליצנות - לא קרה מעולם)' : '(Pure delusion / false)'}
+            <span style={{ fontSize: '1.8rem' }}>🤡</span>
+            <span style={{ fontSize: '1rem', fontWeight: 700 }}>Clown</span>
+            <span style={{ fontSize: '0.76rem', color: '#C62828', fontWeight: 500 }}>
+              {isHe ? '(ליצנות - לא קרה מעולם)' : '(Pure delusion)'}
             </span>
           </button>
         </div>
 
-        {/* אזור התוצאה וההסבר (The Truth) */}
+        {/* משוב פסטלי עדין עם טקסט קריא */}
         {isAnswered && (
           <div style={{
-            backgroundColor: isCorrectGuess ? '#E8F5E9' : '#FFF3E0',
-            border: `1.5px solid ${isCorrectGuess ? '#81C784' : '#FFB74D'}`,
-            borderRadius: '18px',
-            padding: '1.25rem',
-            marginBottom: '1rem',
+            backgroundColor: isCorrectGuess ? '#F1F8F2' : '#FFF7F0',
+            border: `1px solid ${isCorrectGuess ? '#A5D6A7' : '#FFCC80'}`,
+            borderRadius: '16px',
+            padding: '1.15rem',
+            marginBottom: '0.5rem',
             display: 'flex',
             flexDirection: 'column',
-            gap: '0.75rem'
+            gap: '0.65rem'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
               {isCorrectGuess ? (
                 <>
-                  <CheckCircle2 size={20} color="#2E7D32" />
-                  <span style={{ fontWeight: 700, color: '#2E7D32', fontSize: '1rem' }}>
+                  <CheckCircle2 size={18} color="#2E7D32" />
+                  <span style={{ fontWeight: 700, color: '#2E7D32', fontSize: '0.95rem' }}>
                     {isHe ? 'צדקת לחלוטין! 🎉' : 'Spot on! 🎉'}
                   </span>
                 </>
               ) : (
                 <>
-                  <XCircle size={20} color="#E65100" />
-                  <span style={{ fontWeight: 700, color: '#E65100', fontSize: '1rem' }}>
+                  <XCircle size={18} color="#C62828" />
+                  <span style={{ fontWeight: 700, color: '#C62828', fontSize: '0.95rem' }}>
                     {isHe ? 'טעית הפעם! 🙈' : 'Oops, not this time! 🙈'}
                   </span>
                 </>
               )}
             </div>
 
-            <p style={{ margin: 0, fontSize: '0.92rem', lineHeight: '1.55', color: 'var(--text-dark)' }}>
+            <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: '1.5', color: 'var(--text-dark)' }}>
               <strong>{isHe ? 'מה קרה במציאות (The Truth):' : 'The Truth:'}</strong> {current.truth}
             </p>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.25rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.2rem' }}>
               <button
                 onClick={handleNext}
                 style={{
-                  padding: '0.55rem 1.3rem',
+                  padding: '0.5rem 1.25rem',
                   borderRadius: '16px',
                   backgroundColor: 'var(--primary-rose)',
                   color: '#fff',
                   border: 'none',
                   fontWeight: 600,
                   cursor: 'pointer',
-                  fontSize: '0.88rem'
+                  fontSize: '0.85rem'
                 }}
               >
                 {currentIdx + 1 < THEORIES_DATA.length 

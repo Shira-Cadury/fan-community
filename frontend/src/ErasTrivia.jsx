@@ -4,24 +4,27 @@ import { Clock, Award, RotateCcw, ArrowRight, ArrowLeft, CheckCircle2, XCircle }
 const ERAS_DATA = [
   {
     era: 'Taylor Swift (Debut)',
-    color: '#3F7D58',
-    bgColor: '#EAF4EE',
+    color: '#2B5A3E',
+    badgeBg: '#E2F0E7',
+    btnBg: '#3F7D58',
     question: 'מה היה הסינגל הראשון שפרסם את טיילור סוויפט מתוך אלבום הבכורה שלה?',
     options: ['Tim McGraw', 'Teardrops on My Guitar', 'Our Song', 'Picture to Burn'],
     correct: 0,
   },
   {
     era: 'Fearless',
-    color: '#D4AF37',
-    bgColor: '#FDF8EA',
+    color: '#855E0E',
+    badgeBg: '#FDF3D6',
+    btnBg: '#C49424',
     question: 'איזה שיר מתוך Fearless מתחיל במילים "You\'re on the phone with your girlfriend, she\'s upset"?',
     options: ['Love Story', 'You Belong With Me', 'Fifteen', 'White Horse'],
     correct: 1,
   },
   {
     era: 'Speak Now',
-    color: '#8A4B82',
-    bgColor: '#F8EEF6',
+    color: '#5C2456',
+    badgeBg: '#F5E4F3',
+    btnBg: '#8A4B82',
     question: 'מה מייחד את כתיבת השירים באלבום Speak Now?',
     options: [
       'כל השירים נכתבו בשיתוף עם מקס מרטין',
@@ -33,56 +36,63 @@ const ERAS_DATA = [
   },
   {
     era: 'Red',
-    color: '#A82020',
-    bgColor: '#FCEAEA',
+    color: '#7D1515',
+    badgeBg: '#FCE6E6',
+    btnBg: '#A82020',
     question: 'איזה פריט לבוש איקוני מוזכר בשיר All Too Well והושאר אצל אחות של הבחור?',
     options: ['כובע שחור', 'טבעת כסף', 'צעיף אדום', 'ג\'קט ג\'ינס'],
     correct: 2,
   },
   {
     era: '1989',
-    color: '#5C9EAD',
-    bgColor: '#EBF5F7',
+    color: '#1C5B68',
+    badgeBg: '#E0F1F4',
+    btnBg: '#478B99',
     question: 'מהי שנת הלידה של טיילור שהעניקה לאלבום הפופ הראשון שלה את שמו?',
     options: ['1987', '1989', '1991', '1993'],
     correct: 1,
   },
   {
     era: 'Reputation',
-    color: '#2B2B2B',
-    bgColor: '#EEEEEE',
+    color: '#1F1F1F',
+    badgeBg: '#E8E8E8',
+    btnBg: '#3D3D3D',
     question: 'איזו חיה מופיעה באופן בולט בקליפים, באסתטיקה ובבמה של סיבוב ההופעות Reputation?',
     options: ['נחש', 'חתול', 'זאב', 'ברבור'],
     correct: 0,
   },
   {
     era: 'Lover',
-    color: '#D97D9B',
-    bgColor: '#FDEEF3',
+    color: '#8A2B49',
+    badgeBg: '#FDE4ED',
+    btnBg: '#C76384',
     question: 'באיזה צבעים מאופיין עולם הוויזואליה והעטיפה של האלבום Lover?',
     options: ['שחור ולבן מטאלי', 'צבעי פסטל רכים ורוד ותכלת', 'חום ובז\' סתווי', 'אדום וזהב כהה'],
     correct: 1,
   },
   {
     era: 'Folklore & Evermore',
-    color: '#656D4A',
-    bgColor: '#F2F4EB',
+    color: '#3B4127',
+    badgeBg: '#EAEFE0',
+    btnBg: '#596041',
     question: 'מי הדמות הבדיונית שמופיעה במשולש האהבה המפורסם של Folklore לצד בטי וג\'יימס?',
     options: ['דורותיאה', 'אוגוסטין (אינז)', 'מרג\'ורי', 'רבקה'],
     correct: 1,
   },
   {
     era: 'Midnights',
-    color: '#2F3E75',
-    bgColor: '#EBF0FC',
+    color: '#1A2552',
+    badgeBg: '#E2E9FB',
+    btnBg: '#2E3E7A',
     question: 'כמה שירים רגילים (Standard Edition) כלל האלבום Midnights כשיצא בחצות?',
     options: ['10', '13', '15', '19'],
     correct: 1,
   },
   {
     era: 'The Tortured Poets Department',
-    color: '#6C655F',
-    bgColor: '#F3F2F1',
+    color: '#3B3632',
+    badgeBg: '#EAE8E6',
+    btnBg: '#5C544F',
     question: 'מה היה הסינגל המוביל שיצא בליווי קליפ יחד עם פוסט מאלון?',
     options: ['Fortnight', 'I Can Do It With a Broken Heart', 'Down Bad', 'Florida!!!'],
     correct: 0,
@@ -100,12 +110,12 @@ export default function ErasTrivia({ lang, onBack }) {
 
   const currentQuestion = ERAS_DATA[currentIdx];
 
-  // טיימר של 15 שניות לשאלה
   useEffect(() => {
     if (isAnswered || isGameOver) return;
 
     if (timeLeft === 0) {
-      handleTimeout();
+      setIsAnswered(true);
+      setSelectedOpt(-1);
       return;
     }
 
@@ -115,11 +125,6 @@ export default function ErasTrivia({ lang, onBack }) {
 
     return () => clearInterval(timer);
   }, [timeLeft, isAnswered, isGameOver]);
-
-  const handleTimeout = () => {
-    setIsAnswered(true);
-    setSelectedOpt(-1); // הזמן נגמר
-  };
 
   const handleSelectOption = (idx) => {
     if (isAnswered) return;
@@ -167,28 +172,28 @@ export default function ErasTrivia({ lang, onBack }) {
         borderRadius: '24px',
         padding: '2.5rem 1.5rem',
         textAlign: 'center',
-        boxShadow: '0 6px 20px rgba(58, 46, 43, 0.05)',
-        maxWidth: '600px',
+        boxShadow: '0 4px 18px rgba(58, 46, 43, 0.04)',
+        maxWidth: '560px',
         margin: '0 auto'
       }}>
         <div style={{
-          width: '64px',
-          height: '64px',
+          width: '60px',
+          height: '60px',
           borderRadius: '50%',
           backgroundColor: '#FFF0F5',
-          color: 'var(--primary-rose)',
+          color: 'var(--primary-rose-dark)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           margin: '0 auto 1.25rem'
         }}>
-          <Award size={36} />
+          <Award size={32} />
         </div>
 
-        <h3 style={{ fontSize: '1.6rem', color: 'var(--text-dark)', margin: '0 0 0.5rem', fontFamily: '"Georgia", serif' }}>
+        <h3 style={{ fontSize: '1.5rem', color: 'var(--text-dark)', margin: '0 0 0.5rem', fontFamily: '"Georgia", serif' }}>
           {title}
         </h3>
-        <p style={{ color: 'var(--text-muted)', fontSize: '1rem', margin: '0 0 1.5rem' }}>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', margin: '0 0 1.5rem' }}>
           {isHe
             ? `סיימת את כל ה-Eras עם ${score} נקודות מתוך ${totalScore}!`
             : `You completed all Eras with ${score} out of ${totalScore} points!`}
@@ -201,7 +206,7 @@ export default function ErasTrivia({ lang, onBack }) {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.4rem',
-              padding: '0.65rem 1.35rem',
+              padding: '0.6rem 1.3rem',
               borderRadius: '20px',
               backgroundColor: 'var(--primary-rose)',
               color: '#fff',
@@ -219,7 +224,7 @@ export default function ErasTrivia({ lang, onBack }) {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.4rem',
-              padding: '0.65rem 1.35rem',
+              padding: '0.6rem 1.3rem',
               borderRadius: '20px',
               backgroundColor: 'var(--bg-creamy)',
               border: '1px solid var(--border-delicate)',
@@ -239,7 +244,6 @@ export default function ErasTrivia({ lang, onBack }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      {/* כפתור חזרה */}
       <div>
         <button
           onClick={onBack}
@@ -260,16 +264,15 @@ export default function ErasTrivia({ lang, onBack }) {
         </button>
       </div>
 
-      {/* כרטיסיית המשחק */}
       <div style={{
         backgroundColor: 'var(--bg-card)',
-        border: `1.5px solid ${currentQuestion.color}40`,
+        border: '1px solid var(--border-delicate)',
         borderRadius: '24px',
         padding: '1.75rem',
-        boxShadow: '0 6px 20px rgba(58, 46, 43, 0.04)',
-        transition: 'all 0.35s ease'
+        boxShadow: '0 4px 18px rgba(58, 46, 43, 0.03)',
+        transition: 'all 0.3s ease'
       }}>
-        {/* ראש המשחק: Era נוכחית + ניקוד + טיימר */}
+        {/* כותרת עליונה דינמית של ה-Era */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <div style={{
             display: 'inline-flex',
@@ -277,7 +280,7 @@ export default function ErasTrivia({ lang, onBack }) {
             gap: '0.5rem',
             padding: '0.35rem 0.85rem',
             borderRadius: '20px',
-            backgroundColor: currentQuestion.bgColor,
+            backgroundColor: currentQuestion.badgeBg,
             color: currentQuestion.color,
             fontWeight: 700,
             fontSize: '0.85rem'
@@ -295,7 +298,7 @@ export default function ErasTrivia({ lang, onBack }) {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.3rem',
-              color: timeLeft <= 5 ? '#D32F2F' : 'var(--text-muted)',
+              color: timeLeft <= 5 ? '#C62828' : 'var(--text-muted)',
               fontWeight: 700,
               fontSize: '0.88rem'
             }}>
@@ -305,7 +308,7 @@ export default function ErasTrivia({ lang, onBack }) {
           </div>
         </div>
 
-        {/* מד התקדמות (Progress Bar) בצבע ה-Era */}
+        {/* פס התקדמות בצבע ה-Era */}
         <div style={{
           width: '100%',
           height: '6px',
@@ -317,7 +320,7 @@ export default function ErasTrivia({ lang, onBack }) {
           <div style={{
             width: `${progressPercent}%`,
             height: '100%',
-            backgroundColor: currentQuestion.color,
+            backgroundColor: currentQuestion.btnBg,
             transition: 'width 0.4s ease, background-color 0.4s ease'
           }} />
         </div>
@@ -325,7 +328,7 @@ export default function ErasTrivia({ lang, onBack }) {
         {/* שאלת הטריוויה */}
         <h3 style={{
           margin: '0 0 1.5rem 0',
-          fontSize: '1.25rem',
+          fontSize: '1.2rem',
           lineHeight: '1.5',
           color: 'var(--text-dark)',
           fontFamily: '"Georgia", serif'
@@ -333,7 +336,7 @@ export default function ErasTrivia({ lang, onBack }) {
           {currentQuestion.question}
         </h3>
 
-        {/* 4 אפשרויות תשובה */}
+        {/* 4 אפשרויות בחירה */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
           {currentQuestion.options.map((opt, idx) => {
             let btnBg = 'var(--bg-creamy)';
@@ -385,21 +388,21 @@ export default function ErasTrivia({ lang, onBack }) {
           })}
         </div>
 
-        {/* כפתור לשאלה הבאה / לסיום */}
+        {/* כפתור מעבר דינמי בצבע ה-Era הנוכחית */}
         {isAnswered && (
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <button
               onClick={handleNextQuestion}
               style={{
-                padding: '0.65rem 1.4rem',
+                padding: '0.6rem 1.35rem',
                 borderRadius: '18px',
-                backgroundColor: currentQuestion.color,
+                backgroundColor: currentQuestion.btnBg,
                 color: '#fff',
                 border: 'none',
-                fontWeight: 700,
+                fontWeight: 600,
                 cursor: 'pointer',
-                fontSize: '0.9rem',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                fontSize: '0.88rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
               }}
             >
               {currentIdx + 1 < ERAS_DATA.length 
