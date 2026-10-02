@@ -1,172 +1,154 @@
 import React, { useState } from 'react';
-import { Sparkles, Music, HelpCircle, Layers, Play, Smile } from 'lucide-react';
-import ErasTrivia from './ErasTrivia';
-import LyricsMatcher from './LyricsMatcher';
-import MemoryCards from './MemoryCards';
-import MastermindClown from './MastermindClown';
-
-const GAMES = [
-  {
-    id: 'eras-trivia',
-    title: { he: 'טריוויית אלבומים כרונולוגית (The Eras Trivia)', en: 'The Eras Trivia' },
-    desc: {
-      he: 'מסע כרונולוגי בין כל האלבומים של טיילור עם שאלות ברמת קושי עולה וטיימר של 15 שניות!',
-      en: 'A chronological journey across all Eras with increasing difficulty and a 15s timer!'
-    },
-    icon: HelpCircle,
-    accentColor: '#A82020',
-    bgColor: '#FCEAEA',
-  },
-  {
-    id: 'mastermind-clown',
-    title: { he: 'גאון או ליצן? (Mastermind or Clown)', en: 'Mastermind or Clown?' },
-    desc: {
-      he: 'האם תיאוריית המעריצים התבררה כגאונות אמיתית של טיילור, או כקלאונינג מוחלט שלא קרה?',
-      en: 'Was the famous Swiftie theory pure Mastermind genius, or certified Clowning delusion?'
-    },
-    icon: Smile,
-    accentColor: '#0D47A1',
-    bgColor: '#E3F2FD',
-  },
-  {
-    id: 'lyrics-matcher',
-    title: { he: 'התאימו את הציטוט לאלבום (Lyrics Matcher)', en: 'Lyrics Matcher' },
-    desc: {
-      he: 'גררו שורות וציטוטים מוכרים מתוך שירים ישירות אל עטיפת האלבום הנכונה.',
-      en: 'Drag and drop iconic lyrics onto their corresponding album cover.'
-    },
-    icon: Music,
-    accentColor: '#5C9EAD',
-    bgColor: '#EBF5F7',
-  },
-  {
-    id: 'swift-memory',
-    title: { he: 'משחק הזיכרון (Swift Memory Cards)', en: 'Swift Memory Cards' },
-    desc: {
-      he: 'הפכו קלפים וגלו זוגות תואמים של פריטים אייקוניים: הצעיף האדום, כדור הדיסקו ועוד.',
-      en: 'Flip cards and match iconic Swiftie symbols: the red scarf, mirrorball, and more.'
-    },
-    icon: Layers,
-    accentColor: '#8A4B82',
-    bgColor: '#F8EEF6',
-  }
-];
+import TriviaGame from './TriviaGame';
+import LyricsGame from './LyricsGame';
+import MemoryGame from './MemoryGame';
+import ClownGame from './ClownGame';
+import EraQuizGame from './EraQuizGame'; // המשחק החדש!
+import { Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
 
 export default function GamesHub({ lang }) {
   const isHe = lang === 'he';
-  const [activeGameId, setActiveGameId] = useState(null);
+  const [activeGame, setActiveGame] = useState(null);
 
-  if (activeGameId === 'eras-trivia') {
-    return <ErasTrivia lang={lang} onBack={() => setActiveGameId(null)} />;
-  }
+  const games = [
+    {
+      id: 'era_quiz',
+      title: isHe ? 'מהי ה-Era הנוכחית שלך? 💿' : "What's Your Current Era? 💿",
+      desc: isHe ? 'עני על 5 שאלות אופי ואסתטיקה וגלי איזה אלבום של טיילור מתאים בדיוק למצב הרוח שלך!' : 'Answer 5 aesthetic questions and find out which Taylor Swift era matches your current vibe!',
+      component: <EraQuizGame lang={lang} />
+    },
+    {
+      id: 'trivia',
+      title: isHe ? 'טריוויית ה-Eras הגדולה 🏆' : 'The Ultimate Eras Trivia 🏆',
+      desc: isHe ? 'בחנו את הידע שלכן בכל האלבומים והפרטים הקטנים של טיילור.' : 'Test your knowledge across all of Taylor\'s albums, lore, and Easter eggs.',
+      component: <TriviaGame lang={lang} />
+    },
+    {
+      id: 'lyrics',
+      title: isHe ? 'התאמת שורות משירים 🎵' : 'Lyrics Matcher 🎵',
+      desc: isHe ? 'האם תזהו לאיזה שיר שייכת השורה המפורסמת?' : 'Can you match the iconic lyrics to their corresponding song title?',
+      component: <LyricsGame lang={lang} />
+    },
+    {
+      id: 'memory',
+      title: isHe ? 'משחק הזיכרון של האלבומים 🎴' : 'Album Memory Match 🎴',
+      desc: isHe ? 'הפכו את הקלפים ומצאו את זוגות האלבומים הזהים בזמן הקצר ביותר.' : 'Flip the cards to match album pairs in the shortest time possible.',
+      component: <MemoryGame lang={lang} />
+    },
+    {
+      id: 'clown',
+      title: isHe ? 'מאסטרמיינד או קלאון? 🤡' : 'Mastermind or Clown? 🤡',
+      desc: isHe ? 'החליטו האם התאוריה היא רמז אמיתי ומתוחכם או הזיה של מעריצים!' : 'Decide if the theory is a genuine Easter egg or peak clown behavior!',
+      component: <ClownGame lang={lang} />
+    }
+  ];
 
-  if (activeGameId === 'mastermind-clown') {
-    return <MastermindClown lang={lang} onBack={() => setActiveGameId(null)} />;
-  }
+  if (activeGame) {
+    const currentGame = games.find((g) => g.id === activeGame);
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        <button
+          onClick={() => setActiveGame(null)}
+          style={{
+            alignSelf: isHe ? 'flex-start' : 'flex-start',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            padding: '0.5rem 1rem',
+            borderRadius: '20px',
+            backgroundColor: 'var(--bg-card)',
+            border: '1px solid var(--border-delicate)',
+            color: 'var(--text-dark)',
+            fontSize: '0.88rem',
+            fontWeight: 600,
+            cursor: 'pointer'
+          }}
+        >
+          {isHe ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
+          <span>{isHe ? 'חזרה לכל המשחקים' : 'Back to Games Hub'}</span>
+        </button>
 
-  if (activeGameId === 'lyrics-matcher') {
-    return <LyricsMatcher lang={lang} onBack={() => setActiveGameId(null)} />;
-  }
-
-  if (activeGameId === 'swift-memory') {
-    return <MemoryCards lang={lang} onBack={() => setActiveGameId(null)} />;
+        {currentGame?.component}
+      </div>
+    );
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div style={{
-        backgroundColor: 'var(--bg-card)',
-        border: '1px solid var(--border-delicate)',
-        borderRadius: '20px',
-        padding: '1.5rem',
         textAlign: 'center',
-        boxShadow: '0 4px 12px rgba(58, 46, 43, 0.03)'
+        padding: '1.5rem 1rem',
+        backgroundColor: 'var(--bg-card)',
+        borderRadius: '24px',
+        border: '1px solid var(--border-delicate)',
+        boxShadow: '0 4px 14px rgba(58, 46, 43, 0.03)'
       }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'var(--primary-rose-dark)' }}>
-          <Sparkles size={18} />
-          <h3 style={{ margin: 0, fontSize: '1.35rem', fontFamily: '"Georgia", serif' }}>
-            {isHe ? 'פינת המשחקים של Swift Secrets' : 'Swift Secrets Games Lounge'}
-          </h3>
-          <Sparkles size={18} />
+          <Sparkles size={20} />
+          <h2 style={{ margin: 0, fontSize: '1.6rem', fontFamily: '"Georgia", serif' }}>
+            {isHe ? 'ארקייד המשחקים של Swift Secrets' : 'Swift Secrets Arcade'}
+          </h2>
+          <Sparkles size={20} />
         </div>
-        <p style={{ margin: '0.4rem 0 0 0', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-          {isHe 
-            ? 'ארבעה משחקים אינטראקטיביים שנוצרו במיוחד עבור קהילת הסוויפטיז שלנו!'
-            : 'Four interactive games designed specially for our Swiftie community!'}
+        <p style={{ margin: '0.4rem 0 0', color: 'var(--text-muted)', fontSize: '0.92rem' }}>
+          {isHe ? 'בחרי משחק ותראי עד כמה את סוויפטית אמיתית!' : 'Pick a mini-game and see how well you know Taylor!'}
         </p>
       </div>
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '1rem'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+        gap: '1.25rem'
       }}>
-        {GAMES.map((game) => {
-          const IconComponent = game.icon;
-          return (
-            <div
-              key={game.id}
-              style={{
-                backgroundColor: 'var(--bg-card)',
-                border: '1px solid var(--border-delicate)',
-                borderRadius: '18px',
-                padding: '1.35rem',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                gap: '1rem',
-                boxShadow: '0 2px 8px rgba(58, 46, 43, 0.03)',
-                transition: 'transform 0.2s ease'
-              }}
-            >
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', marginBottom: '0.75rem' }}>
-                  <div style={{
-                    width: '42px',
-                    height: '42px',
-                    borderRadius: '12px',
-                    backgroundColor: game.bgColor,
-                    color: game.accentColor,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <IconComponent size={22} />
-                  </div>
-                </div>
-
-                <h4 style={{ margin: '0 0 0.35rem 0', fontSize: '1.05rem', color: 'var(--text-dark)' }}>
-                  {game.title[lang] || game.title.en}
-                </h4>
-                <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                  {game.desc[lang] || game.desc.en}
-                </p>
-              </div>
-
-              <button
-                onClick={() => setActiveGameId(game.id)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.35rem',
-                  padding: '0.6rem',
-                  borderRadius: '12px',
-                  backgroundColor: 'var(--primary-rose)',
-                  border: 'none',
-                  color: '#fff',
-                  fontSize: '0.88rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  boxShadow: '0 2px 8px rgba(216, 112, 147, 0.25)'
-                }}
-              >
-                <Play size={14} />
-                {isHe ? 'שחקי עכשיו!' : 'Play Now!'}
-              </button>
+        {games.map((game) => (
+          <div
+            key={game.id}
+            onClick={() => setActiveGame(game.id)}
+            style={{
+              backgroundColor: 'var(--bg-card)',
+              border: '1px solid var(--border-delicate)',
+              borderRadius: '20px',
+              padding: '1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(58, 46, 43, 0.03)',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 8px 20px rgba(216, 112, 147, 0.12)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(58, 46, 43, 0.03)';
+            }}
+          >
+            <div>
+              <h3 style={{ margin: '0 0 0.5rem', color: 'var(--text-dark)', fontSize: '1.2rem', fontFamily: '"Georgia", serif' }}>
+                {game.title}
+              </h3>
+              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: '1.5' }}>
+                {game.desc}
+              </p>
             </div>
-          );
-        })}
+
+            <div style={{ marginTop: '1.25rem', display: 'flex', justifyContent: isHe ? 'flex-start' : 'flex-end' }}>
+              <span style={{
+                color: 'var(--primary-rose-dark)',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.3rem'
+              }}>
+                {isHe ? 'שחקי עכשיו' : 'Play Now'}
+                {isHe ? <ArrowLeft size={14} /> : <ArrowRight size={14} />}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
