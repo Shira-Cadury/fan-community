@@ -8,7 +8,7 @@ import AdminFeedbackBoard from './AdminFeedbackBoard';
 import PostCard from './PostCard';
 import { 
   Heart, Sparkles, Image as ImageIcon, 
-  X, Music, ExternalLink, Search, Clock, Flame, Edit3 
+  X, Music, ExternalLink, Search, Clock, Flame, Edit3, Trash2 
 } from 'lucide-react';
 
 const DEFAULT_DAILY_SONG = {
