@@ -45,8 +45,8 @@ export default function GamesHub({ lang }) {
     },
     {
       id: 'era_quiz',
-      title: isHe ? "מהי ה-Era הנוכחית שלך? (What's Your Current Era?)" : "What's Your Current Era?",
-      desc: isHe ? 'עני על 5 שאלות אופי ואסתטיקה וגלי איזה אלבום של טיילור מתאים בדיוק למצב הרוח שלך!' : 'Answer 5 aesthetic questions and find out which Taylor Swift era matches your current vibe!',
+      title: isHe ? 'מהי ה-Era הנוכחית שלך?' : "What's Your Current Era?",
+      desc: isHe ? 'עני על 10 שאלות אופי ואסתטיקה וגלי איזה אלבום של טיילור מתאים בדיוק למצב הרוח שלך!' : 'Answer 10 aesthetic questions and find out which Taylor Swift era matches your current vibe!',
       icon: <Disc3 size={22} color="#C2185B" />,
       iconBg: '#FCE4EC',
       component: <EraQuizGame lang={lang} />
