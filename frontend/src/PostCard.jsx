@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import API from './api';
 import CommentsSection from './CommentsSection';
 import { Heart, MessageCircle, Flag, Tag, Trash2, Globe, Loader2 } from 'lucide-react';
 
@@ -31,13 +30,21 @@ export default function PostCard({
 
     setIsLoadingTranslation(true);
     try {
-      const targetLang = isHe ? 'he' : 'en';
-      const res = await API.post('/posts/translate', {
-        text: post.content,
-        target_lang: targetLang
-      });
-      setTranslatedContent(res.data.translated_text);
-      setIsTranslated(true);
+      // זיהוי שפת היעד: אם האתר בעברית נתרגם לעברית, אחרת לאנגלית
+      const targetLang = isHe ? 'iw' : 'en';
+      
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(post.content)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      // חיבור חלקי התרגום למשפט שלם
+      if (data && data[0]) {
+        const fullTranslation = data[0].map((item) => item[0]).join('');
+        setTranslatedContent(fullTranslation);
+        setIsTranslated(true);
+      } else {
+        throw new Error('Empty response');
+      }
     } catch (err) {
       console.error('Translation error:', err);
       alert(isHe ? 'שגיאה בטעינת התרגום' : 'Failed to fetch translation');
