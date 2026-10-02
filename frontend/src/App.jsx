@@ -951,8 +951,8 @@ export default function App() {
             ) : (
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-                gap: '8px'
+                gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))',
+                gap: '4px'
               }}>
                 {processedPosts.map((post) => (
                   <div
@@ -960,22 +960,22 @@ export default function App() {
                     onClick={() => setSelectedImageModalPost(post)}
                     style={{
                       position: 'relative',
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       overflow: 'hidden',
                       aspectRatio: '1 / 1',
                       backgroundColor: 'var(--bg-subtle)',
                       border: '1px solid var(--border-delicate)',
                       cursor: 'pointer',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
                       transition: 'transform 0.2s ease, box-shadow 0.2s ease'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'scale(1.03)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(216, 112, 147, 0.15)';
+                      e.currentTarget.style.boxShadow = '0 4px 10px rgba(216, 112, 147, 0.15)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.03)';
+                      e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.03)';
                     }}
                   >
                     {post.image_url ? (
@@ -991,10 +991,10 @@ export default function App() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: '0.5rem',
+                        padding: '0.25rem',
                         textAlign: 'center',
                         color: 'var(--text-muted)',
-                        fontSize: '0.75rem'
+                        fontSize: '0.65rem'
                       }}>
                         {post.title}
                       </div>
@@ -1005,20 +1005,20 @@ export default function App() {
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)',
-                      padding: '0.4rem 0.5rem',
+                      background: 'linear-gradient(to top, rgba(0,0,0,0.65), transparent)',
+                      padding: '0.2rem 0.35rem',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       color: '#fff',
-                      fontSize: '0.72rem'
+                      fontSize: '0.65rem'
                     }}>
-                      <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '70%' }}>
+                      <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '65%' }}>
                         {post.title && post.title !== 'Untitled' ? post.title : '✨'}
                       </span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '0.62rem' }}>
                         <Heart
-                          size={11}
+                          size={9}
                           fill={post.is_liked ? '#fff' : 'none'}
                           color="#fff"
                         />
