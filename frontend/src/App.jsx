@@ -6,8 +6,9 @@ import AdminModal from './AdminModal';
 import CommentsSection from './CommentsSection';
 import GamesHub from './GamesHub';
 import AdminFeedbackBoard from './AdminFeedbackBoard';
+import PostCard from './PostCard';
 import { 
-  Heart, MessageCircle, Flag, Tag, Trash2, Sparkles, Image as ImageIcon, 
+  Heart, Sparkles, Image as ImageIcon, 
   X, Music, ExternalLink, Search, Clock, Flame, Edit3 
 } from 'lucide-react';
 
@@ -194,7 +195,6 @@ export default function App() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackBoardOpen, setIsFeedbackBoardOpen] = useState(false);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
-  const [openCommentsPostId, setOpenCommentsPostId] = useState(null);
   const [selectedImageModalPost, setSelectedImageModalPost] = useState(null);
 
   const [dailySong, setDailySong] = useState(() => {
@@ -215,7 +215,6 @@ export default function App() {
   const [postCategory, setPostCategory] = useState('discussions');
   const [postImageUrl, setPostImageUrl] = useState('');
 
-  // וידוא הרשאת אדמין תמיד גם עבור שירה
   const isAdmin = user && (user.role === 'admin' || user.username?.toLowerCase() === 'shira');
   const currentTheme = CATEGORY_THEMES[selectedCategory] || CATEGORY_THEMES.all;
 
@@ -1028,189 +1027,27 @@ export default function App() {
                 {searchQuery ? t.noSearchPosts : t.noPosts}
               </div>
             ) : (
-              processedPosts.map((post) => {
-                const canDelete = isAdmin;
-                const catTheme = CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all;
-
-                return (
-                  <article
-                    key={post.id}
-                    style={{
-                      backgroundColor: 'var(--bg-card)',
-                      border: '1px solid var(--border-delicate)',
-                      borderRadius: '20px',
-                      padding: '1.85rem',
-                      boxShadow: '0 4px 14px rgba(58, 46, 43, 0.04)'
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                      <span style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.35rem',
-                        fontSize: '0.75rem',
-                        textTransform: 'uppercase',
-                        fontWeight: 700,
-                        backgroundColor: catTheme.badgeBg,
-                        color: catTheme.badgeText,
-                        padding: '0.3rem 0.8rem',
-                        borderRadius: '14px'
-                      }}>
-                        <Tag size={12} />
-                        {t[post.category] || post.category}
-                      </span>
-
-                      {canDelete && (
-                        <button
-                          onClick={() => handleDeletePost(post.id)}
-                          title={t.deletePost}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#C2185B',
-                            cursor: 'pointer',
-                            padding: '4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            opacity: 0.75
-                          }}
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      )}
-                    </div>
-
-                    {post.title && post.title !== 'Untitled' && (
-                      <h3 style={{
-                        margin: '0 0 0.6rem 0',
-                        color: 'var(--text-dark)',
-                        fontSize: '1.35rem',
-                        fontFamily: '"Georgia", serif',
-                        lineHeight: '1.3'
-                      }}>
-                        {post.title}
-                      </h3>
-                    )}
-
-                    {post.image_url && (
-                      <div style={{
-                        marginBottom: '1.25rem',
-                        borderRadius: '14px',
-                        overflow: 'hidden',
-                        border: '1px solid var(--border-delicate)',
-                        maxHeight: '480px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        backgroundColor: '#fafafa'
-                      }}>
-                        <img
-                          src={post.image_url}
-                          alt={post.title || "Post image"}
-                          style={{ width: '100%', maxHeight: '480px', objectFit: 'contain' }}
-                          onError={(e) => { e.target.style.display = 'none'; }}
-                        />
-                      </div>
-                    )}
-
-                    {post.content && post.content.trim() !== '' && (
-                      <p style={{
-                        margin: '0 0 1.25rem 0',
-                        color: 'var(--text-dark)',
-                        opacity: 0.88,
-                        fontSize: '0.98rem',
-                        lineHeight: '1.7',
-                        wordBreak: 'break-word',
-                        padding: '0 0.15rem'
-                      }}>
-                        {post.content}
-                      </p>
-                    )}
-
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      borderTop: '1px solid var(--border-delicate)',
-                      paddingTop: '0.95rem'
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem' }}>
-                        <button
-                          onClick={() => handleToggleLike(post.id)}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.4rem',
-                            background: 'none',
-                            border: 'none',
-                            color: 'var(--primary-rose-dark)',
-                            cursor: 'pointer',
-                            fontSize: '0.9rem',
-                            fontWeight: 600
-                          }}
-                        >
-                          <Heart
-                            size={17}
-                            fill={post.likes_count > 0 ? "var(--primary-rose)" : "none"}
-                            color="var(--primary-rose-dark)"
-                          />
-                          {post.likes_count || 0} {t.likes}
-                        </button>
-
-                        <button
-                          onClick={() => setOpenCommentsPostId(openCommentsPostId === post.id ? null : post.id)}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.4rem',
-                            background: 'none',
-                            border: 'none',
-                            color: 'var(--secondary-sage-dark)',
-                            cursor: 'pointer',
-                            fontSize: '0.9rem',
-                            fontWeight: 600
-                          }}
-                        >
-                          <MessageCircle size={17} />
-                          {openCommentsPostId === post.id ? t.hideComments : t.comments}
-                        </button>
-                      </div>
-
-                      <button
-                        onClick={() => handleReportPost(post.id)}
-                        title={t.report}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: 'var(--text-muted)',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.25rem',
-                          fontSize: '0.8rem'
-                        }}
-                      >
-                        <Flag size={14} />
-                        {t.report}
-                      </button>
-                    </div>
-
-                    {openCommentsPostId === post.id && (
-                      <CommentsSection
-                        postId={post.id}
-                        user={user}
-                        onRequireAuth={() => setIsAuthOpen(true)}
-                        t={t}
-                      />
-                    )}
-                  </article>
-                );
-              })
+              processedPosts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  user={user}
+                  isAdmin={isAdmin}
+                  lang={lang}
+                  t={t}
+                  catTheme={CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all}
+                  onToggleLike={handleToggleLike}
+                  onDeletePost={handleDeletePost}
+                  onReportPost={handleReportPost}
+                  onRequireAuth={() => setIsAuthOpen(true)}
+                />
+              ))
             )}
           </section>
         )}
       </main>
 
-      {/* פופאפ מודל: לוח משימות ובקשות (נפתח מהכפתור העליון) */}
+      {/* פופאפ מודל: לוח משימות ובקשות */}
       {isFeedbackBoardOpen && isAdmin && (
         <div
           onClick={() => setIsFeedbackBoardOpen(false)}

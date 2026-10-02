@@ -1,14 +1,21 @@
 from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+from deep_translator import GoogleTranslator
 
 from app import models, schemas
 from app.database import get_db
 from app.routers.auth import get_current_user
 
 router = APIRouter(prefix="/posts", tags=["posts"])
+
+
+class TranslateRequest(BaseModel):
+    text: str
+    target_lang: str = "he"
 
 
 @router.get("", response_model=List[schemas.PostOut])
@@ -18,7 +25,6 @@ def get_posts(
 ):
     query = db.query(models.Post)
     if category and category != "all":
-        # השוואה ללא תלות באותיות גדולות/קטנות
         query = query.filter(func.lower(models.Post.category) == category.lower())
     posts = query.order_by(models.Post.created_at.desc()).all()
 
@@ -85,3 +91,18 @@ def delete_post(
     db.delete(post)
     db.commit()
     return {"message": "הפוסט נמחק בהצלחה"}
+
+
+@router.post("/translate")
+def translate_post_text(payload: TranslateRequest):
+    text_to_translate = payload.text.strip()
+    if not text_to_translate:
+        return {"translated_text": ""}
+    try:
+        translated = GoogleTranslator(source="auto", target=payload.target_lang).translate(text_to_translate)
+        return {"translated_text": translated}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Translation failed: {str(e)}",
+        )
