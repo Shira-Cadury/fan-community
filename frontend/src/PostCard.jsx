@@ -21,6 +21,7 @@ export default function PostCard({
   const [isLoadingTranslation, setIsLoadingTranslation] = useState(false);
 
   const handleTranslate = async () => {
+    // אם כבר קיים תרגום מוכן – נחליף בין מקור לתרגום
     if (translatedContent) {
       setIsTranslated(!isTranslated);
       return;
@@ -30,14 +31,16 @@ export default function PostCard({
 
     setIsLoadingTranslation(true);
     try {
-      // זיהוי שפת היעד: אם האתר בעברית נתרגם לעברית, אחרת לאנגלית
-      const targetLang = isHe ? 'iw' : 'en';
-      
+      // בדיקה אם הטקסט מכיל אותיות בעברית
+      const hasHebrew = /[\u0590-\u05FF]/.test(post.content);
+
+      // אם הטקסט בעברית – נתרגם לאנגלית ('en'); אם הוא באנגלית – נתרגם לעברית ('iw')
+      const targetLang = hasHebrew ? 'en' : 'iw';
+
       const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(post.content)}`;
       const res = await fetch(url);
       const data = await res.json();
 
-      // חיבור חלקי התרגום למשפט שלם
       if (data && data[0]) {
         const fullTranslation = data[0].map((item) => item[0]).join('');
         setTranslatedContent(fullTranslation);
@@ -134,15 +137,18 @@ export default function PostCard({
 
       {post.content && post.content.trim() !== '' && (
         <div style={{ marginBottom: '1.25rem' }}>
-          <p style={{
-            margin: '0 0 0.5rem 0',
-            color: 'var(--text-dark)',
-            opacity: 0.88,
-            fontSize: '0.98rem',
-            lineHeight: '1.7',
-            wordBreak: 'break-word',
-            padding: '0 0.15rem'
-          }}>
+          <p 
+            dir={isTranslated && /^[A-Za-z0-9\s.,!?'"()-]+$/.test(translatedContent?.slice(0, 30) || '') ? 'ltr' : undefined}
+            style={{
+              margin: '0 0 0.5rem 0',
+              color: 'var(--text-dark)',
+              opacity: 0.88,
+              fontSize: '0.98rem',
+              lineHeight: '1.7',
+              wordBreak: 'break-word',
+              padding: '0 0.15rem'
+            }}
+          >
             {isTranslated && translatedContent ? translatedContent : post.content}
           </p>
 
