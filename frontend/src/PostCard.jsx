@@ -19,9 +19,15 @@ export default function PostCard({
   const [translatedContent, setTranslatedContent] = useState(null);
   const [isTranslated, setIsTranslated] = useState(false);
   const [isLoadingTranslation, setIsLoadingTranslation] = useState(false);
+  const [isAnimatingLike, setIsAnimatingLike] = useState(false);
+
+  const handleLikeClick = () => {
+    setIsAnimatingLike(true);
+    setTimeout(() => setIsAnimatingLike(false), 300);
+    onToggleLike(post.id);
+  };
 
   const handleTranslate = async () => {
-    // אם כבר קיים תרגום מוכן – נחליף בין מקור לתרגום
     if (translatedContent) {
       setIsTranslated(!isTranslated);
       return;
@@ -31,10 +37,7 @@ export default function PostCard({
 
     setIsLoadingTranslation(true);
     try {
-      // בדיקה אם הטקסט מכיל אותיות בעברית
       const hasHebrew = /[\u0590-\u05FF]/.test(post.content);
-
-      // אם הטקסט בעברית – נתרגם לאנגלית ('en'); אם הוא באנגלית – נתרגם לעברית ('iw')
       const targetLang = hasHebrew ? 'en' : 'iw';
 
       const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(post.content)}`;
@@ -55,6 +58,8 @@ export default function PostCard({
       setIsLoadingTranslation(false);
     }
   };
+
+  const isUserLiked = Boolean(post.is_liked);
 
   return (
     <article
@@ -194,24 +199,33 @@ export default function PostCard({
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem' }}>
           <button
-            onClick={() => onToggleLike(post.id)}
+            onClick={handleLikeClick}
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.4rem',
               background: 'none',
               border: 'none',
-              color: 'var(--primary-rose-dark)',
+              color: isUserLiked ? 'var(--primary-rose)' : 'var(--text-muted)',
               cursor: 'pointer',
               fontSize: '0.9rem',
-              fontWeight: 600
+              fontWeight: 600,
+              transition: 'color 0.2s ease'
             }}
           >
-            <Heart
-              size={17}
-              fill={post.likes_count > 0 ? "var(--primary-rose)" : "none"}
-              color="var(--primary-rose-dark)"
-            />
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transform: isAnimatingLike ? 'scale(1.35)' : 'scale(1)',
+              transition: 'transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            }}>
+              <Heart
+                size={18}
+                fill={isUserLiked ? 'var(--primary-rose)' : 'none'}
+                color={isUserLiked ? 'var(--primary-rose)' : 'var(--text-muted)'}
+              />
+            </span>
             {post.likes_count || 0} {t.likes}
           </button>
 

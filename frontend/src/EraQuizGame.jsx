@@ -2,64 +2,34 @@ import React, { useState } from 'react';
 import { Sparkles, RefreshCw, Share2, Check, ArrowRight, ArrowLeft } from 'lucide-react';
 
 const ERA_DATA = {
-  lover: {
-    name: 'Lover',
-    color: '#F48FB1',
-    bg: 'linear-gradient(135deg, #FCE4EC 0%, #F8BBD0 50%, #E1BEE7 100%)',
-    textColor: '#880E4F',
+  debut: {
+    name: 'Taylor Swift (Debut)',
+    color: '#2E7D32',
+    bg: 'linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%)',
+    textColor: '#1B5E20',
     desc: {
-      he: 'את אדם מלא באור, רומנטיקה ואופטימיות! החיים שלך צבועים בצבעי פסטל בהירים, ואת בוחרת תמיד לראות את הטוב באנשים ולהתמקד באהבה, חמלה ושמחה. את אוהבת לחגוג את הרגעים הקטנים, מחוברת לרגשות שלך בצורה מלאה ולא מפחדת להראות לעולם את הלב הגדול והרגיש שלך.',
-      en: 'You are radiant, romantic, and endlessly optimistic! You view the world through soft pastel hues, embracing empathy, celebration, and unapologetic affection. You are deeply in touch with your emotions and never afraid to show your big, golden heart.'
+      he: 'את מחוברת לשורשים, מלאת תמימות יפה, חולמת בגדול ומאמינה בכוחם של התחלות חדשות. הגיטרה האקוסטית, ריח השדות והכנות הפשוטה והטהורה מגדירים את הלב שלך. את לא מתביישת להראות את הפגיעות שלך ויוצאת לעולם עם חיוך ואומץ.',
+      en: 'Grounded, heartfelt, and full of sweet innocence. You find magic in simple guitar melodies, summer evenings, and big, brave dreams. You wear your heart on your sleeve with genuine courage.'
     }
   },
-  reputation: {
-    name: 'reputation',
-    color: '#212121',
-    bg: 'linear-gradient(135deg, #212121 0%, #424242 100%)',
-    textColor: '#FFFFFF',
+  fearless: {
+    name: 'Fearless',
+    color: '#F57F17',
+    bg: 'linear-gradient(135deg, #FFFDE7 0%, #FFF9C4 50%, #FFE082 100%)',
+    textColor: '#E65100',
     desc: {
-      he: 'את בתקופה שבה את חזקה, בטוחה בעצמך ולא דופקת חשבון לאף אחד. מתחת למעטפת הקשוחה, המגוננת והאדג\'ית שלך, יש לך נאמנות אינסופית לאנשים שקרובים אלייך באמת ואהבה עמוקה שאת שומרת רק למי שראוי לה. את יודעת להילחם על שלך, לקום מהריסות חזקה יותר ולתת למעשים שלך לדבר.',
-      en: 'You are fierce, fiercely protective, and completely unapologetic. Beneath the sharp armor and dark aesthetics lies profound loyalty and rare tenderness reserved only for those who truly earn your trust. You rise from the ashes stronger every single time.'
+      he: 'את חסרת פחד! את מאמינה בסיפורי אגדות, בריקוד תחת הגשם ובאהבה ראשונה שמרגישה כמו ניצוץ קסום. את קופצת לחיים בשתי רגליים, לא מפחדת לקחת סיכונים על מה שחשוב לך, ומביאה איתך אנרגיה זהובה, נוצצת ומחבקת לכל מקום.',
+      en: 'Unstoppable, fairy-tale dreaming, and golden-hearted! You dance in the rain, take bold leaps of faith for love, and light up any room with your radiant optimism and fearless spirit.'
     }
   },
-  evermore: {
-    name: 'evermore',
-    color: '#8D6E63',
-    bg: 'linear-gradient(135deg, #EFEBE9 0%, #D7CCC8 100%)',
-    textColor: '#3E2723',
+  speakNow: {
+    name: 'Speak Now',
+    color: '#7B1FA2',
+    bg: 'linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 50%, #CE93D8 100%)',
+    textColor: '#4A148C',
     desc: {
-      he: 'את אוהבת עומק, סיפורים נוסטלגיים ופיוטיים. הלב שלך נמצא במקומות שקטים, בטבע וביצירתיות, ויש לך יכולת מדהימה למצוא יופי גם ברגעים מלנכוליים. את מעריכה אומנות אמיתית, כתיבה ומחשבה עמוקה, ובדיוק כמו האלבום – החוסן השקט שלך מוכיח שגם כאבים שנראים נצחיים חולפים.',
-      en: 'You are an old soul enamored by poetry, quiet woodland walks, and layered storytelling. You discover sublime beauty even within melancholy, possessing a calm, resilient grace that proves all enduring pains eventually heal.'
-    }
-  },
-  folklore: {
-    name: 'folklore',
-    color: '#78909C',
-    bg: 'linear-gradient(135deg, #ECEFF1 0%, #CFD8DC 100%)',
-    textColor: '#263238',
-    desc: {
-      he: 'את חיה בעולם עשיר של דמיון, סקרנות וחיבור עמוק לסיפורים של אחרים. יש לך נפש של סופרת ורגישות מיוחדת לפרטים הקטנים. את מעדיפה שיחות עמוקות לתוך הלילה על פני מסיבות רועשות, ויודעת לברוח לעולמות קסומים של מילים ורגש.',
-      en: 'You dwell in richly woven narratives, quiet reflection, and soulful daydreams. You possess an innate empathy and an artistic eye that turns ordinary life into timeless folklore.'
-    }
-  },
-  midnights: {
-    name: 'Midnights',
-    color: '#303F9F',
-    bg: 'linear-gradient(135deg, #1A237E 0%, #283593 100%)',
-    textColor: '#FFFFFF',
-    desc: {
-      he: 'את טיפוס לילה מובהק שחושב על החיים בשעות הקטנות. יש בך שילוב מסקרן של תחכום, שנינות ומודעות עצמית גבוהה. את יודעת לזרוח כשצריך, אבל גם להתעמת עם המחשבות העמוקות ביותר שלך באומץ ובסטייל בלתי מתפשר.',
-      en: 'A midnight thinker characterized by contemplative late nights, self-awareness, and magnetic glamour. You balance honest vulnerability with sharp, irresistible confidence.'
-    }
-  },
-  nineteen89: {
-    name: '1989',
-    color: '#4FC3F7',
-    bg: 'linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%)',
-    textColor: '#01579B',
-    desc: {
-      he: 'את מלאת אנרגיה, עצמאית ומוכנה לכבוש את העולם! את אוהבת התחלות חדשות, חברויות קרובות ורגעים ספונטניים של חופש טהור. את לא נותנת לרעשי רקע להוריד אותך, ויודעת לנער מעלייך כל דבר שלא משרת אותך יותר בכיף ובביטחון.',
-      en: 'Independent, radiant, and unstoppable! You thrive on clean slates, vibrant city skylines, and genuine camaraderie. You gracefully shake off negativity and write your own soundtrack.'
+      he: 'את דרמטית, כובשת ומאמינה בצדק ובאמת ללא פשרות. את לא שותקת כשמשהו חשוב לך, כותבת את הסיפור שלך בעצמך ומלאה בקסם של שמלות נשף, זיקוקים ורגשות עמוקים. החיים עבורך הם אגדה עוצמתית עם סוף שאת מכתיבה.',
+      en: 'Enchanting, outspoken, and theatrical. You refuse to stay silent, writing your own narrative filled with dragons, sparks flying, and unapologetic self-expression.'
     }
   },
   red: {
@@ -68,18 +38,88 @@ const ERA_DATA = {
     bg: 'linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%)',
     textColor: '#B71C1C',
     desc: {
-      he: 'את חיה את הרגשות שלך במקסימום ווליום – בתשוקה, באהבה ובעוצמה. את לא מפחדת להרגיש עד הסוף, לכתוב את הכאב או לחגוג את השמחה. הכנות והאותנטיות שלך הן הכוח הכי גדול שלך.',
-      en: 'Passionate, intensely expressive, and entirely genuine. You feel every heartbeat and heartbreak in vibrant shades of passion, embracing love and nostalgia with heroic honesty.'
+      he: 'את חיה את הרגשות שלך במקסימום ווליום – בתשוקה, באהבה ובעוצמה. את לא מפחדת להרגיש עד הסוף, לכתוב את הכאב או לחגוג את השמחה. הכנות, הסוודרים הסתוויים והאותנטיות שלך הן הכוח הכי גדול שלך.',
+      en: 'Passionate, expressive, and fiercely genuine. You live love in burning shades of red, embracing nostalgia, fall leaves, and emotional honesty.'
+    }
+  },
+  nineteen89: {
+    name: '1989',
+    color: '#0288D1',
+    bg: 'linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%)',
+    textColor: '#01579B',
+    desc: {
+      he: 'את מלאת אנרגיה, עצמאית ומוכנה לכבוש את העיר הגדולה! את אוהבת התחלות חדשות, חברויות קרובות ורגעים ספונטניים של חופש טהור. את מנערת מעלייך כל רעש שלילי בביטחון ובסטייל בלתי מתפשר.',
+      en: 'Independent, vibrant, and ready to take on the world! You thrive on clean slates, city skylines, and shaking off negativity with effortless chic confidence.'
+    }
+  },
+  reputation: {
+    name: 'reputation',
+    color: '#212121',
+    bg: 'linear-gradient(135deg, #212121 0%, #424242 100%)',
+    textColor: '#FFFFFF',
+    desc: {
+      he: 'את בתקופה שבה את חזקה, בטוחה בעצמך ולא דופקת חשבון לאף אחד. מתחת למעטפת הקשוחה, המגוננת והאדג\'ית שלך, יש לך נאמנות אינסופית לאנשים שקרובים אלייך באמת ואהבה עמוקה שאת שומרת רק למי שראוי לה.',
+      en: 'Fierce, protective, and completely unapologetic. Beneath the sharp black aesthetic lies rare loyalty and profound tenderness reserved only for those who earn your trust.'
+    }
+  },
+  lover: {
+    name: 'Lover',
+    color: '#EC407A',
+    bg: 'linear-gradient(135deg, #FCE4EC 0%, #F8BBD0 50%, #E1BEE7 100%)',
+    textColor: '#880E4F',
+    desc: {
+      he: 'את אדם מלא באור, רומנטיקה ואופטימיות! החיים שלך צבועים בצבעי פסטל בהירים, ואת בוחרת תמיד לראות את הטוב באנשים ולהתמקד באהבה, חמלה ושמחה. את לא מפחדת להראות לעולם את הלב הגדול והרגיש שלך.',
+      en: 'Radiant, romantic, and endlessly sweet! You look at the world through pastel sunsets, empathy, and unapologetic tenderness.'
+    }
+  },
+  folklore: {
+    name: 'folklore',
+    color: '#546E7A',
+    bg: 'linear-gradient(135deg, #ECEFF1 0%, #CFD8DC 100%)',
+    textColor: '#263238',
+    desc: {
+      he: 'את חיה בעולם עשיר של דמיון, סקרנות וחיבור עמוק לסיפורים של אחרים. יש לך נפש של סופרת ורגישות מיוחדת לפרטים הקטנים. את מעדיפה שיחות עמוקות לתוך הלילה על פני מסיבות רועשות, ויודעת לברוח לעולמות קסומים של מילים ורגש.',
+      en: 'A poetic soul woven of daydreams, quiet woodlands, and timeless empathy. You look at life through an artistic lens that turns quiet moments into enduring legends.'
+    }
+  },
+  evermore: {
+    name: 'evermore',
+    color: '#8D6E63',
+    bg: 'linear-gradient(135deg, #EFEBE9 0%, #D7CCC8 100%)',
+    textColor: '#3E2723',
+    desc: {
+      he: 'את אוהבת עומק, סיפורים נוסטלגיים ופיוטיים. הלב שלך נמצא במקומות שקטים, בטבע וביצירתיות, ויש לך יכולת מדהימה למצוא יופי גם ברגעים מלנכוליים. החוסן השקט שלך מוכיח שגם כאבים שנראים נצחיים חולפים בסוף.',
+      en: 'An old soul enamored by layered storytelling, cozy plaids, and autumn forests. You find peace in melancholy and possess a graceful, resilient heart.'
+    }
+  },
+  midnights: {
+    name: 'Midnights',
+    color: '#283593',
+    bg: 'linear-gradient(135deg, #1A237E 0%, #283593 100%)',
+    textColor: '#FFFFFF',
+    desc: {
+      he: 'את טיפוס לילה מובהק שחושב על החיים בשעות הקטנות. יש בך שילוב מסקרן של תחכום, שנינות ומודעות עצמית גבוהה. את יודעת לזרוח בביטחון, אך גם להתעמת עם המחשבות העמוקות ביותר שלך בסטייל בלתי מתפשר.',
+      en: 'Contemplative, glamorous, and nocturnal. You dance with your late-night thoughts, balancing honest vulnerability with sharp wit and sparkling confidence.'
     }
   },
   ttpd: {
     name: 'The Tortured Poets Department',
-    color: '#5D4037',
-    bg: 'linear-gradient(135deg, #EFEBE9 0%, #D7CCC8 100%)',
-    textColor: '#3E2723',
+    color: '#4E342E',
+    bg: 'linear-gradient(135deg, #D7CCC8 0%, #BCAAA4 100%)',
+    textColor: '#271713',
     desc: {
-      he: 'את אינטלקטואלית, פיוטית, ולא מפחדת מדרמה רגשית גדולה. יש לך צורך לפרוק את המחשבות שלך בכתיבה ובמילים חדות. את מסתכלת על החיים כמו יצירת אומנות טרגית ומפוארת בו-זמנית.',
-      en: 'An analytical poet at heart. You turn raw heartache, existential musings, and complicated feelings into unforgettable literary masterpieces.'
+      he: 'את אינטלקטואלית, פיוטית, ולא מפחדת מדרמה רגשית גדולה. יש לך צורך לפרוק את המחשבות שלך בכתיבה ובמילים חדות. את מסתכלת על החיים כמו יצירת אומנות מורכבת ומפוארת בו-זמנית.',
+      en: 'An analytical poet at heart. You turn raw heartache, existential thoughts, and complicated feelings into unforgettable literary masterpieces.'
+    }
+  },
+  holiday: {
+    name: 'The Holiday Collection / Special Era',
+    color: '#B71C1C',
+    bg: 'linear-gradient(135deg, #FFEBEE 0%, #C8E6C9 100%)',
+    textColor: '#1B5E20',
+    desc: {
+      he: 'את אדם של בית, חום ואווירת חג נוסטלגית! את אוהבת לחגוג מסורות, לקבץ אנשים יחד, לפנק באפייה ביתית וליצור זיכרונות מתוקים שנשארים לתמיד. הנוכחות שלך מנחמת ומלאה באהבה טהורה.',
+      en: 'Warm, festive, and nurturing! You cherish tradition, cozy fireside gatherings, and spreading genuine joy to everyone in your circle.'
     }
   }
 };
@@ -94,8 +134,8 @@ const QUESTIONS = [
     options: [
       { text: { he: 'מסיבה קצבית עם חברים, ריקודים ואורות נוצצים ✨', en: 'A vibrant party with friends, dancing and sparkling lights ✨' }, eras: ['nineteen89', 'midnights'] },
       { text: { he: 'טיול בטבע, יער ערפילי, או התכרבלות עם ספר טוב 🌲', en: 'A forest walk, foggy trails, or curling up with a book 🌲' }, eras: ['evermore', 'folklore'] },
-      { text: { he: 'יום יצירתי בבית, אפיית עוגיות, ציור או תפירה 🧁', en: 'A cozy creative day at home: baking cookies or painting 🧁' }, eras: ['lover', 'red'] },
-      { text: { he: 'לילה חשוך, מוזיקה חזקה באוזניות, כתיבה ביומן 🖤', en: 'Late night with headphones, journaling or deep mystery films 🖤' }, eras: ['reputation', 'ttpd'] }
+      { text: { he: 'יום יצירתי בבית, אפיית עוגיות, פיקניק או שירים על גיטרה 🧁', en: 'A cozy day at home: baking cookies, guitar melodies or a picnic 🧁' }, eras: ['lover', 'debut', 'fearless', 'holiday'] },
+      { text: { he: 'לילה חשוך, מוזיקה חזקה באוזניות, כתיבה ביומן 🖤', en: 'Late night with headphones, journaling or mystery films 🖤' }, eras: ['reputation', 'ttpd', 'speakNow', 'red'] }
     ]
   },
   {
@@ -105,10 +145,10 @@ const QUESTIONS = [
       en: 'Which style or aesthetic speaks to you most right now?'
     },
     options: [
-      { text: { he: 'שמלות וינטג\', סוודרים סרוגים, גווני חום וירוק זית 🍂', en: 'Vintage dresses, chunky knit sweaters, olive & earthy tones 🍂' }, eras: ['evermore', 'folklore'] },
-      { text: { he: 'בגדים שחורים, ג\'קט עור, אקססוריז מטאליים וסטייל חד 🐍', en: 'All-black outfits, leather jackets, sharp modern tailoring 🐍' }, eras: ['reputation'] },
-      { text: { he: 'שמלות קלילות, צבעי פסטל (ורוד, תכלת), נצנצים ואור 🌸', en: 'Pastels (pink, sky blue), dreamy soft fabrics, butterflies 🌸' }, eras: ['lover'] },
-      { text: { he: 'כחול עמוק, קטיפה, סגול או כסף, מראה מודרני מנצנץ 🌌', en: 'Midnight blue, velvet, deep purple and shimmering silver 🌌' }, eras: ['midnights'] }
+      { text: { he: 'שמלות וינטג\', סוודרים סרוגים, גווני חום וירוק זית 🍂', en: 'Vintage dresses, chunky knit sweaters, olive & earthy tones 🍂' }, eras: ['evermore', 'folklore', 'debut'] },
+      { text: { he: 'בגדים שחורים, ג\'קט עור, אקססוריז מטאליים וסטייל חד 🐍', en: 'All-black outfits, leather jackets, sharp modern tailoring 🐍' }, eras: ['reputation', 'ttpd'] },
+      { text: { he: 'שמלות קלילות, נצנצים זהובים או סגול נסיכותי 🌸', en: 'Dreamy soft fabrics, golden sparkles or royal purple dresses 🌸' }, eras: ['lover', 'fearless', 'speakNow'] },
+      { text: { he: 'כחול עמוק, קטיפה, סגול או כסף, מראה מודרני מנצנץ 🌌', en: 'Midnight blue, velvet, deep purple and shimmering silver 🌌' }, eras: ['midnights', 'nineteen89', 'red'] }
     ]
   },
   {
@@ -118,10 +158,10 @@ const QUESTIONS = [
       en: 'What beverage or treat matches your current mood?'
     },
     options: [
-      { text: { he: 'שוקו חם עם מרשמלו מול החלון הגשום ☕', en: 'Hot cocoa with marshmallows watching the rain ☕' }, eras: ['evermore', 'folklore'] },
+      { text: { he: 'שוקו חם עם מרשמלו מול החלון הגשום ☕', en: 'Hot cocoa with marshmallows watching the rain ☕' }, eras: ['evermore', 'folklore', 'holiday'] },
       { text: { he: 'אספרסו כפול וחזק, משהו מדויק שמעורר את המוח ⚡', en: 'Double shot black espresso — sharp and focused ⚡' }, eras: ['reputation', 'ttpd'] },
-      { text: { he: 'אייס וניל מתוק, מילקשייק תות או משקה פירותי קייצי 🍓', en: 'Sweet iced strawberry latte or a sunny fruity smoothie 🍓' }, eras: ['lover', 'nineteen89'] },
-      { text: { he: 'תה ארל גריי עם דבש בזמן האזנה לשירים נוסטלגיים 🍯', en: 'Earl Grey tea with honey listening to wistful records 🍯' }, eras: ['red', 'evermore'] }
+      { text: { he: 'אייס וניל מתוק, מילקשייק תות או לימונדה קרירה 🍓', en: 'Sweet iced strawberry latte or cool sweet lemonade 🍓' }, eras: ['lover', 'nineteen89', 'debut', 'fearless'] },
+      { text: { he: 'תה ארל גריי עם דבש בזמן האזנה לשירים נוסטלגיים 🍯', en: 'Earl Grey tea with honey listening to wistful records 🍯' }, eras: ['red', 'speakNow', 'evermore'] }
     ]
   },
   {
@@ -131,10 +171,10 @@ const QUESTIONS = [
       en: 'How do you usually handle getting hurt or let down?'
     },
     options: [
-      { text: { he: 'מתנתקת מהרעש, מציבה גבולות ברורים וממשיכה הלאה חזקה יותר 🛡️', en: 'Cut the noise, set unbreakable boundaries, and return stronger 🛡️' }, eras: ['reputation'] },
-      { text: { he: 'מסתגרת עם המחשבות, כותבת ומנתחת כל מילה שנאמרה 📜', en: 'Retreat inwards, writing and analyzing every detail into poetry 📜' }, eras: ['ttpd', 'folklore'] },
-      { text: { he: 'בוחרת לסלוח ולהתמקד באהבה של מי שבאמת אוהב אותי 💖', en: 'Choose forgiveness and pour affection into those who truly love me 💖' }, eras: ['lover'] },
-      { text: { he: 'יוצאת לנשום אוויר, שמה שיר קצבי ומנערת את זה ממני 🏙️', en: 'Step outside, blast an upbeat anthem, and shake it off 🏙️' }, eras: ['nineteen89', 'red'] }
+      { text: { he: 'מתנתקת מהרעש, מציבה גבולות ברורים וממשיכה הלאה חזקה יותר 🛡️', en: 'Cut the noise, set unbreakable boundaries, and return stronger 🛡️' }, eras: ['reputation', 'nineteen89'] },
+      { text: { he: 'מסתגרת עם המחשבות, כותבת ומנתחת כל מילה שנאמרה 📜', en: 'Retreat inwards, writing and analyzing every detail into poetry 📜' }, eras: ['ttpd', 'folklore', 'evermore'] },
+      { text: { he: 'אומרת בדיוק את מה שאני מרגישה בלי לפחד, עומדת על שלי 💜', en: 'Speak now and stand my ground, voicing exactly how I feel 💜' }, eras: ['speakNow', 'red'] },
+      { text: { he: 'בוחרת לסלוח, מאמינה בטוב וממשיכה לקוות לעתיד בהיר 💖', en: 'Choose forgiveness, believe in good and look forward with hope 💖' }, eras: ['lover', 'fearless', 'debut', 'holiday'] }
     ]
   },
   {
@@ -144,10 +184,75 @@ const QUESTIONS = [
       en: 'Which lyric/sentiment best defines your life right now?'
     },
     options: [
-      { text: { he: '"אני מגלה את העצמאות שלי ומוכנה להרפתקה הבאה!" 🌟', en: '"I am embracing my independence and ready for the next adventure!" 🌟' }, eras: ['nineteen89'] },
-      { text: { he: '"יש בי שקט פנימי, גם אם דברים משתנים מסביב" 🌿', en: '"I hold a quiet peace within me, even when seasons change" 🌿' }, eras: ['evermore', 'folklore'] },
-      { text: { he: '"הלב שלי פתוח ואני רוצה לחוות כל רגע במלואו" 💘', en: '"My heart is open and I want to experience every feeling fully" 💘' }, eras: ['lover', 'red'] },
-      { text: { he: '"אני מסתכלת לאמת בעיניים, בלי פילטרים ובלי מסיכות" 🌒', en: '"I look reality in the eye — unfiltered and unapologetic" 🌒' }, eras: ['midnights', 'ttpd', 'reputation'] }
+      { text: { he: '"אני מגלה את העצמאות שלי ומוכנה להרפתקה הבאה!" 🌟', en: '"I am embracing my independence and ready for the next adventure!" 🌟' }, eras: ['nineteen89', 'fearless'] },
+      { text: { he: '"יש בי שקט פנימי, גם אם דברים משתנים מסביב" 🌿', en: '"I hold a quiet peace within me, even when seasons change" 🌿' }, eras: ['evermore', 'folklore', 'debut'] },
+      { text: { he: '"הלב שלי פתוח ואני רוצה לחוות כל רגע במלואו" 💘', en: '"My heart is open and I want to experience every feeling fully" 💘' }, eras: ['lover', 'red', 'holiday'] },
+      { text: { he: '"אני מסתכלת לאמת בעיניים, בלי פילטרים ובלי מסיכות" 🌒', en: '"I look reality in the eye — unfiltered and unapologetic" 🌒' }, eras: ['midnights', 'ttpd', 'reputation', 'speakNow'] }
+    ]
+  },
+  {
+    id: 6,
+    q: {
+      he: 'איזה סוג של נוף או מקום הכי גורם לך להרגיש בבית?',
+      en: 'What landscape or setting makes you feel most at home?'
+    },
+    options: [
+      { text: { he: 'עיר גדולה ומוארת בלילה, גורדי שחקים וקצב מהיר 🌆', en: 'A bright city skyline at night, skyscrapers, and fast pace 🌆' }, eras: ['nineteen89', 'midnights'] },
+      { text: { he: 'בקתת עץ מבודדת בלב יער ערפילי, עם קולות של גשם ברקע 🌲', en: 'A cozy cabin in a misty forest, with rain falling outside 🌲' }, eras: ['folklore', 'evermore', 'holiday'] },
+      { text: { he: 'חוף ים בשקיעה, שדות פתוחים ורוח חמימה ורגועה 🏖️', en: 'A sunset beach or open meadows with a warm breeze 🏖️️' }, eras: ['fearless', 'lover', 'debut'] },
+      { text: { he: 'סמטאות סודיות בעיר עתיקה, טירות וגשרים מסתוריים 🌌', en: 'Secret stone alleyways, castles, and historic architecture 🌌' }, eras: ['reputation', 'ttpd', 'speakNow', 'red'] }
+    ]
+  },
+  {
+    id: 7,
+    q: {
+      he: 'אם היית צריכה לבחור אלמנט אחד של מזג אוויר שאת הכי אוהבת, מה זה יהיה?',
+      en: 'If you had to pick your favorite weather element, what would it be?'
+    },
+    options: [
+      { text: { he: 'לילה בהיר ומלא כוכבים, כשכל העיר ישנה 🌟', en: 'A clear starlit night when the entire city is quiet 🌟' }, eras: ['midnights', 'nineteen89'] },
+      { text: { he: 'יום סגרירי, ערפל כבד וטפטוף עדין שלא נפסק 🌫️', en: 'Overcast skies, thick fog, and endless gentle drizzle 🌫️' }, eras: ['folklore', 'evermore'] },
+      { text: { he: 'שמש חמימה של אביב, שמיים כחולים נקיים ורוח קלילה ☀️', en: 'Warm spring sunshine, crisp blue skies, and gentle breeze ☀️' }, eras: ['fearless', 'lover', 'debut', 'holiday'] },
+      { text: { he: 'סופת ברקים עוצמתית באמצע הלילה, רעמים ומתח באוויר ⚡', en: 'A dramatic thunderstorm in the dead of night, electric air ⚡' }, eras: ['reputation', 'speakNow', 'red', 'ttpd'] }
+    ]
+  },
+  {
+    id: 8,
+    q: {
+      he: 'מהי התכונה שאת הכי מעריכה אצל האנשים שקרובים אלייך?',
+      en: 'What trait do you value most in those closest to you?'
+    },
+    options: [
+      { text: { he: 'שמחת חיים, זרימה ויכולת להרים את האווירה בכל רגע 🎉', en: 'Joyful vitality, easygoing laughter, and uplifting energy 🎉' }, eras: ['nineteen89', 'lover', 'fearless'] },
+      { text: { he: 'כנות עמוקה, יכולת להקשיב לשיחות נפש ארוכות אל תוך הלילה ☕', en: 'Profound empathy and listening during late-night talks ☕' }, eras: ['folklore', 'evermore', 'debut', 'holiday'] },
+      { text: { he: 'נאמנות מוחלטת – כאלה שיישארו איתי ויילחמו בשבילי בכל מצב 🛡️️', en: 'Absolute loyalty — staying by my side through any battle 🛡️' }, eras: ['reputation', 'speakNow'] },
+      { text: { he: 'שאפתנות, חוכמה פנימית והרצון להצליח ולהגשים חלומות גדולים 📈', en: 'Ambition, sharp intellect, and reaching for big dreams 📈' }, eras: ['midnights', 'ttpd', 'red'] }
+    ]
+  },
+  {
+    id: 9,
+    q: {
+      he: 'כשאת מקשיבה למוזיקה, מה הכי תופס אותך בשיר?',
+      en: 'When you listen to music, what captivates you first?'
+    },
+    options: [
+      { text: { he: 'קצב מקפיץ שאי אפשר להפסיק לרקוד איתו, הפקה מנצנצת 💃', en: 'An infectious beat, synth hooks, and dancing rhythms 💃' }, eras: ['nineteen89', 'midnights'] },
+      { text: { he: 'המילים, הסיפור הפיוטי והרגש העמוק שנמצא בין השורות ✍️', en: 'Poetic lyrics, rich metaphors, and emotional resonance ✍️' }, eras: ['folklore', 'evermore', 'ttpd'] },
+      { text: { he: 'מנגינה מתוקה, הרמוניות קלילות וגיטרות אקוסטיות שמחממות את הלב 🎸', en: 'Sweet acoustics, heartfelt melodies, and comforting chords 🎸' }, eras: ['debut', 'fearless', 'lover', 'holiday'] },
+      { text: { he: 'ביטים חזקים, דרמה, אנרגיה מתפרצת וטקסטים חדים ובועטים 🥁', en: 'Biting anthems, theatrical drama, and bold power 🥁' }, eras: ['reputation', 'speakNow', 'red'] }
+    ]
+  },
+  {
+    id: 10,
+    q: {
+      he: 'איך החברים שלך היו מתארים אותך במילה אחת?',
+      en: 'How would your friends describe you in one word?'
+    },
+    options: [
+      { text: { he: 'קורנת – מלאה באנרגיה חיובית, חום ואור ✨', en: 'Radiant — bright, infectious warmth, and light ✨' }, eras: ['nineteen89', 'lover', 'fearless', 'holiday'] },
+      { text: { he: 'עמוקה – חושבת המון, מחוברת לטבע וליצירה 🍃', en: 'Deep — reflective, nature-loving, and imaginative 🍃' }, eras: ['folklore', 'evermore', 'debut'] },
+      { text: { he: 'חזקה – עוצמתית, שומרת על הגבולות שלה ונאמנה עד הסוף 🖤', en: 'Fierce — resilient, protective of boundaries, fiercely loyal 🖤' }, eras: ['reputation', 'speakNow'] },
+      { text: { he: 'חולמת – מתוחכמת, חושבת בגדול ותמיד מחפשת משמעות 🌌', en: 'Visionary — sophisticated, ambitious, and deep-thinking 🌌' }, eras: ['midnights', 'ttpd', 'red'] }
     ]
   }
 ];
@@ -245,7 +350,7 @@ export default function EraQuizGame({ lang = 'he' }) {
         </h2>
 
         <div style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: 'rgba(255, 255, 255, 0.92)',
           color: '#2b2b2b',
           borderRadius: '20px',
           padding: '1.6rem',

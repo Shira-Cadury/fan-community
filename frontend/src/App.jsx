@@ -3,7 +3,6 @@ import API from './api';
 import Navbar from './Navbar';
 import AuthModal from './AuthModal';
 import AdminModal from './AdminModal';
-import CommentsSection from './CommentsSection';
 import GamesHub from './GamesHub';
 import AdminFeedbackBoard from './AdminFeedbackBoard';
 import PostCard from './PostCard';
@@ -75,7 +74,7 @@ const TRANSLATIONS = {
     tagline: '',
     signIn: 'התחברות',
     newPost: 'פוסט חדש',
-    bannerTitle: 'ברוכים הבאים ל-Swift Secrets',
+    bannerTitle: 'ברוכים הבאים ל Swift Secrets',
     bannerSub: 'מקום עדין ושקט לתאוריות, יצירות, ניתוחי שירים ושיחות קהילה.',
     dailySongLabel: 'השיר היומי',
     listenNow: 'האזנה',
@@ -196,6 +195,7 @@ export default function App() {
   const [isFeedbackBoardOpen, setIsFeedbackBoardOpen] = useState(false);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
   const [selectedImageModalPost, setSelectedImageModalPost] = useState(null);
+  const [isModalLikeAnimating, setIsModalLikeAnimating] = useState(false);
 
   const [dailySong, setDailySong] = useState(() => {
     const saved = localStorage.getItem('swift_daily_song');
@@ -380,6 +380,12 @@ export default function App() {
       console.error('Failed to toggle like', err);
       fetchPosts();
     }
+  };
+
+  const handleModalLikeClick = (postId) => {
+    setIsModalLikeAnimating(true);
+    setTimeout(() => setIsModalLikeAnimating(false), 300);
+    handleToggleLike(postId);
   };
 
   const handleReportPost = async (postId) => {
@@ -945,8 +951,8 @@ export default function App() {
             ) : (
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-                gap: '12px'
+                gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                gap: '8px'
               }}>
                 {processedPosts.map((post) => (
                   <div
@@ -954,14 +960,22 @@ export default function App() {
                     onClick={() => setSelectedImageModalPost(post)}
                     style={{
                       position: 'relative',
-                      borderRadius: '16px',
+                      borderRadius: '12px',
                       overflow: 'hidden',
                       aspectRatio: '1 / 1',
                       backgroundColor: 'var(--bg-subtle)',
                       border: '1px solid var(--border-delicate)',
                       cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
                       transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.03)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(216, 112, 147, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.03)';
                     }}
                   >
                     {post.image_url ? (
@@ -977,10 +991,10 @@ export default function App() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: '1rem',
+                        padding: '0.5rem',
                         textAlign: 'center',
                         color: 'var(--text-muted)',
-                        fontSize: '0.85rem'
+                        fontSize: '0.75rem'
                       }}>
                         {post.title}
                       </div>
@@ -991,22 +1005,25 @@ export default function App() {
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      background: 'linear-gradient(to top, rgba(0,0,0,0.65), transparent)',
-                      padding: '0.6rem 0.75rem',
+                      background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)',
+                      padding: '0.4rem 0.5rem',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       color: '#fff',
-                      fontSize: '0.78rem'
+                      fontSize: '0.72rem'
                     }}>
-                      <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '65%' }}>
+                      <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '70%' }}>
                         {post.title && post.title !== 'Untitled' ? post.title : '✨'}
                       </span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-                          <Heart size={12} fill="#fff" /> {post.likes_count || 0}
-                        </span>
-                      </div>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                        <Heart
+                          size={11}
+                          fill={post.is_liked ? '#fff' : 'none'}
+                          color="#fff"
+                        />
+                        {post.likes_count || 0}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -1505,13 +1522,13 @@ export default function App() {
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '1.25rem',
+            padding: '1rem',
             zIndex: 1000,
-            backdropFilter: 'blur(4px)'
+            backdropFilter: 'blur(5px)'
           }}
         >
           <div
@@ -1519,11 +1536,11 @@ export default function App() {
             style={{
               backgroundColor: 'var(--bg-card)',
               borderRadius: '24px',
-              maxWidth: '650px',
+              maxWidth: '560px',
               width: '100%',
               maxHeight: '90vh',
               overflowY: 'auto',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+              boxShadow: '0 12px 36px rgba(0,0,0,0.3)',
               position: 'relative',
               display: 'flex',
               flexDirection: 'column'
@@ -1552,24 +1569,24 @@ export default function App() {
             </button>
 
             {selectedImageModalPost.image_url && (
-              <div style={{ backgroundColor: '#000', display: 'flex', justifyContent: 'center' }}>
+              <div style={{ backgroundColor: '#000', display: 'flex', justifyContent: 'center', borderRadius: '24px 24px 0 0', overflow: 'hidden' }}>
                 <img
                   src={selectedImageModalPost.image_url}
                   alt={selectedImageModalPost.title}
-                  style={{ maxWidth: '100%', maxHeight: '55vh', objectFit: 'contain' }}
+                  style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain' }}
                 />
               </div>
             )}
 
-            <div style={{ padding: '1.5rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                <h3 style={{ margin: 0, fontSize: '1.25rem', color: 'var(--text-dark)', fontFamily: '"Georgia", serif' }}>
+            <div style={{ padding: '1.25rem 1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
+                <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--text-dark)', fontFamily: '"Georgia", serif' }}>
                   {selectedImageModalPost.title}
                 </h3>
                 {isAdmin && (
                   <button
                     onClick={() => handleDeletePost(selectedImageModalPost.id)}
-                    style={{ background: 'none', border: 'none', color: '#C2185B', cursor: 'pointer' }}
+                    style={{ background: 'none', border: 'none', color: '#C2185B', cursor: 'pointer', padding: '4px' }}
                   >
                     <Trash2 size={16} />
                   </button>
@@ -1577,36 +1594,43 @@ export default function App() {
               </div>
 
               {selectedImageModalPost.content && (
-                <p style={{ margin: '0 0 1rem 0', color: 'var(--text-dark)', opacity: 0.85, fontSize: '0.92rem' }}>
+                <p style={{ margin: '0 0 1rem 0', color: 'var(--text-dark)', opacity: 0.85, fontSize: '0.9rem', lineHeight: '1.5' }}>
                   {selectedImageModalPost.content}
                 </p>
               )}
 
-              <div style={{ display: 'flex', gap: '1rem', borderTop: '1px solid var(--border-delicate)', paddingTop: '0.75rem', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-delicate)', paddingTop: '0.75rem' }}>
                 <button
-                  onClick={() => handleToggleLike(selectedImageModalPost.id)}
+                  onClick={() => handleModalLikeClick(selectedImageModalPost.id)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.35rem',
                     background: 'none',
                     border: 'none',
-                    color: 'var(--primary-rose-dark)',
+                    color: selectedImageModalPost.is_liked ? 'var(--primary-rose)' : 'var(--text-muted)',
                     cursor: 'pointer',
-                    fontWeight: 600
+                    fontWeight: 600,
+                    fontSize: '0.88rem',
+                    transition: 'color 0.2s ease'
                   }}
                 >
-                  <Heart size={16} fill={selectedImageModalPost.likes_count > 0 ? "var(--primary-rose)" : "none"} />
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transform: isModalLikeAnimating ? 'scale(1.35)' : 'scale(1)',
+                    transition: 'transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+                  }}>
+                    <Heart
+                      size={17}
+                      fill={selectedImageModalPost.is_liked ? 'var(--primary-rose)' : 'none'}
+                      color={selectedImageModalPost.is_liked ? 'var(--primary-rose)' : 'var(--text-muted)'}
+                    />
+                  </span>
                   {selectedImageModalPost.likes_count || 0} {t.likes}
                 </button>
               </div>
-
-              <CommentsSection
-                postId={selectedImageModalPost.id}
-                user={user}
-                onRequireAuth={() => setIsAuthOpen(true)}
-                t={t}
-              />
             </div>
           </div>
         </div>
