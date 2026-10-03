@@ -6,9 +6,10 @@ import AdminModal from './AdminModal';
 import GamesHub from './GamesHub';
 import AdminFeedbackBoard from './AdminFeedbackBoard';
 import PostCard from './PostCard';
+import CommentsSection from './CommentsSection';
 import { 
   Heart, Sparkles, Image as ImageIcon, Video,
-  X, Music, ExternalLink, Search, Clock, Flame, Edit3, Trash2, Loader2, Star 
+  X, Music, ExternalLink, Search, Clock, Flame, Edit3, Trash2, Loader2, Star, MessageCircle
 } from 'lucide-react';
 
 const CLOUDINARY_CLOUD_NAME = 'gvdwsxay';
@@ -56,7 +57,8 @@ const TRANSLATIONS = {
     uploadingMedia: 'Uploading file...',
     orEnterUrl: 'Or paste image/video link...',
     removeImage: 'Remove media',
-    isExclusiveLabel: 'Site Exclusive content (shows VIP badge)',
+    exclusiveBtnOff: 'Standard Post',
+    exclusiveBtnOn: '✨ Mark as Site Exclusive',
     exclusiveBadge: 'Site Exclusive',
     cancel: 'Cancel',
     publish: 'Publish',
@@ -109,7 +111,8 @@ const TRANSLATIONS = {
     uploadingMedia: 'מעלה קובץ...',
     orEnterUrl: 'או הדבקת קישור...',
     removeImage: 'הסרת מדיה',
-    isExclusiveLabel: 'סמני אם התוכן בלעדי לאתר (יוסיף תגית זוהרת)',
+    exclusiveBtnOff: 'פוסט רגיל',
+    exclusiveBtnOn: '✨ סמני כבלעדי לאתר',
     exclusiveBadge: 'בלעדי לאתר',
     cancel: 'ביטול',
     publish: 'פרסום',
@@ -338,7 +341,6 @@ export default function App() {
     }
   };
 
-  // גלריה ותיאוריות בלבד מוצגות בעיצוב גריד
   const isVisualCategory = postCategory === 'gallery' || postCategory === 'theories';
 
   const handleCreatePost = async (e) => {
@@ -354,8 +356,8 @@ export default function App() {
       : (lang === 'he' ? 'יצירה מהגלריה' : 'Gallery Tale');
 
     let finalTitle = postTitle.trim() || (isVisualCategory ? defaultTitle : 'Untitled');
-    if (isExclusive && !finalTitle.includes('[בלעדי לאתר]')) {
-      finalTitle = `[בלעדי לאתר] ${finalTitle}`;
+    if (isExclusive) {
+      finalTitle = `[EXCLUSIVE_POST] ${finalTitle}`;
     }
 
     const finalContent = postContent.trim() || '';
@@ -464,20 +466,15 @@ export default function App() {
       return (b.id || 0) - (a.id || 0);
     });
 
-  // קטגוריות שמוצגות כגריד קומפקטי: רק גלריה ותיאוריות
   const isGridCategory = selectedCategory === 'gallery' || selectedCategory === 'theories';
 
   const checkIsExclusive = (post) => {
-    return Boolean(
-      post?.title?.includes('[בלעדי לאתר]') ||
-      post?.content?.includes('בלעדי לאתר') ||
-      post?.title?.toLowerCase().includes('exclusive')
-    );
+    return Boolean(post?.title && post.title.includes('[EXCLUSIVE_POST]'));
   };
 
   const cleanDisplayTitle = (title) => {
     if (!title) return '';
-    return title.replace(/\[בלעדי לאתר\]/g, '').trim() || (lang === 'he' ? 'ללא כותרת' : 'Untitled');
+    return title.replace(/\[EXCLUSIVE_POST\]\s*/g, '').trim() || (lang === 'he' ? 'ללא כותרת' : 'Untitled');
   };
 
   return (
@@ -488,6 +485,7 @@ export default function App() {
         onLogout={handleLogout}
         onOpenNewPost={() => {
           setIsCreatingPost(true);
+          setIsExclusive(false);
           if (selectedCategory !== 'all' && selectedCategory !== 'games') {
             setPostCategory(selectedCategory);
           } else {
@@ -826,23 +824,48 @@ export default function App() {
               {t.createTitle}
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-              <select
-                value={postCategory}
-                onChange={(e) => setPostCategory(e.target.value)}
-                style={{
-                  padding: '0.6rem 0.85rem',
-                  borderRadius: '10px',
-                  border: '1px solid var(--border-delicate)',
-                  backgroundColor: 'var(--bg-creamy)',
-                  fontSize: '0.9rem'
-                }}
-              >
-                <option value="discussions">{t.discussions}</option>
-                <option value="theories">{t.theories}</option>
-                <option value="news">{t.news}</option>
-                <option value="events">{t.events}</option>
-                <option value="gallery">{t.gallery}</option>
-              </select>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <select
+                  value={postCategory}
+                  onChange={(e) => setPostCategory(e.target.value)}
+                  style={{
+                    padding: '0.6rem 0.85rem',
+                    borderRadius: '10px',
+                    border: '1px solid var(--border-delicate)',
+                    backgroundColor: 'var(--bg-creamy)',
+                    fontSize: '0.9rem',
+                    flex: '1 1 180px'
+                  }}
+                >
+                  <option value="discussions">{t.discussions}</option>
+                  <option value="theories">{t.theories}</option>
+                  <option value="news">{t.news}</option>
+                  <option value="events">{t.events}</option>
+                  <option value="gallery">{t.gallery}</option>
+                </select>
+
+                <button
+                  type="button"
+                  onClick={() => setIsExclusive(!isExclusive)}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.55rem 0.95rem',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    border: isExclusive ? '1.5px solid #8A2BE2' : '1px solid var(--border-delicate)',
+                    backgroundColor: isExclusive ? '#F3E5F5' : 'var(--bg-creamy)',
+                    color: isExclusive ? '#6A1B9A' : 'var(--text-muted)',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <Star size={15} fill={isExclusive ? '#8A2BE2' : 'none'} color={isExclusive ? '#8A2BE2' : 'var(--text-muted)'} />
+                  <span>{isExclusive ? t.exclusiveBtnOn : t.exclusiveBtnOff}</span>
+                </button>
+              </div>
 
               <input
                 type="text"
@@ -859,31 +882,6 @@ export default function App() {
                   fontSize: '0.95rem'
                 }}
               />
-
-              {/* תיבת סימון: בלעדי לאתר */}
-              <label style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.88rem',
-                fontWeight: 600,
-                color: '#8A2BE2',
-                backgroundColor: '#F7EDFF',
-                padding: '0.4rem 0.75rem',
-                borderRadius: '12px',
-                border: '1px dashed #C8A2C8',
-                alignSelf: 'flex-start'
-              }}>
-                <input
-                  type="checkbox"
-                  checked={isExclusive}
-                  onChange={(e) => setIsExclusive(e.target.checked)}
-                  style={{ accentColor: '#8A2BE2', cursor: 'pointer', width: '16px', height: '16px' }}
-                />
-                <Star size={15} fill={isExclusive ? '#8A2BE2' : 'none'} />
-                <span>{t.isExclusiveLabel}</span>
-              </label>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -1004,6 +1002,7 @@ export default function App() {
                   onClick={() => {
                     setIsCreatingPost(false);
                     setPostImageUrl('');
+                    setIsExclusive(false);
                   }}
                   style={{ padding: '0.5rem 1rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
                 >
@@ -1078,7 +1077,6 @@ export default function App() {
                         e.currentTarget.style.boxShadow = postExclusive ? '0 2px 8px rgba(171, 71, 188, 0.25)' : '0 1px 4px rgba(0,0,0,0.03)';
                       }}
                     >
-                      {/* תגית VIP קטנה בפינה */}
                       {postExclusive && (
                         <div style={{
                           position: 'absolute',
@@ -1177,7 +1175,11 @@ export default function App() {
               processedPosts.map((post) => (
                 <PostCard
                   key={post.id}
-                  post={post}
+                  post={{
+                    ...post,
+                    title: cleanDisplayTitle(post.title),
+                    isExclusive: checkIsExclusive(post)
+                  }}
                   user={user}
                   isAdmin={isAdmin}
                   lang={lang}
@@ -1647,7 +1649,7 @@ export default function App() {
         </div>
       )}
 
-      {/* חלון הגדלת תמונה/סרטון במודאל */}
+      {/* חלון הגדלת תמונה/סרטון במודאל כולל תגובות מלאות */}
       {selectedImageModalPost && (
         <div
           onClick={() => setSelectedImageModalPost(null)}
@@ -1668,7 +1670,7 @@ export default function App() {
             style={{
               backgroundColor: 'var(--bg-card)',
               borderRadius: '24px',
-              maxWidth: '560px',
+              maxWidth: '580px',
               width: '100%',
               maxHeight: '90vh',
               overflowY: 'auto',
@@ -1708,13 +1710,13 @@ export default function App() {
                     controls
                     autoPlay
                     playsInline
-                    style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain' }}
+                    style={{ maxWidth: '100%', maxHeight: '55vh', objectFit: 'contain' }}
                   />
                 ) : (
                   <img
                     src={selectedImageModalPost.image_url}
                     alt={cleanDisplayTitle(selectedImageModalPost.title)}
-                    style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain' }}
+                    style={{ maxWidth: '100%', maxHeight: '55vh', objectFit: 'contain' }}
                   />
                 )}
               </div>
@@ -1723,7 +1725,7 @@ export default function App() {
             <div style={{ padding: '1.25rem 1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--text-dark)', fontFamily: '"Georgia", serif' }}>
+                  <h3 style={{ margin: 0, fontSize: '1.25rem', color: 'var(--text-dark)', fontFamily: '"Georgia", serif' }}>
                     {cleanDisplayTitle(selectedImageModalPost.title)}
                   </h3>
                   {checkIsExclusive(selectedImageModalPost) && (
@@ -1755,12 +1757,12 @@ export default function App() {
               </div>
 
               {selectedImageModalPost.content && (
-                <p style={{ margin: '0 0 1rem 0', color: 'var(--text-dark)', opacity: 0.85, fontSize: '0.9rem', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
+                <p style={{ margin: '0 0 1rem 0', color: 'var(--text-dark)', opacity: 0.88, fontSize: '0.92rem', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
                   {selectedImageModalPost.content}
                 </p>
               )}
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-delicate)', paddingTop: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-delicate)', paddingTop: '0.75rem', marginBottom: '1rem' }}>
                 <button
                   onClick={() => handleModalLikeClick(selectedImageModalPost.id)}
                   style={{
@@ -1791,6 +1793,29 @@ export default function App() {
                   </span>
                   {selectedImageModalPost.likes_count || 0} {t.likes}
                 </button>
+
+                <button
+                  onClick={() => handleReportPost(selectedImageModalPost.id)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-muted)',
+                    fontSize: '0.75rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {t.report}
+                </button>
+              </div>
+
+              {/* אזור התגובות המובנה בתוך המודאל */}
+              <div style={{ borderTop: '1px dashed var(--border-delicate)', paddingTop: '1rem' }}>
+                <CommentsSection
+                  postId={selectedImageModalPost.id}
+                  user={user}
+                  onRequireAuth={() => setIsAuthOpen(true)}
+                  t={t}
+                />
               </div>
             </div>
           </div>
