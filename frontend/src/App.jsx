@@ -8,7 +8,7 @@ import AdminFeedbackBoard from './AdminFeedbackBoard';
 import PostCard from './PostCard';
 import { 
   Heart, Sparkles, Image as ImageIcon, Video,
-  X, Music, ExternalLink, Search, Clock, Flame, Edit3, Trash2, Loader2, Star
+  X, Music, ExternalLink, Search, Clock, Flame, Edit3, Trash2, Loader2, Star 
 } from 'lucide-react';
 
 const CLOUDINARY_CLOUD_NAME = 'gvdwsxay';
@@ -338,7 +338,8 @@ export default function App() {
     }
   };
 
-  const isVisualCategory = postCategory === 'gallery' || postCategory === 'news';
+  // גלריה ותיאוריות בלבד מוצגות בעיצוב גריד
+  const isVisualCategory = postCategory === 'gallery' || postCategory === 'theories';
 
   const handleCreatePost = async (e) => {
     e.preventDefault();
@@ -348,8 +349,8 @@ export default function App() {
       return;
     }
 
-    const defaultTitle = postCategory === 'news' 
-      ? (lang === 'he' ? 'עדכון חדשות' : 'News Update') 
+    const defaultTitle = postCategory === 'theories'
+      ? (lang === 'he' ? 'תיאוריה וניתוח' : 'Theory & Analysis')
       : (lang === 'he' ? 'יצירה מהגלריה' : 'Gallery Tale');
 
     let finalTitle = postTitle.trim() || (isVisualCategory ? defaultTitle : 'Untitled');
@@ -463,7 +464,8 @@ export default function App() {
       return (b.id || 0) - (a.id || 0);
     });
 
-  const isGridCategory = selectedCategory === 'gallery' || selectedCategory === 'news';
+  // קטגוריות שמוצגות כגריד קומפקטי: רק גלריה ותיאוריות
+  const isGridCategory = selectedCategory === 'gallery' || selectedCategory === 'theories';
 
   const checkIsExclusive = (post) => {
     return Boolean(
@@ -1028,7 +1030,7 @@ export default function App() {
           </form>
         )}
 
-        {/* תוכן ראשי */}
+        {/* תוכן ראשי: משחקים / גלריה או תיאוריות (גריד) / כל השאר (פוסטים רגילים) */}
         {selectedCategory === 'games' ? (
           <GamesHub lang={lang} />
         ) : isGridCategory ? (
