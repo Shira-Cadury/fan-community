@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import CommentsSection from './CommentsSection';
 import { Heart, MessageCircle, Flag, Tag, Trash2, Globe, Loader2 } from 'lucide-react';
 
+const isVideoUrl = (url) => {
+  if (!url) return false;
+  return Boolean(url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i) || url.includes('/video/upload/'));
+};
+
 export default function PostCard({
   post,
   user,
@@ -60,6 +65,7 @@ export default function PostCard({
   };
 
   const isUserLiked = Boolean(post.is_liked);
+  const isVideo = isVideoUrl(post.image_url);
 
   return (
     <article
@@ -129,14 +135,23 @@ export default function PostCard({
           maxHeight: '480px',
           display: 'flex',
           justifyContent: 'center',
-          backgroundColor: '#fafafa'
+          backgroundColor: '#0a0a0a'
         }}>
-          <img
-            src={post.image_url}
-            alt={post.title || "Post image"}
-            style={{ width: '100%', maxHeight: '480px', objectFit: 'contain' }}
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
+          {isVideo ? (
+            <video
+              src={post.image_url}
+              controls
+              playsInline
+              style={{ width: '100%', maxHeight: '480px', borderRadius: '14px' }}
+            />
+          ) : (
+            <img
+              src={post.image_url}
+              alt={post.title || "Post image"}
+              style={{ width: '100%', maxHeight: '480px', objectFit: 'contain' }}
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
+          )}
         </div>
       )}
 

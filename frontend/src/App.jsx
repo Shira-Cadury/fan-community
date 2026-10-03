@@ -7,9 +7,17 @@ import GamesHub from './GamesHub';
 import AdminFeedbackBoard from './AdminFeedbackBoard';
 import PostCard from './PostCard';
 import { 
-  Heart, Sparkles, Image as ImageIcon, 
-  X, Music, ExternalLink, Search, Clock, Flame, Edit3, Trash2 
+  Heart, Sparkles, Image as ImageIcon, Video,
+  X, Music, ExternalLink, Search, Clock, Flame, Edit3, Trash2, Loader2 
 } from 'lucide-react';
+
+const CLOUDINARY_CLOUD_NAME = 'gvdwsxay';
+const CLOUDINARY_UPLOAD_PRESET = 'swift-preset';
+
+const isVideoUrl = (url) => {
+  if (!url) return false;
+  return Boolean(url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i) || url.includes('/video/upload/'));
+};
 
 const DEFAULT_DAILY_SONG = {
   title: "Enchanted (Taylor's Version)",
@@ -44,9 +52,10 @@ const TRANSLATIONS = {
     createTitle: 'Create a New Tale / Post',
     titlePlaceholder: 'Post title (optional for gallery)...',
     contentPlaceholder: 'Write your story or thoughts (optional for gallery)...',
-    chooseImage: 'Upload Image from Device',
-    orEnterUrl: 'Or paste image link...',
-    removeImage: 'Remove image',
+    chooseImage: 'Upload Image / Video',
+    uploadingMedia: 'Uploading file...',
+    orEnterUrl: 'Or paste image/video link...',
+    removeImage: 'Remove media',
     cancel: 'Cancel',
     publish: 'Publish',
     save: 'Save',
@@ -94,9 +103,10 @@ const TRANSLATIONS = {
     createTitle: 'יצירת פוסט חדש',
     titlePlaceholder: 'כותרת הפוסט (אופציונלי בגלריה)...',
     contentPlaceholder: 'כתבי את המחשבות שלך (אופציונלי בגלריה)...',
-    chooseImage: 'העלאת תמונה מהמכשיר',
-    orEnterUrl: 'או הדבקת קישור לתמונה...',
-    removeImage: 'הסרת תמונה',
+    chooseImage: 'העלאת תמונה או סרטון',
+    uploadingMedia: 'מעלה קובץ...',
+    orEnterUrl: 'או הדבקת קישור...',
+    removeImage: 'הסרת מדיה',
     cancel: 'ביטול',
     publish: 'פרסום',
     save: 'שמירה',
@@ -194,6 +204,7 @@ export default function App() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackBoardOpen, setIsFeedbackBoardOpen] = useState(false);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
+  const [isUploadingMedia, setIsUploadingMedia] = useState(false);
   const [selectedImageModalPost, setSelectedImageModalPost] = useState(null);
   const [isModalLikeAnimating, setIsModalLikeAnimating] = useState(false);
 
@@ -266,20 +277,40 @@ export default function App() {
     setUser(null);
   };
 
-  const handleImageFileChange = (e, setTarget) => {
+  // העלאה ישירה ל-Cloudinary עבור סרטונים ותמונות
+  const handleMediaUploadToCloudinary = async (e, setTargetUrl) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert(lang === 'he' ? 'גודל התמונה מוגבל לעד 5MB' : 'Image size is limited to 5MB');
+    if (file.size > 50 * 1024 * 1024) {
+      alert(lang === 'he' ? 'גודל הקובץ מוגבל לעד 50MB' : 'File size is limited to 50MB');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setTarget(reader.result);
-    };
-    reader.readAsDataURL(file);
+    setIsUploadingMedia(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error?.message || 'Upload failed');
+      }
+
+      const data = await res.json();
+      setTargetUrl(data.secure_url);
+    } catch (err) {
+      console.error('Cloudinary upload error:', err);
+      alert(lang === 'he' ? `שגיאה בהעלאה: ${err.message}` : `Upload error: ${err.message}`);
+    } finally {
+      setIsUploadingMedia(false);
+    }
   };
 
   const handleSaveDailySong = async (e) => {
@@ -309,7 +340,7 @@ export default function App() {
     const isGallery = postCategory === 'gallery';
 
     if (isGallery && !postImageUrl.trim() && !postTitle.trim() && !postContent.trim()) {
-      alert(lang === 'he' ? 'בגלריה יש לבחור תמונה' : 'Please upload an image for the gallery');
+      alert(lang === 'he' ? 'בגלריה יש לבחור תמונה או סרטון' : 'Please upload media for the gallery');
       return;
     }
 
@@ -814,14 +845,16 @@ export default function App() {
                     color: 'var(--secondary-sage-dark)',
                     fontSize: '0.85rem',
                     fontWeight: 600,
-                    cursor: 'pointer'
+                    cursor: isUploadingMedia ? 'not-allowed' : 'pointer',
+                    opacity: isUploadingMedia ? 0.7 : 1
                   }}>
-                    <ImageIcon size={16} />
-                    {t.chooseImage}
+                    {isUploadingMedia ? <Loader2 size={16} className="animate-spin" /> : <ImageIcon size={16} />}
+                    {isUploadingMedia ? t.uploadingMedia : t.chooseImage}
                     <input
                       type="file"
-                      accept="image/*"
-                      onChange={(e) => handleImageFileChange(e, setPostImageUrl)}
+                      accept="image/*,video/*"
+                      disabled={isUploadingMedia}
+                      onChange={(e) => handleMediaUploadToCloudinary(e, setPostImageUrl)}
                       style={{ display: 'none' }}
                     />
                   </label>
@@ -829,7 +862,7 @@ export default function App() {
                   <input
                     type="url"
                     placeholder={t.orEnterUrl}
-                    value={postImageUrl.startsWith('data:') ? '' : postImageUrl}
+                    value={postImageUrl}
                     onChange={(e) => setPostImageUrl(e.target.value)}
                     style={{
                       flex: 1,
@@ -850,16 +883,25 @@ export default function App() {
                     borderRadius: '12px',
                     overflow: 'hidden',
                     border: '1px solid var(--border-delicate)',
-                    maxHeight: '220px',
+                    maxHeight: '260px',
                     display: 'flex',
                     justifyContent: 'center',
-                    backgroundColor: '#fafafa'
+                    backgroundColor: '#111'
                   }}>
-                    <img
-                      src={postImageUrl}
-                      alt="Preview"
-                      style={{ maxHeight: '220px', objectFit: 'contain' }}
-                    />
+                    {isVideoUrl(postImageUrl) ? (
+                      <video
+                        src={postImageUrl}
+                        controls
+                        playsInline
+                        style={{ maxHeight: '260px', maxWidth: '100%' }}
+                      />
+                    ) : (
+                      <img
+                        src={postImageUrl}
+                        alt="Preview"
+                        style={{ maxHeight: '260px', objectFit: 'contain' }}
+                      />
+                    )}
                     <button
                       type="button"
                       onClick={() => setPostImageUrl('')}
@@ -878,7 +920,8 @@ export default function App() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        zIndex: 5
                       }}
                     >
                       <X size={16} />
@@ -915,6 +958,7 @@ export default function App() {
                 </button>
                 <button
                   type="submit"
+                  disabled={isUploadingMedia}
                   style={{
                     padding: '0.5rem 1.35rem',
                     borderRadius: '18px',
@@ -922,7 +966,8 @@ export default function App() {
                     color: '#fff',
                     border: 'none',
                     fontWeight: 600,
-                    cursor: 'pointer'
+                    cursor: isUploadingMedia ? 'not-allowed' : 'pointer',
+                    opacity: isUploadingMedia ? 0.7 : 1
                   }}
                 >
                   {t.publish}
@@ -979,11 +1024,20 @@ export default function App() {
                     }}
                   >
                     {post.image_url ? (
-                      <img
-                        src={post.image_url}
-                        alt={post.title}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
+                      isVideoUrl(post.image_url) ? (
+                        <video
+                          src={post.image_url}
+                          muted
+                          preload="metadata"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <img
+                          src={post.image_url}
+                          alt={post.title}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      )
                     ) : (
                       <div style={{
                         width: '100%',
@@ -1423,14 +1477,15 @@ export default function App() {
                   color: 'var(--secondary-sage-dark)',
                   fontSize: '0.8rem',
                   fontWeight: 600,
-                  cursor: 'pointer'
+                  cursor: isUploadingMedia ? 'not-allowed' : 'pointer'
                 }}>
                   <ImageIcon size={15} />
                   {t.chooseImage}
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => handleImageFileChange(e, setSongImageUrl)}
+                    disabled={isUploadingMedia}
+                    onChange={(e) => handleMediaUploadToCloudinary(e, setSongImageUrl)}
                     style={{ display: 'none' }}
                   />
                 </label>
@@ -1438,7 +1493,7 @@ export default function App() {
                 <input
                   type="url"
                   placeholder={t.orEnterUrl}
-                  value={songImageUrl.startsWith('data:') ? '' : songImageUrl}
+                  value={songImageUrl}
                   onChange={(e) => setSongImageUrl(e.target.value)}
                   style={{
                     flex: 1,
@@ -1498,6 +1553,7 @@ export default function App() {
               </button>
               <button
                 type="submit"
+                disabled={isUploadingMedia}
                 style={{
                   padding: '0.5rem 1.35rem',
                   borderRadius: '16px',
@@ -1505,7 +1561,7 @@ export default function App() {
                   color: '#fff',
                   border: 'none',
                   fontWeight: 600,
-                  cursor: 'pointer'
+                  cursor: isUploadingMedia ? 'not-allowed' : 'pointer'
                 }}
               >
                 {t.save}
@@ -1515,14 +1571,14 @@ export default function App() {
         </div>
       )}
 
-      {/* חלון הגדלת תמונה בגלריה */}
+      {/* חלון הגדלת תמונה/סרטון בגלריה */}
       {selectedImageModalPost && (
         <div
           onClick={() => setSelectedImageModalPost(null)}
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1570,11 +1626,21 @@ export default function App() {
 
             {selectedImageModalPost.image_url && (
               <div style={{ backgroundColor: '#000', display: 'flex', justifyContent: 'center', borderRadius: '24px 24px 0 0', overflow: 'hidden' }}>
-                <img
-                  src={selectedImageModalPost.image_url}
-                  alt={selectedImageModalPost.title}
-                  style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain' }}
-                />
+                {isVideoUrl(selectedImageModalPost.image_url) ? (
+                  <video
+                    src={selectedImageModalPost.image_url}
+                    controls
+                    autoPlay
+                    playsInline
+                    style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain' }}
+                  />
+                ) : (
+                  <img
+                    src={selectedImageModalPost.image_url}
+                    alt={selectedImageModalPost.title}
+                    style={{ maxWidth: '100%', maxHeight: '60vh', objectFit: 'contain' }}
+                  />
+                )}
               </div>
             )}
 
