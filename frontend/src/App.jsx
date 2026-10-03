@@ -50,8 +50,8 @@ const TRANSLATIONS = {
     gallery: 'Gallery',
     games: 'Games',
     createTitle: 'Create a New Tale / Post',
-    titlePlaceholder: 'Post title (optional for gallery)...',
-    contentPlaceholder: 'Write your story or thoughts (optional for gallery)...',
+    titlePlaceholder: 'Post title (optional)...',
+    contentPlaceholder: 'Write your story or thoughts (optional)...',
     chooseImage: 'Upload Image / Video',
     uploadingMedia: 'Uploading file...',
     orEnterUrl: 'Or paste image/video link...',
@@ -101,8 +101,8 @@ const TRANSLATIONS = {
     gallery: 'גלריה',
     games: 'משחקים',
     createTitle: 'יצירת פוסט חדש',
-    titlePlaceholder: 'כותרת הפוסט (אופציונלי בגלריה)...',
-    contentPlaceholder: 'כתבי את המחשבות שלך (אופציונלי בגלריה)...',
+    titlePlaceholder: 'כותרת הפוסט (אופציונלי)...',
+    contentPlaceholder: 'כתבי את המחשבות שלך (אופציונלי)...',
     chooseImage: 'העלאת תמונה או סרטון',
     uploadingMedia: 'מעלה קובץ...',
     orEnterUrl: 'או הדבקת קישור...',
@@ -277,7 +277,6 @@ export default function App() {
     setUser(null);
   };
 
-  // העלאה ישירה ל-Cloudinary עבור סרטונים ותמונות
   const handleMediaUploadToCloudinary = async (e, setTargetUrl) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -334,17 +333,21 @@ export default function App() {
     }
   };
 
+  const isVisualCategory = postCategory === 'gallery' || postCategory === 'news';
+
   const handleCreatePost = async (e) => {
     e.preventDefault();
 
-    const isGallery = postCategory === 'gallery';
-
-    if (isGallery && !postImageUrl.trim() && !postTitle.trim() && !postContent.trim()) {
-      alert(lang === 'he' ? 'בגלריה יש לבחור תמונה או סרטון' : 'Please upload media for the gallery');
+    if (isVisualCategory && !postImageUrl.trim() && !postTitle.trim() && !postContent.trim()) {
+      alert(lang === 'he' ? 'יש לבחור תמונה, סרטון או להזין תוכן' : 'Please upload media or enter content');
       return;
     }
 
-    const finalTitle = postTitle.trim() || (isGallery ? (lang === 'he' ? 'יצירה מהגלריה' : 'Gallery Tale') : 'Untitled');
+    const defaultTitle = postCategory === 'news' 
+      ? (lang === 'he' ? 'עדכון חדשות' : 'News Update') 
+      : (lang === 'he' ? 'יצירה מהגלריה' : 'Gallery Tale');
+
+    const finalTitle = postTitle.trim() || (isVisualCategory ? defaultTitle : 'Untitled');
     const finalContent = postContent.trim() || '';
 
     try {
@@ -435,8 +438,6 @@ export default function App() {
     }
   };
 
-  const isGalleryForm = postCategory === 'gallery';
-
   const processedPosts = posts
     .filter((post) => {
       if (!searchQuery.trim()) return true;
@@ -451,6 +452,8 @@ export default function App() {
       }
       return (b.id || 0) - (a.id || 0);
     });
+
+  const isGridCategory = selectedCategory === 'gallery' || selectedCategory === 'news';
 
   return (
     <div dir={lang === 'he' ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -819,8 +822,8 @@ export default function App() {
               <input
                 type="text"
                 placeholder={t.titlePlaceholder}
-                required={!isGalleryForm}
-                minLength={!isGalleryForm ? 3 : 0}
+                required={!isVisualCategory}
+                minLength={!isVisualCategory ? 3 : 0}
                 value={postTitle}
                 onChange={(e) => setPostTitle(e.target.value)}
                 style={{
@@ -932,8 +935,8 @@ export default function App() {
 
               <textarea
                 placeholder={t.contentPlaceholder}
-                required={!isGalleryForm && !postImageUrl}
-                rows={isGalleryForm ? 2 : 4}
+                required={!isVisualCategory && !postImageUrl}
+                rows={isVisualCategory ? 2 : 4}
                 value={postContent}
                 onChange={(e) => setPostContent(e.target.value)}
                 style={{
@@ -977,10 +980,10 @@ export default function App() {
           </form>
         )}
 
-        {/* תוכן ראשי: משחקים / גלריה / פוסטים */}
+        {/* תוכן ראשי: משחקים / תצוגת גלריית תמונות (גם לגלריה וגם לחדשות) / פוסטים רגילים */}
         {selectedCategory === 'games' ? (
           <GamesHub lang={lang} />
-        ) : selectedCategory === 'gallery' ? (
+        ) : isGridCategory ? (
           <div>
             {processedPosts.length === 0 ? (
               <div style={{
@@ -1571,7 +1574,7 @@ export default function App() {
         </div>
       )}
 
-      {/* חלון הגדלת תמונה/סרטון בגלריה */}
+      {/* חלון הגדלת תמונה/סרטון במודאל (התוכן המלא מוצג בלחיצה) */}
       {selectedImageModalPost && (
         <div
           onClick={() => setSelectedImageModalPost(null)}
@@ -1660,7 +1663,7 @@ export default function App() {
               </div>
 
               {selectedImageModalPost.content && (
-                <p style={{ margin: '0 0 1rem 0', color: 'var(--text-dark)', opacity: 0.85, fontSize: '0.9rem', lineHeight: '1.5' }}>
+                <p style={{ margin: '0 0 1rem 0', color: 'var(--text-dark)', opacity: 0.85, fontSize: '0.9rem', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
                   {selectedImageModalPost.content}
                 </p>
               )}
