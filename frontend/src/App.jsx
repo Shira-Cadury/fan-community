@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import AuthModal from './AuthModal';
 import AdminModal from './AdminModal';
 import GamesHub from './GamesHub';
+import MerchHub from './MerchHub'; // הוספנו את קטלוג המרצ'נדייז
 import AdminFeedbackBoard from './AdminFeedbackBoard';
 import PostCard from './PostCard';
 import CommentsSection from './CommentsSection';
@@ -50,6 +51,7 @@ const TRANSLATIONS = {
     events: 'Events',
     gallery: 'Gallery',
     games: 'Games',
+    merch: "Collector's Corner",
     createTitle: 'Create a New Tale / Post',
     titlePlaceholder: 'Post title (optional)...',
     contentPlaceholder: 'Write your story or thoughts (optional)...',
@@ -104,6 +106,7 @@ const TRANSLATIONS = {
     events: 'אירועים',
     gallery: 'גלריה',
     games: 'משחקים',
+    merch: "מרצ'נדייז ואספנות",
     createTitle: 'יצירת פוסט חדש',
     titlePlaceholder: 'כותרת הפוסט (אופציונלי)...',
     contentPlaceholder: 'כתבי את המחשבות שלך (אופציונלי)...',
@@ -195,6 +198,14 @@ const CATEGORY_THEMES = {
     title: '#562580',
     badgeBg: '#EDE5F7',
     badgeText: '#4A148C'
+  },
+  merch: {
+    bg: 'linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%)',
+    border: '#FFE082',
+    text: '#6A4F4B',
+    title: '#5D4037',
+    badgeBg: '#FFECB3',
+    badgeText: '#5D4037'
   }
 };
 
@@ -244,6 +255,7 @@ export default function App() {
     { key: 'news', label: t.news, icon: '📰' },
     { key: 'events', label: t.events, icon: '📅' },
     { key: 'gallery', label: t.gallery, icon: '🎨' },
+    { key: 'merch', label: t.merch, icon: '💎' },
     { key: 'games', label: t.games, icon: '🎮' }
   ];
 
@@ -266,7 +278,7 @@ export default function App() {
   }, []);
 
   const fetchPosts = async () => {
-    if (selectedCategory === 'games') return;
+    if (selectedCategory === 'games' || selectedCategory === 'merch') return;
     try {
       const url = selectedCategory === 'all' ? '/posts' : `/posts?category=${selectedCategory}`;
       const res = await API.get(url);
@@ -486,7 +498,7 @@ export default function App() {
         onOpenNewPost={() => {
           setIsCreatingPost(true);
           setIsExclusive(false);
-          if (selectedCategory !== 'all' && selectedCategory !== 'games') {
+          if (selectedCategory !== 'all' && selectedCategory !== 'games' && selectedCategory !== 'merch') {
             setPostCategory(selectedCategory);
           } else {
             setPostCategory('discussions');
@@ -638,7 +650,8 @@ export default function App() {
             </div>
           </div>
 
-          {selectedCategory !== 'games' && (
+          {/* שורת חיפוש ומיון עבור פוסטים בלבד */}
+          {selectedCategory !== 'games' && selectedCategory !== 'merch' && (
             <div style={{
               display: 'flex',
               gap: '0.5rem',
@@ -807,8 +820,8 @@ export default function App() {
           })}
         </div>
 
-        {/* טופס פוסט חדש */}
-        {isCreatingPost && selectedCategory !== 'games' && (
+        {/* טופס פוסט חדש - לא מופיע במשחקים או מרצ'נדייז */}
+        {isCreatingPost && selectedCategory !== 'games' && selectedCategory !== 'merch' && (
           <form
             onSubmit={handleCreatePost}
             style={{
@@ -1029,9 +1042,11 @@ export default function App() {
           </form>
         )}
 
-        {/* תוכן ראשי: משחקים / גלריה או תיאוריות (גריד) / כל השאר (פוסטים רגילים) */}
+        {/* תוכן ראשי: משחקים / מרצ'נדייז / גלריה או תיאוריות (גריד) / כל השאר (פוסטים רגילים) */}
         {selectedCategory === 'games' ? (
           <GamesHub lang={lang} />
+        ) : selectedCategory === 'merch' ? (
+          <MerchHub lang={lang} isAdmin={isAdmin} />
         ) : isGridCategory ? (
           <div>
             {processedPosts.length === 0 ? (
