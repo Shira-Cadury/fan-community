@@ -37,7 +37,6 @@ def toggle_like(
             post_id=post_id,
             user_id=current_user.id,
         )
-        # מעביר תאריך ושעה למקרה שהעמודה קיימת במסד עם אילוץ NOT NULL
         if hasattr(models.Like, "created_at"):
             setattr(new_like, "created_at", datetime.utcnow())
 
