@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, Header
 from pydantic import BaseModel
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -9,6 +9,8 @@ from deep_translator import GoogleTranslator
 from app import models, schemas
 from app.database import get_db
 from app.routers.auth import get_current_user
+import jwt
+from app.routers.auth import SECRET_KEY, ALGORITHM
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
@@ -18,10 +20,27 @@ class TranslateRequest(BaseModel):
     target_lang: str = "he"
 
 
+def get_current_user_optional(authorization: Optional[str] = Header(None), db: Session = Depends(get_db)) -> Optional[models.User]:
+    """פונקציה עזר לבדיקת משתמש מחובר באופן אופציונלי (לא זורקת שגיאה אם אין טוקן)"""
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    token = authorization.split(" ")[1]
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            return None
+        user = db.query(models.User).filter(models.User.username == username).first()
+        return user
+    except Exception:
+        return None
+
+
 @router.get("", response_model=List[schemas.PostOut])
 def get_posts(
     category: Optional[str] = Query(None),
     db: Session = Depends(get_db),
+    current_user: Optional[models.User] = Depends(get_current_user_optional),
 ):
     query = db.query(models.Post)
     if category and category != "all":
@@ -30,6 +49,12 @@ def get_posts(
 
     for p in posts:
         p.likes_count = len(p.likes)
+        # בדיקה האם המשתמש המחובר עשה לייק לפוסט זה
+        if current_user:
+            p.is_liked = any(like.user_id == current_user.id for like in p.likes)
+        else:
+            p.is_liked = False
+
     return posts
 
 
@@ -63,6 +88,7 @@ def create_post(
     db.commit()
     db.refresh(db_post)
     db_post.likes_count = 0
+    db_post.is_liked = False
     return db_post
 
 
