@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CommentsSection from './CommentsSection';
-import { Heart, MessageCircle, Flag, Tag, Trash2, Globe, Loader2 } from 'lucide-react';
+import { Heart, MessageCircle, Flag, Tag, Trash2, Globe, Loader2, Share2 } from 'lucide-react';
 
 const isVideoUrl = (url) => {
   if (!url) return false;
@@ -25,11 +25,27 @@ export default function PostCard({
   const [isTranslated, setIsTranslated] = useState(false);
   const [isLoadingTranslation, setIsLoadingTranslation] = useState(false);
   const [isAnimatingLike, setIsAnimatingLike] = useState(false);
+  const [isCopied, setIsCopied] = useState(false); // סטייט חדש לכפתור ההעתקה
 
   const handleLikeClick = () => {
     setIsAnimatingLike(true);
     setTimeout(() => setIsAnimatingLike(false), 300);
     onToggleLike(post.id);
+  };
+
+  // פונקציית העתקת הקישור
+  const handleShareClick = async () => {
+    try {
+      // מייצר קישור עם ה-ID הייחודי של הפוסט
+      const postUrl = `${window.location.origin}?post=${post.id}`;
+      await navigator.clipboard.writeText(postUrl);
+      setIsCopied(true);
+      
+      // מחזיר את הכפתור למצב הקודם אחרי 2.5 שניות
+      setTimeout(() => setIsCopied(false), 2500);
+    } catch (err) {
+      console.error('Failed to copy', err);
+    }
   };
 
   const handleTranslate = async () => {
@@ -212,7 +228,9 @@ export default function PostCard({
         borderTop: '1px solid var(--border-delicate)',
         paddingTop: '0.95rem'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem' }}>
+        {/* שורת הכפתורים משמאל */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem', flexWrap: 'wrap' }}>
+          
           <button
             onClick={handleLikeClick}
             style={{
@@ -261,6 +279,27 @@ export default function PostCard({
             <MessageCircle size={17} />
             {isCommentsOpen ? t.hideComments : t.comments}
           </button>
+
+          {/* כפתור השיתוף החדש */}
+          <button
+            onClick={handleShareClick}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              background: 'none',
+              border: 'none',
+              color: isCopied ? 'var(--primary-rose)' : 'var(--secondary-sage-dark)',
+              cursor: 'pointer',
+              fontSize: '0.9rem',
+              fontWeight: 600,
+              transition: 'color 0.2s ease'
+            }}
+          >
+            <Share2 size={17} />
+            {isCopied ? (isHe ? 'הקישור הועתק! ✨' : 'Link copied! ✨') : (isHe ? 'שיתוף' : 'Share')}
+          </button>
+
         </div>
 
         <button
