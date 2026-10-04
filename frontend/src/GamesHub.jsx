@@ -6,7 +6,8 @@ import MastermindClown from './MastermindClown';
 import EraQuizGame from './EraQuizGame';
 import EmojiQuiz from './EmojiQuiz';
 import EraStylist from './EraStylist';
-import { HelpCircle, Brain, Music, Layers, Disc3, Smile, Scissors } from 'lucide-react';
+import SwiftieLibrary from './SwiftieLibrary';
+import { HelpCircle, Brain, Music, Layers, Disc3, Smile, Scissors, BookOpen } from 'lucide-react';
 
 export default function GamesHub({ lang }) {
   const isHe = lang === 'he';
@@ -68,6 +69,14 @@ export default function GamesHub({ lang }) {
       icon: <Scissors size={22} color="#4A148C" />,
       iconBg: '#F3E5F5',
       component: <EraStylist lang={lang} onBack={() => setActiveGame(null)} />
+    },
+    {
+      id: 'swiftie_library',
+      title: isHe ? 'הספרייה של טיילור (The Swiftie Library)' : 'The Swiftie Library',
+      desc: isHe ? 'השלימי את המילים החסרות מתוך השורות הפיוטיות והספרותיות ביותר של טיילור.' : "Complete the missing words from Taylor's most poetic and literary lyrics.",
+      icon: <BookOpen size={22} color="#75500A" />,
+      iconBg: '#FAF6ED',
+      component: <SwiftieLibrary lang={lang} onBack={() => setActiveGame(null)} />
     }
   ];
 
