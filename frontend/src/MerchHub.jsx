@@ -22,11 +22,9 @@ const ERAS = [
 
 const CATEGORIES = [
   { id: 'all', label: 'All Types / הכל' },
-  { id: 'vinyl', label: 'Vinyls / וינילים' },
+  { id: 'vinyl', label: 'Vinyls / תקלטים' },
   { id: 'cd', label: 'CDs / דיסקים' },
-  { id: 'cassette', label: 'Cassettes / קלטות' },
-  { id: 'snowglobe', label: 'Snowglobes / כדורי שלג' },
-  { id: 'merch', label: 'Merch / מרצ\'נדייז' }
+  { id: 'cardigan', label: 'Cardigans / קרדיגנים' }
 ];
 
 export default function MerchHub({ lang, isAdmin }) {
@@ -120,7 +118,7 @@ export default function MerchHub({ lang, isAdmin }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h2 style={{ fontFamily: '"Georgia", serif', color: 'var(--text-dark)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
           <Package size={26} color="var(--primary-rose-dark)" />
-          {isHe ? 'מרצ\'נדייז ואספנות' : 'Collector\'s Corner'}
+          {isHe ? 'אוסף דיסקים, תקלטים וקרדיגנים' : 'Collector\'s Corner'}
         </h2>
         {isAdmin && (
           <button
