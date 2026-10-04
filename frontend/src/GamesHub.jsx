@@ -5,7 +5,8 @@ import MemoryCards from './MemoryCards';
 import MastermindClown from './MastermindClown';
 import EraQuizGame from './EraQuizGame';
 import EmojiQuiz from './EmojiQuiz';
-import { HelpCircle, Brain, Music, Layers, Disc3, Smile } from 'lucide-react';
+import EraStylist from './EraStylist';
+import { HelpCircle, Brain, Music, Layers, Disc3, Smile, Scissors } from 'lucide-react';
 
 export default function GamesHub({ lang }) {
   const isHe = lang === 'he';
@@ -59,6 +60,14 @@ export default function GamesHub({ lang }) {
       icon: <Smile size={22} color="#FF8F00" />,
       iconBg: '#FFF8E1',
       component: <EmojiQuiz lang={lang} onBack={() => setActiveGame(null)} />
+    },
+    {
+      id: 'era_stylist',
+      title: isHe ? 'The Ultimate Era Stylist' : 'The Ultimate Era Stylist',
+      desc: isHe ? 'משחק הלבשה! צרי את הלוק המושלם על הדמות, ושתפי את התוצאה שלך ישירות בפורום הדיונים של הקהילה.' : 'Dress up the avatar in your favorite era style and share it!',
+      icon: <Scissors size={22} color="#4A148C" />,
+      iconBg: '#F3E5F5',
+      component: <EraStylist lang={lang} onBack={() => setActiveGame(null)} />
     }
   ];
 
