@@ -93,7 +93,15 @@ export default function MerchHub({ lang, isAdmin }) {
       });
       fetchItems();
     } catch (err) {
-      alert('Failed to add item');
+      // חשיפת הודעת השגיאה המדויקת מהשרת לצורך דיבוג
+      const detail = err.response?.data?.detail;
+      if (Array.isArray(detail)) {
+        alert(detail.map(d => `${d.loc?.slice(-1)[0]}: ${d.msg}`).join('\n'));
+      } else if (typeof detail === 'string') {
+        alert(detail);
+      } else {
+        alert(isHe ? `שגיאה בהוספת הפריט: ${err.message || 'Unknown'}` : 'Failed to add item');
+      }
     }
   };
 
@@ -263,7 +271,7 @@ export default function MerchHub({ lang, isAdmin }) {
               </div>
 
               {selectedItem.description && (
-                <p style={{ lineHeight: '1.6', color: 'var(--text-dark)', marginBottom: '2rem', fontSize: '0.95rem' }}>{selectedItem.description}</p>
+                <p style={{ lineHeight: '1.6', color: 'var(--text-dark)', marginBottom: '2rem', fontSize: '0.95rem' }}>{selectedItem.description}[cite: 12]</p>
               )}
 
               {selectedItem.external_link && (
