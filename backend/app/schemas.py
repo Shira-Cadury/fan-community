@@ -104,3 +104,27 @@ class ReportOut(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# Collectible schemas
+class CollectibleBase(BaseModel):
+    title: str
+    category: str
+    era: str
+    image_url: Optional[str] = None
+    release_year: Optional[str] = None
+    rarity: Optional[str] = None
+    status: Optional[str] = None
+    description: Optional[str] = None
+    external_link: Optional[str] = None
+
+
+class CollectibleCreate(CollectibleBase):
+    pass
+
+
+class CollectibleOut(CollectibleBase):
+    id: int
+
+    class Config:
+        from_attributes = True

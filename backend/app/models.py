@@ -93,3 +93,18 @@ class Report(Base):
     reporter = relationship("User", back_populates="reports")
     post = relationship("Post", back_populates="reports")
     comment = relationship("Comment", back_populates="reports")
+
+
+class Collectible(Base):
+    __tablename__ = "collectibles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, index=True, nullable=False)
+    category = Column(String, index=True, nullable=False)
+    era = Column(String, index=True, nullable=False)
+    image_url = Column(String, nullable=True)
+    release_year = Column(String, nullable=True)
+    rarity = Column(String, nullable=True)
+    status = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    external_link = Column(String, nullable=True)
