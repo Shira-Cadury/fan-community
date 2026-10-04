@@ -4,8 +4,8 @@ import LyricsMatcher from './LyricsMatcher';
 import MemoryCards from './MemoryCards';
 import MastermindClown from './MastermindClown';
 import EraQuizGame from './EraQuizGame';
-import EmojiQuiz from './EmojiQuiz'; // הוספנו את האימפורט החדש
-import { HelpCircle, Brain, Music, Layers, Disc3, Smile } from 'lucide-react'; // הוספנו את אייקון הסמיילי
+import EmojiQuiz from './EmojiQuiz';
+import { HelpCircle, Brain, Music, Layers, Disc3, Smile } from 'lucide-react';
 
 export default function GamesHub({ lang }) {
   const isHe = lang === 'he';
@@ -52,7 +52,6 @@ export default function GamesHub({ lang }) {
       iconBg: '#FCE4EC',
       component: <EraQuizGame lang={lang} onBack={() => setActiveGame(null)} />
     },
-    // ---- הוספנו את משחק האימוג'ים כאן ----
     {
       id: 'emoji_quiz',
       title: isHe ? "נחשי את השיר לפי אימוג'ים" : 'Guess The Song Emoji Quiz',
@@ -95,7 +94,6 @@ export default function GamesHub({ lang }) {
             minHeight: '220px'
           }}
         >
-          {/* אייקון בפינה */}
           <div style={{
             position: 'absolute',
             top: '1.5rem',
