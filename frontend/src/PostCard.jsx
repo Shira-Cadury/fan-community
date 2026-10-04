@@ -25,7 +25,10 @@ export default function PostCard({
   const [isTranslated, setIsTranslated] = useState(false);
   const [isLoadingTranslation, setIsLoadingTranslation] = useState(false);
   const [isAnimatingLike, setIsAnimatingLike] = useState(false);
-  const [isCopied, setIsCopied] = useState(false); // סטייט חדש לכפתור ההעתקה
+  const [isCopied, setIsCopied] = useState(false);
+  
+  // מונה תגובות דינמי שמתעדכן מהרכיב הפנימי
+  const [commentsCount, setCommentsCount] = useState(post.comments_count || 0);
 
   const handleLikeClick = () => {
     setIsAnimatingLike(true);
@@ -33,15 +36,11 @@ export default function PostCard({
     onToggleLike(post.id);
   };
 
-  // פונקציית העתקת הקישור
   const handleShareClick = async () => {
     try {
-      // מייצר קישור עם ה-ID הייחודי של הפוסט
       const postUrl = `${window.location.origin}?post=${post.id}`;
       await navigator.clipboard.writeText(postUrl);
       setIsCopied(true);
-      
-      // מחזיר את הכפתור למצב הקודם אחרי 2.5 שניות
       setTimeout(() => setIsCopied(false), 2500);
     } catch (err) {
       console.error('Failed to copy', err);
@@ -228,7 +227,6 @@ export default function PostCard({
         borderTop: '1px solid var(--border-delicate)',
         paddingTop: '0.95rem'
       }}>
-        {/* שורת הכפתורים משמאל */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.4rem', flexWrap: 'wrap' }}>
           
           <button
@@ -262,6 +260,7 @@ export default function PostCard({
             {post.likes_count || 0} {t.likes}
           </button>
 
+          {/* כפתור תגובות יחד עם בועת המונה הדינמית */}
           <button
             onClick={() => setIsCommentsOpen(!isCommentsOpen)}
             style={{
@@ -273,14 +272,33 @@ export default function PostCard({
               color: 'var(--secondary-sage-dark)',
               cursor: 'pointer',
               fontSize: '0.9rem',
-              fontWeight: 600
+              fontWeight: 600,
+              position: 'relative'
             }}
           >
-            <MessageCircle size={17} />
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <MessageCircle size={17} />
+              {commentsCount > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-6px',
+                  [isHe ? 'left' : 'right']: '-10px',
+                  backgroundColor: 'var(--primary-rose)',
+                  color: '#fff',
+                  fontSize: '0.62rem',
+                  fontWeight: 700,
+                  padding: '0.02rem 0.3rem',
+                  borderRadius: '10px',
+                  border: '1.5px solid var(--bg-card)',
+                  lineHeight: '1.1'
+                }}>
+                  {commentsCount}
+                </span>
+              )}
+            </div>
             {isCommentsOpen ? t.hideComments : t.comments}
           </button>
 
-          {/* כפתור השיתוף החדש */}
           <button
             onClick={handleShareClick}
             style={{
@@ -327,6 +345,7 @@ export default function PostCard({
           user={user}
           onRequireAuth={onRequireAuth}
           t={t}
+          onCommentsCountUpdate={(count) => setCommentsCount(count)}
         />
       )}
     </article>

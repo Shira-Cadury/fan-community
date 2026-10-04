@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import API from './api';
-import { Send, CornerDownRight, Trash2, Flag, ShieldCheck } from 'lucide-react';
+import { Send, CornerDownRight, Trash2, Flag, ShieldCheck, Loader2 } from 'lucide-react';
 
-export default function CommentsSection({ postId, user, onRequireAuth, t }) {
+export default function CommentsSection({ postId, user, onRequireAuth, t, onCommentsCountUpdate }) {
   const [comments, setComments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // סטייט חדש לניהול מצב טעינה
   const [newCommentText, setNewCommentText] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
 
   const loadComments = async () => {
+    setIsLoading(true);
     try {
       const res = await API.get(`/posts/${postId}/comments`);
       setComments(res.data);
+      // מעדכן את האב בכמות התגובות הנוכחית
+      if (onCommentsCountUpdate) {
+        onCommentsCountUpdate(res.data.length);
+      }
     } catch (err) {
       console.error('Failed to load comments', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -74,7 +82,11 @@ export default function CommentsSection({ postId, user, onRequireAuth, t }) {
     <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px dashed var(--border-delicate)' }}>
       {/* Comments List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1rem' }}>
-        {comments.length === 0 ? (
+        {isLoading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '1rem', color: 'var(--text-muted)' }}>
+            <Loader2 size={20} className="animate-spin" />
+          </div>
+        ) : comments.length === 0 ? (
           <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
             {t ? t.noCommentsYet : 'No replies yet. Start the conversation!'}
           </p>
