@@ -1,272 +1,163 @@
 import React, { useState } from 'react';
-import { Gamepad2, Sparkles, ChevronRight, CheckCircle2, XCircle, HelpCircle, RotateCcw, Trophy } from 'lucide-react';
-
-const EMOJI_QUESTIONS = [
-  { id: 1, emojis: '🧣 🍂 💔 ❄️', answer: 'All Too Well', options: ['All Too Well', 'Back To December', 'cardigan', 'Lover'], hint: '10 דקות של כאב לב...' },
-  { id: 2, emojis: '🐍 📞 ☠️ 👑', answer: 'Look What You Made Me Do', options: ['End Game', 'Blank Space', 'Look What You Made Me Do', 'Karma'], hint: 'הטיילור הישנה לא יכולה לענות לטלפון עכשיו' },
-  { id: 3, emojis: '🚗 💨 🎒 💰', answer: 'Getaway Car', options: ['Cruel Summer', 'Getaway Car', 'Out Of The Woods', 'Style'], hint: 'שום דבר טוב לא קורה במושב האחורי' },
-  { id: 4, emojis: '💎 ✨ 🚶‍♀️ 👗', answer: 'Bejeweled', options: ['Mirrorball', 'Bejeweled', 'Gorgeous', 'Dress'], hint: 'אני עדיין יכולה לגרום לכל החדר לנצוץ' },
-  { id: 5, emojis: '🌲 🧶 👵🏻 🧥', answer: 'cardigan', options: ['willow', 'ivy', 'cardigan', 'august'], hint: 'הרגשתי כמו משהו ישן מתחת למיטה' },
-  { id: 6, emojis: '☔ 🕛 🌌 👦🏻', answer: 'Midnight Rain', options: ['Midnight Rain', 'Lavender Haze', 'Clean', 'Sparks Fly'], hint: 'הוא היה שמש, אני הייתי גשם של חצות' },
-  { id: 7, emojis: '🇬🇧 👦🏼 ☕ 🛵', answer: 'London Boy', options: ['So Long, London', 'London Boy', 'Welcome To New York', 'Paris'], hint: 'אוהבת תה של אחר הצהריים וסיפורים מהפאב' },
-  { id: 8, emojis: '🏹 💘 🎯 🏃‍♀️', answer: 'The Archer', options: ['The Archer', 'Treacherous', 'State Of Grace', 'Lover'], hint: 'אני הקשת, ואני גם המטרה' },
-  { id: 9, emojis: '🪩 💃 💔 👠', answer: 'mirrorball', options: ['mirrorball', 'maroon', 'Delicate', 'Anti-Hero'], hint: 'אני אשנה את כל מה שאני כדי להתאים לך' },
-  { id: 10, emojis: '🏰 🧱 🐉 👑', answer: 'Castles Crumbling', options: ['Long Live', 'Castles Crumbling', 'Enchanted', 'Sparks Fly'], hint: 'אימפריות נופלות, והם חגגו כשהייתי למטה' }
-];
+import ErasTrivia from './ErasTrivia';
+import LyricsMatcher from './LyricsMatcher';
+import MemoryCards from './MemoryCards';
+import MastermindClown from './MastermindClown';
+import EraQuizGame from './EraQuizGame';
+import EmojiQuiz from './EmojiQuiz'; // הוספנו את האימפורט החדש
+import { HelpCircle, Brain, Music, Layers, Disc3, Smile } from 'lucide-react'; // הוספנו את אייקון הסמיילי
 
 export default function GamesHub({ lang }) {
   const isHe = lang === 'he';
   const [activeGame, setActiveGame] = useState(null);
 
-  const [currentQ, setCurrentQ] = useState(0);
-  const [score, setScore] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [isCorrect, setIsCorrect] = useState(null);
-  const [showHint, setShowHint] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
-
-  const handleStartGame = () => {
-    setActiveGame('emoji');
-    setCurrentQ(0);
-    setScore(0);
-    setSelectedOption(null);
-    setIsCorrect(null);
-    setShowHint(false);
-    setGameOver(false);
-  };
-
-  const handleOptionClick = (option) => {
-    if (selectedOption) return; // מניעת לחיצה כפולה
-    setSelectedOption(option);
-    
-    const correct = option === EMOJI_QUESTIONS[currentQ].answer;
-    setIsCorrect(correct);
-    if (correct) {
-      setScore(s => s + 1);
+  const games = [
+    {
+      id: 'trivia',
+      title: isHe ? 'טריוויית אלבומים כרונולוגית (The Eras Trivia)' : 'The Eras Trivia',
+      desc: isHe ? 'מסע כרונולוגי בין כל האלבומים של טיילור עם שאלות ברמת קושי עולה וטיימר של 15 שניות!' : 'Chronological journey across all Taylor albums with timed questions!',
+      icon: <HelpCircle size={22} color="#D81B60" />,
+      iconBg: '#FCE4EC',
+      component: <ErasTrivia lang={lang} onBack={() => setActiveGame(null)} />
+    },
+    {
+      id: 'clown',
+      title: isHe ? 'גאון או ליצן? (Mastermind or Clown)' : 'Mastermind or Clown?',
+      desc: isHe ? 'האם תיאוריית המעריצים התבררה כגאונות אמיתית של טיילור, או כקלאונינג מוחלט שלא קרה?' : 'Is the fan theory a genuine Mastermind Easter egg, or pure clown behavior?',
+      icon: <Brain size={22} color="#1E88E5" />,
+      iconBg: '#E3F2FD',
+      component: <MastermindClown lang={lang} onBack={() => setActiveGame(null)} />
+    },
+    {
+      id: 'lyrics',
+      title: isHe ? 'התאימו את הציטוט לאלבום (Lyrics Matcher)' : 'Lyrics Matcher',
+      desc: isHe ? 'גררו שורות וציטוטים מוכרים מתוך שירים ישירות אל עטיפת האלבום הנכונה.' : 'Match iconic lyrics directly to their correct album era.',
+      icon: <Music size={22} color="#00897B" />,
+      iconBg: '#E0F2F1',
+      component: <LyricsMatcher lang={lang} onBack={() => setActiveGame(null)} />
+    },
+    {
+      id: 'memory',
+      title: isHe ? 'משחק הזיכרון (Swift Memory Cards)' : 'Swift Memory Cards',
+      desc: isHe ? 'הפכו קלפים וגלו זוגות תואמים של פריטים אייקוניים: הצעיף האדום, כדור הדיסקו ועוד.' : 'Flip cards and find pairs of iconic Swiftie lore symbols.',
+      icon: <Layers size={22} color="#8E24AA" />,
+      iconBg: '#F3E5F5',
+      component: <MemoryCards lang={lang} onBack={() => setActiveGame(null)} />
+    },
+    {
+      id: 'era_quiz',
+      title: isHe ? 'מהי ה-Era הנוכחית שלך?' : "What's Your Current Era?",
+      desc: isHe ? 'עני על 10 שאלות אופי ואסתטיקה וגלי איזה אלבום של טיילור מתאים בדיוק למצב הרוח שלך!' : 'Answer 10 aesthetic questions and find out which Taylor Swift era matches your current vibe!',
+      icon: <Disc3 size={22} color="#C2185B" />,
+      iconBg: '#FCE4EC',
+      component: <EraQuizGame lang={lang} onBack={() => setActiveGame(null)} />
+    },
+    // ---- הוספנו את משחק האימוג'ים כאן ----
+    {
+      id: 'emoji_quiz',
+      title: isHe ? "נחשי את השיר לפי אימוג'ים" : 'Guess The Song Emoji Quiz',
+      desc: isHe ? 'חושבת שאת מכירה כל שורה בשירים? בואי נבדוק עד כמה את טובה בפיענוח רמזים מתוך אימוג\'ים בלבד!' : 'Think you know every lyric? Test your knowledge by decoding the emojis!',
+      icon: <Smile size={22} color="#FF8F00" />,
+      iconBg: '#FFF8E1',
+      component: <EmojiQuiz lang={lang} onBack={() => setActiveGame(null)} />
     }
+  ];
 
-    setTimeout(() => {
-      if (currentQ < EMOJI_QUESTIONS.length - 1) {
-        setCurrentQ(q => q + 1);
-        setSelectedOption(null);
-        setIsCorrect(null);
-        setShowHint(false);
-      } else {
-        setGameOver(true);
-      }
-    }, 1500); // מעבר לשאלה הבאה אחרי שנייה וחצי
-  };
-
-  if (!activeGame) {
+  if (activeGame) {
+    const currentGame = games.find((g) => g.id === activeGame);
     return (
-      <div style={{ padding: '1rem' }}>
-        <h2 style={{ fontFamily: '"Georgia", serif', color: 'var(--text-dark)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Gamepad2 size={24} color="var(--primary-rose-dark)" />
-          {isHe ? 'מרכז המשחקים' : 'Games Hub'}
-        </h2>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-          {/* כרטיסיית משחק האימוג'ים */}
-          <div 
-            onClick={handleStartGame}
-            style={{
-              backgroundColor: 'var(--bg-card)',
-              border: '1px solid var(--border-delicate)',
-              borderRadius: '20px',
-              padding: '2rem',
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.boxShadow = '0 8px 20px rgba(184, 80, 115, 0.12)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.03)';
-            }}
-          >
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🧩🎶</div>
-            <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-dark)', fontSize: '1.4rem' }}>
-              {isHe ? 'נחשי את השיר לפי האימוג\'ים' : 'Guess The Song Emoji Quiz'}
-            </h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', margin: '0 0 1.5rem 0' }}>
-              {isHe ? 'חושבת שאת מכירה כל שורה בשירים? בואי נבדוק עד כמה את טובה בפיענוח רמזים!' : 'Test your Swiftie knowledge by decoding the emojis!'}
-            </p>
-            <button style={{
-              backgroundColor: 'var(--primary-rose)',
-              color: '#fff',
-              border: 'none',
-              padding: '0.6rem 1.5rem',
-              borderRadius: '20px',
-              fontWeight: 700,
-              fontSize: '1rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}>
-              <Sparkles size={18} />
-              {isHe ? 'שחקי עכשיו' : 'Play Now'}
-            </button>
-          </div>
-        </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+        {currentGame?.component}
       </div>
     );
   }
-
-  // --- תצוגת סיכום המשחק ---
-  if (gameOver) {
-    return (
-      <div style={{ padding: '2rem 1rem', textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
-        <div style={{ backgroundColor: 'var(--bg-card)', borderRadius: '24px', padding: '3rem 2rem', boxShadow: '0 12px 36px rgba(0,0,0,0.08)', border: '1px solid var(--border-delicate)' }}>
-          <Trophy size={60} color="#FFD700" style={{ marginBottom: '1rem' }} />
-          <h2 style={{ fontSize: '2rem', color: 'var(--text-dark)', margin: '0 0 0.5rem 0', fontFamily: '"Georgia", serif' }}>
-            {isHe ? 'כל הכבוד סוויפטי!' : 'Great Job Swiftie!'}
-          </h2>
-          <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '2rem' }}>
-            {isHe ? `ענית נכון על ${score} מתוך ${EMOJI_QUESTIONS.length} שירים!` : `You got ${score} out of ${EMOJI_QUESTIONS.length} correct!`}
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <button
-              onClick={handleStartGame}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.5rem',
-                backgroundColor: 'var(--primary-rose)', color: '#fff', border: 'none',
-                padding: '0.8rem 1.5rem', borderRadius: '20px', fontWeight: 600, cursor: 'pointer', fontSize: '1rem'
-              }}
-            >
-              <RotateCcw size={18} />
-              {isHe ? 'שחקי שוב' : 'Play Again'}
-            </button>
-            <button
-              onClick={() => setActiveGame(null)}
-              style={{
-                backgroundColor: 'var(--bg-subtle)', color: 'var(--text-dark)', border: '1px solid var(--border-delicate)',
-                padding: '0.8rem 1.5rem', borderRadius: '20px', fontWeight: 600, cursor: 'pointer', fontSize: '1rem'
-              }}
-            >
-              {isHe ? 'חזרה למשחקים' : 'Back to Games'}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // --- תצוגת השאלות במשחק ---
-  const question = EMOJI_QUESTIONS[currentQ];
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1rem' }}>
-      {/* סרגל התקדמות עליון */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <button 
-          onClick={() => setActiveGame(null)}
-          style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', fontWeight: 600 }}
-        >
-          {isHe ? 'חזרה' : 'Back'}
-        </button>
-        <div style={{ fontWeight: 700, color: 'var(--primary-rose-dark)', backgroundColor: 'var(--bg-subtle)', padding: '0.4rem 1rem', borderRadius: '14px' }}>
-          {isHe ? `שאלה ${currentQ + 1} מתוך ${EMOJI_QUESTIONS.length}` : `Question ${currentQ + 1} of ${EMOJI_QUESTIONS.length}`}
-        </div>
-        <div style={{ fontWeight: 700, color: 'var(--secondary-sage-dark)' }}>
-          {isHe ? `נקודות: ${score}` : `Score: ${score}`}
-        </div>
-      </div>
-
-      {/* כרטיסיית השאלה */}
-      <div style={{
-        backgroundColor: 'var(--bg-card)',
-        border: '1px solid var(--border-delicate)',
-        borderRadius: '24px',
-        padding: '3rem 1.5rem',
-        textAlign: 'center',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.04)',
-        marginBottom: '1.5rem'
-      }}>
-        <div style={{ fontSize: '3.5rem', letterSpacing: '0.5rem', marginBottom: '2rem' }}>
-          {question.emojis}
-        </div>
-
-        {/* כפתור רמז */}
-        <button 
-          onClick={() => setShowHint(true)}
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+      gap: '1.5rem',
+      padding: '0.5rem 0'
+    }}>
+      {games.map((game) => (
+        <div
+          key={game.id}
           style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--text-muted)',
-            fontSize: '0.85rem',
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.3rem',
-            marginBottom: '1.5rem',
-            opacity: showHint ? 1 : 0.7
+            backgroundColor: 'var(--bg-card)',
+            border: '1px solid var(--border-delicate)',
+            borderRadius: '24px',
+            padding: '1.75rem 1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            position: 'relative',
+            boxShadow: '0 4px 16px rgba(58, 46, 43, 0.03)',
+            minHeight: '220px'
           }}
         >
-          <HelpCircle size={16} />
-          {showHint ? <span style={{ fontWeight: 600, color: 'var(--primary-rose)' }}>{question.hint}</span> : (isHe ? 'לחצי לרמז' : 'Need a hint?')}
-        </button>
+          {/* אייקון בפינה */}
+          <div style={{
+            position: 'absolute',
+            top: '1.5rem',
+            [isHe ? 'left' : 'right']: '1.5rem',
+            width: '44px',
+            height: '44px',
+            borderRadius: '14px',
+            backgroundColor: game.iconBg,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            {game.icon}
+          </div>
 
-        {/* אפשרויות התשובה */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-          {question.options.map((opt, idx) => {
-            let bgColor = 'var(--bg-subtle)';
-            let borderColor = 'var(--border-delicate)';
-            let textColor = 'var(--text-dark)';
-            let icon = null;
+          <div style={{ paddingInlineEnd: '3.5rem', textAlign: isHe ? 'right' : 'left' }}>
+            <h3 style={{
+              margin: '0 0 0.6rem',
+              color: 'var(--text-dark)',
+              fontSize: '1.15rem',
+              fontFamily: '"Georgia", serif',
+              fontWeight: 700
+            }}>
+              {game.title}
+            </h3>
+            <p style={{
+              margin: 0,
+              color: 'var(--text-muted)',
+              fontSize: '0.88rem',
+              lineHeight: '1.5'
+            }}>
+              {game.desc}
+            </p>
+          </div>
 
-            if (selectedOption !== null) {
-              if (opt === question.answer) {
-                // התשובה הנכונה תמיד תיצבע בירוק אחרי הלחיצה
-                bgColor = '#E8F5E9';
-                borderColor = '#A5D6A7';
-                textColor = '#2E7D32';
-                icon = <CheckCircle2 size={18} color="#2E7D32" />;
-              } else if (opt === selectedOption) {
-                // אם בחרנו את זה וזה טעות - ייצבע באדום
-                bgColor = '#FFEBEE';
-                borderColor = '#FFCDD2';
-                textColor = '#C62828';
-                icon = <XCircle size={18} color="#C62828" />;
-              }
-            }
-
-            return (
-              <button
-                key={idx}
-                onClick={() => handleOptionClick(opt)}
-                disabled={selectedOption !== null}
-                style={{
-                  padding: '1rem',
-                  borderRadius: '16px',
-                  backgroundColor: bgColor,
-                  border: `2px solid ${borderColor}`,
-                  color: textColor,
-                  fontSize: '1.05rem',
-                  fontWeight: 600,
-                  fontFamily: '"Georgia", serif',
-                  cursor: selectedOption ? 'default' : 'pointer',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  transition: 'all 0.2s ease',
-                  opacity: selectedOption && opt !== question.answer && opt !== selectedOption ? 0.5 : 1
-                }}
-              >
-                <span>{opt}</span>
-                {icon}
-              </button>
-            );
-          })}
+          <div style={{ marginTop: '1.5rem' }}>
+            <button
+              onClick={() => setActiveGame(game.id)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                borderRadius: '16px',
+                backgroundColor: '#D97398',
+                color: '#fff',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: '0.92rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.45rem',
+                boxShadow: '0 4px 12px rgba(217, 115, 152, 0.25)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <span>{isHe ? 'שחקי עכשיו!' : 'Play Now!'}</span>
+              <span>▷</span>
+            </button>
+          </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 }
