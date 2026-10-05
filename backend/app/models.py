@@ -40,6 +40,7 @@ class Post(Base):
     content = Column(Text, nullable=True)
     category = Column(String, default="discussions", nullable=False)
     image_url = Column(Text, nullable=True)
+    is_edited = Column(Boolean, default=False, nullable=False)  # שורה חדשה שנוספה לסימון פוסט שעבר עריכה
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     author_id = Column(Integer, ForeignKey("users.id"), nullable=False)
