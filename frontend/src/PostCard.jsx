@@ -37,8 +37,9 @@ export default function PostCard({
 
   const handleShareClick = async () => {
     try {
-      const baseUrl = window.location.origin + window.location.pathname;
-      const postUrl = `${baseUrl}?post=${post.id}`;
+      // חילוץ כתובת האתר הנקייה (ללא פרמטרים קודמים) והוספת מזהה הפוסט המדויק
+      const cleanUrl = window.location.href.split('?')[0];
+      const postUrl = `${cleanUrl}?post=${post.id}`;
       await navigator.clipboard.writeText(postUrl);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2500);

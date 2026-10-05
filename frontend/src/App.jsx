@@ -131,7 +131,7 @@ const TRANSLATIONS = {
     reportComment: 'דיווח על תגובה',
     reportSuccess: 'הדיווח נשלח לבדיקת הנהלת הקהילה. תודה!',
     deletePost: 'מחיקת פוסט',
-    deletePostConfirm: 'האם את בטוחה שברצונך למחוק פוסט זה?',
+    deletePostConfirm: 'Are you sure you want to delete this post?',
     reply: 'הגב',
     replyPlaceholder: 'כתיבת תגובה...',
     sendReply: 'שלח',
@@ -259,6 +259,7 @@ export default function App() {
     { key: 'games', label: t.games, icon: '🎮' }
   ];
 
+  // בדיקת Deep Link בטעינת האתר הראשונית (בלתי תלוי בקטגוריה)
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -275,6 +276,20 @@ export default function App() {
         }
       })
       .catch(() => {});
+
+    // בדיקה ישירה של ה-URL לזיהוי פוסט ממוקד בטעינה הראשונה
+    const params = new URLSearchParams(window.location.search);
+    const postIdParam = params.get('post');
+    if (postIdParam) {
+      API.get('/posts')
+        .then((res) => {
+          const target = res.data.find(p => p.id.toString() === postIdParam.toString());
+          if (target) {
+            setSelectedImageModalPost(target);
+          }
+        })
+        .catch((err) => console.error('Failed to resolve deep link post', err));
+    }
   }, []);
 
   const fetchPosts = async () => {
@@ -283,16 +298,6 @@ export default function App() {
       const url = selectedCategory === 'all' ? '/posts' : `/posts?category=${selectedCategory}`;
       const res = await API.get(url);
       setPosts(res.data);
-
-      // בדיקת Deep Link לפוסט ספציפי בטעינת האתר
-      const params = new URLSearchParams(window.location.search);
-      const postIdParam = params.get('post');
-      if (postIdParam && res.data.length > 0) {
-        const targetPost = res.data.find(p => p.id.toString() === postIdParam.toString());
-        if (targetPost) {
-          setSelectedImageModalPost(targetPost);
-        }
-      }
     } catch (err) {
       console.error('Failed to load posts', err);
     }
