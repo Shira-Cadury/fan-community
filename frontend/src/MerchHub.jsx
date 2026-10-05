@@ -276,7 +276,7 @@ export default function MerchHub({ lang, isAdmin }) {
 
               {selectedItem.external_link && (
                 <a href={selectedItem.external_link} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--primary-rose)', color: '#fff', textDecoration: 'none', padding: '0.75rem 1.5rem', borderRadius: '20px', fontWeight: 600, fontSize: '0.9rem' }}>
-                  {isHe ? 'צפייה בפריט ברשת' : 'View Online'} <ExternalLink size/={16} />
+                  {isHe ? 'צפייה בפריט ברשת' : 'View Online'} <ExternalLink size={16} />
                 </a>
               )}
             </div>
