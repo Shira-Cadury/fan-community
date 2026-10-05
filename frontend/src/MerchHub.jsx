@@ -17,7 +17,8 @@ const ERAS = [
   { id: 'folklore', label: 'folklore', color: '#CFD8DC' },
   { id: 'evermore', label: 'evermore', color: '#D7CCC8' },
   { id: 'midnights', label: 'Midnights', color: '#9FA8DA' },
-  { id: 'ttpd', label: 'TTPD', color: '#D7CCC8' }
+  { id: 'ttpd', label: 'TTPD', color: '#D7CCC8' },
+  { id: 'showgirl', label: 'The Life Of a Showgirl', color: '#F48FB1' }
 ];
 
 const CATEGORIES = [
@@ -93,7 +94,6 @@ export default function MerchHub({ lang, isAdmin }) {
       });
       fetchItems();
     } catch (err) {
-      // חשיפת הודעת השגיאה המדויקת מהשרת לצורך דיבוג
       const detail = err.response?.data?.detail;
       if (Array.isArray(detail)) {
         alert(detail.map(d => `${d.loc?.slice(-1)[0]}: ${d.msg}`).join('\n'));
@@ -271,12 +271,12 @@ export default function MerchHub({ lang, isAdmin }) {
               </div>
 
               {selectedItem.description && (
-                <p style={{ lineHeight: '1.6', color: 'var(--text-dark)', marginBottom: '2rem', fontSize: '0.95rem' }}>{selectedItem.description}[cite: 12]</p>
+                <p style={{ lineHeight: '1.6', color: 'var(--text-dark)', marginBottom: '2rem', fontSize: '0.95rem' }}>{selectedItem.description}</p>
               )}
 
               {selectedItem.external_link && (
                 <a href={selectedItem.external_link} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--primary-rose)', color: '#fff', textDecoration: 'none', padding: '0.75rem 1.5rem', borderRadius: '20px', fontWeight: 600, fontSize: '0.9rem' }}>
-                  {isHe ? 'צפייה בפריט ברשת' : 'View Online'} <ExternalLink size={16} />
+                  {isHe ? 'צפייה בפריט ברשת' : 'View Online'} <ExternalLink size/={16} />
                 </a>
               )}
             </div>
