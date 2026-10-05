@@ -18,7 +18,7 @@ const CLOUDINARY_UPLOAD_PRESET = 'swift-preset';
 
 const isVideoUrl = (url) => {
   if (!url) return false;
-  return Boolean(url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$ /i) || url.includes('/video/upload/'));
+  return Boolean(url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i) || url.includes('/video/upload/'));
 };
 
 const DEFAULT_DAILY_SONG = {
@@ -53,6 +53,7 @@ const TRANSLATIONS = {
     games: 'Games',
     merch: "Collector's Corner",
     createTitle: 'Create a New Tale / Post',
+    editTitle: 'Edit Post',
     titlePlaceholder: 'Post title (optional)...',
     contentPlaceholder: 'Write your story or thoughts (optional)...',
     chooseImage: 'Upload Image / Video',
@@ -76,7 +77,7 @@ const TRANSLATIONS = {
     reportComment: 'Report comment',
     reportSuccess: 'Report submitted for moderation. Thank you for keeping our community safe!',
     deletePost: 'Delete post',
-    deletePostConfirm: 'Are you sure you want to delete this post?',
+    deletePostConfirm: 'Are you sure you want to delete post?',
     reply: 'Reply',
     replyPlaceholder: 'Write a reply...',
     sendReply: 'Reply',
@@ -108,6 +109,7 @@ const TRANSLATIONS = {
     games: 'משחקים',
     merch: "מרצ'נדייז ואספנות",
     createTitle: 'יצירת פוסט חדש',
+    editTitle: 'עריכת פוסט',
     titlePlaceholder: 'כותרת הפוסט (אופציונלי)...',
     contentPlaceholder: 'כתבי את המחשבות שלך (אופציונלי)...',
     chooseImage: 'העלאת תמונה או סרטון',
@@ -222,6 +224,7 @@ export default function App() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackBoardOpen, setIsFeedbackBoardOpen] = useState(false);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
+  const [editingPostId, setEditingPostId] = useState(null); // זיהוי פוסט במצב עריכה
   const [isUploadingMedia, setIsUploadingMedia] = useState(false);
   const [isExclusive, setIsExclusive] = useState(false);
   const [selectedImageModalPost, setSelectedImageModalPost] = useState(null);
@@ -259,7 +262,26 @@ export default function App() {
     { key: 'games', label: t.games, icon: '🎮' }
   ];
 
-  // בדיקת Deep Link בטעינת האתר הראשונית - שליפה ישירה של הפוסט הספציפי מהשרת
+  const checkIsExclusive = (post) => {
+    return Boolean(post?.title && post.title.includes('[EXCLUSIVE_POST]'));
+  };
+
+  const cleanDisplayTitle = (title) => {
+    if (!title) return '';
+    return title.replace(/\[EXCLUSIVE_POST\]\s*/g, '').trim() || (lang === 'he' ? 'ללא כותרת' : 'Untitled');
+  };
+
+  // פתיחת מצב עריכה לפוסט קיים
+  const handleStartEditPost = (post) => {
+    setEditingPostId(post.id);
+    setPostCategory(post.category || 'discussions');
+    setPostTitle(cleanDisplayTitle(post.title));
+    setPostContent(post.content || '');
+    setPostImageUrl(post.image_url || '');
+    setIsExclusive(checkIsExclusive(post));
+    setIsCreatingPost(true);
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -277,7 +299,6 @@ export default function App() {
       })
       .catch(() => {});
 
-    // שליפה ישירה של הפוסט הספציפי לפי ה-ID מה-URL
     const params = new URLSearchParams(window.location.search);
     const postIdParam = params.get('post');
     if (postIdParam) {
@@ -369,7 +390,8 @@ export default function App() {
 
   const isVisualCategory = postCategory === 'gallery' || postCategory === 'theories';
 
-  const handleCreatePost = async (e) => {
+  // יצירת פוסט חדש או עדכון פוסט קיים בהתאם ל-editingPostId
+  const handleSavePost = async (e) => {
     e.preventDefault();
 
     if (isVisualCategory && !postImageUrl.trim() && !postTitle.trim() && !postContent.trim()) {
@@ -389,16 +411,29 @@ export default function App() {
     const finalContent = postContent.trim() || '';
 
     try {
-      await API.post('/posts', {
-        title: finalTitle,
-        content: finalContent,
-        category: postCategory,
-        image_url: postImageUrl.trim() ? postImageUrl.trim() : null,
-      });
+      if (editingPostId) {
+        // עדכון פוסט קיים בשרת
+        await API.put(`/posts/${editingPostId}`, {
+          title: finalTitle,
+          content: finalContent,
+          category: postCategory,
+          image_url: postImageUrl.trim() ? postImageUrl.trim() : null,
+        });
+      } else {
+        // יצירת פוסט חדש
+        await API.post('/posts', {
+          title: finalTitle,
+          content: finalContent,
+          category: postCategory,
+          image_url: postImageUrl.trim() ? postImageUrl.trim() : null,
+        });
+      }
+
       setPostTitle('');
       setPostContent('');
       setPostImageUrl('');
       setIsExclusive(false);
+      setEditingPostId(null);
       setIsCreatingPost(false);
       fetchPosts();
     } catch (err) {
@@ -408,7 +443,7 @@ export default function App() {
       } else if (typeof detail === 'string') {
         alert(detail);
       } else {
-        alert('Failed to create post. Please check input requirements.');
+        alert('Failed to save post. Please check input requirements.');
       }
     }
   };
@@ -494,15 +529,6 @@ export default function App() {
 
   const isGridCategory = selectedCategory === 'gallery' || selectedCategory === 'theories';
 
-  const checkIsExclusive = (post) => {
-    return Boolean(post?.title && post.title.includes('[EXCLUSIVE_POST]'));
-  };
-
-  const cleanDisplayTitle = (title) => {
-    if (!title) return '';
-    return title.replace(/\[EXCLUSIVE_POST\]\s*/g, '').trim() || (lang === 'he' ? 'ללא כותרת' : 'Untitled');
-  };
-
   return (
     <div dir={lang === 'he' ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar
@@ -510,8 +536,12 @@ export default function App() {
         onOpenAuth={() => setIsAuthOpen(true)}
         onLogout={handleLogout}
         onOpenNewPost={() => {
-          setIsCreatingPost(true);
+          setEditingPostId(null);
+          setPostTitle('');
+          setPostContent('');
+          setPostImageUrl('');
           setIsExclusive(false);
+          setIsCreatingPost(true);
           if (selectedCategory !== 'all' && selectedCategory !== 'games' && selectedCategory !== 'merch') {
             setPostCategory(selectedCategory);
           } else {
@@ -832,7 +862,7 @@ export default function App() {
 
         {isCreatingPost && selectedCategory !== 'games' && selectedCategory !== 'merch' && (
           <form
-            onSubmit={handleCreatePost}
+            onSubmit={handleSavePost}
             style={{
               backgroundColor: 'var(--bg-card)',
               border: '1.5px solid var(--primary-rose-light)',
@@ -843,7 +873,7 @@ export default function App() {
             }}
           >
             <h3 style={{ margin: '0 0 1rem 0', color: 'var(--primary-rose-dark)', fontSize: '1.25rem' }}>
-              {t.createTitle}
+              {editingPostId ? t.editTitle : t.createTitle}
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -1022,6 +1052,7 @@ export default function App() {
                   type="button"
                   onClick={() => {
                     setIsCreatingPost(false);
+                    setEditingPostId(null);
                     setPostImageUrl('');
                     setIsExclusive(false);
                   }}
@@ -1043,7 +1074,7 @@ export default function App() {
                     opacity: isUploadingMedia ? 0.7 : 1
                   }}
                 >
-                  {t.publish}
+                  {editingPostId ? t.save : t.publish}
                 </button>
               </div>
             </div>
@@ -1209,6 +1240,7 @@ export default function App() {
                   catTheme={CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all}
                   onToggleLike={handleToggleLike}
                   onDeletePost={handleDeletePost}
+                  onEditPost={handleStartEditPost}
                   onReportPost={handleReportPost}
                   onRequireAuth={() => setIsAuthOpen(true)}
                 />
@@ -1218,6 +1250,7 @@ export default function App() {
         )}
       </main>
 
+      {/* יתר המודאלים (Feedback, Song, ImageModal וכד׳ נשארים ללא שינוי) */}
       {isFeedbackBoardOpen && isAdmin && (
         <div
           onClick={() => setIsFeedbackBoardOpen(false)}
@@ -1831,7 +1864,7 @@ export default function App() {
                   postId={selectedImageModalPost.id}
                   user={user}
                   onRequireAuth={() => setIsAuthOpen(true)}
-                  t={t}
+                  tt={t}
                 />
               </div>
             </div>

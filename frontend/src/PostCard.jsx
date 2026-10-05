@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CommentsSection from './CommentsSection';
-import { Heart, MessageCircle, Flag, Tag, Trash2, Globe, Loader2, Share2 } from 'lucide-react';
+import { Heart, MessageCircle, Flag, Tag, Trash2, Globe, Loader2, Share2, Edit3 } from 'lucide-react';
 
 const isVideoUrl = (url) => {
   if (!url) return false;
@@ -16,6 +16,7 @@ export default function PostCard({
   catTheme,
   onToggleLike,
   onDeletePost,
+  onEditPost,
   onReportPost,
   onRequireAuth
 }) {
@@ -37,7 +38,6 @@ export default function PostCard({
 
   const handleShareClick = async () => {
     try {
-      // חילוץ כתובת האתר הנקייה (ללא פרמטרים קודמים) והוספת מזהה הפוסט המדויק
       const cleanUrl = window.location.href.split('?')[0];
       const postUrl = `${cleanUrl}?post=${post.id}`;
       await navigator.clipboard.writeText(postUrl);
@@ -111,22 +111,41 @@ export default function PostCard({
         </span>
 
         {isAdmin && (
-          <button
-            onClick={() => onDeletePost(post.id)}
-            title={t.deletePost}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: '#C2185B',
-              cursor: 'pointer',
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              opacity: 0.75
-            }}
-          >
-            <Trash2 size={16} />
-          </button>
+          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+            <button
+              onClick={() => onEditPost && onEditPost(post)}
+              title={isHe ? 'עריכת פוסט' : 'Edit post'}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                opacity: 0.75
+              }}
+            >
+              <Edit3 size={16} />
+            </button>
+
+            <button
+              onClick={() => onDeletePost(post.id)}
+              title={t.deletePost}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#C2185B',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                opacity: 0.75
+              }}
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
         )}
       </div>
 
@@ -221,7 +240,6 @@ export default function PostCard({
         </div>
       )}
 
-      {/* שורת האינטראקציה: לייקים, תגובות ושיתוף יושבים יחד בשורה אופקית */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
