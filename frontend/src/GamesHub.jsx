@@ -36,7 +36,7 @@ export default function MerchHub({ lang, isAdmin }) {
   const [searchQuery, setSearchQuery] = useState('');
   
   const [isAdding, setIsAdding] = useState(false);
-  const [editingItemId, setEditingItemId] = useState(null); // זיהוי פריט במצב עריכה
+  const [editingItemId, setEditingItemId] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -88,10 +88,8 @@ export default function MerchHub({ lang, isAdmin }) {
     e.preventDefault();
     try {
       if (editingItemId) {
-        // עדכון פריט קיים
         await API.put(`/collectibles/${editingItemId}`, formData);
       } else {
-        // הוספת פריט חדש
         await API.post('/collectibles', formData);
       }
 
@@ -127,8 +125,8 @@ export default function MerchHub({ lang, isAdmin }) {
       description: item.description || '',
       external_link: item.external_link || ''
     });
-    setSelectedItem(null); // סגירת מודאל הצפייה
-    setIsAdding(true); // פתיחת טופס העריכה
+    setSelectedItem(null);
+    setIsAdding(true);
   };
 
   const handleDelete = async (id) => {
@@ -175,7 +173,6 @@ export default function MerchHub({ lang, isAdmin }) {
         )}
       </div>
 
-      {/* שורת סינונים וחיפוש */}
       <div style={{ backgroundColor: 'var(--bg-card)', padding: '1.5rem', borderRadius: '20px', border: '1px solid var(--border-delicate)', marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <select value={selectedEra} onChange={(e) => setSelectedEra(e.target.value)} style={{ padding: '0.6rem 1rem', borderRadius: '14px', border: '1px solid var(--border-delicate)', backgroundColor: 'var(--bg-creamy)', fontWeight: 600, flex: '1 1 200px' }}>
@@ -197,7 +194,6 @@ export default function MerchHub({ lang, isAdmin }) {
         </div>
       </div>
 
-      {/* גריד פריטים */}
       {filteredItems.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
           <Disc3 size={48} opacity={0.3} style={{ marginBottom: '1rem' }} />
@@ -229,7 +225,6 @@ export default function MerchHub({ lang, isAdmin }) {
         </div>
       )}
 
-      {/* חלון הוספה / עריכת פריט (למנהלים בלבד) */}
       {isAdding && isAdmin && (
         <div onClick={() => setIsAdding(false)} style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem' }}>
           <form onClick={e => e.stopPropagation()} onSubmit={handleSubmit} style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: '24px', width: '100%', maxWidth: '500px', maxHeight: '90vh', overflowY: 'auto' }}>
@@ -275,7 +270,6 @@ export default function MerchHub({ lang, isAdmin }) {
         </div>
       )}
 
-      {/* מודאל צפייה בפריט */}
       {selectedItem && (
         <div onClick={() => setSelectedItem(null)} style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem', backdropFilter: 'blur(5px)' }}>
           <div onClick={e => e.stopPropagation()} style={{ backgroundColor: 'var(--bg-card)', borderRadius: '24px', maxWidth: '600px', width: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
@@ -296,9 +290,13 @@ export default function MerchHub({ lang, isAdmin }) {
                   <h2 style={{ margin: '0 0 1rem 0', fontFamily: '"Georgia", serif', color: 'var(--text-dark)' }}>{selectedItem.title}</h2>
                 </div>
                 {isAdmin && (
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <button onClick={() => handleStartEdit(selectedItem)} title={isHe ? 'עריכת פריט' : 'Edit item'} style={{ background: 'none', border: 'none', color: 'var(--primary-rose-dark)', cursor: 'pointer', padding: '4px' }}><Edit3 size={18} /></button>
-                    <button onClick={() => handleDelete(selectedItem.id)} title={isHe ? 'מחיקת פריט' : 'Delete item'} style={{ background: 'none', border: 'none', color: '#C62828', cursor: 'pointer', padding: '4px' }}><Trash2 size={18} /></button>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button onClick={() => handleStartEdit(selectedItem)} title={isHe ? 'עריכת פריט' : 'Edit item'} style={{ background: 'none', border: 'none', color: 'var(--primary-rose-dark)', cursor: 'pointer', padding: '4px' }}>
+                      <Edit3 size={18} />
+                    </button>
+                    <button onClick={() => handleDelete(selectedItem.id)} title={isHe ? 'מחיקת פריט' : 'Delete item'} style={{ background: 'none', border: 'none', color: '#C62828', cursor: 'pointer', padding: '4px' }}>
+                      <Trash2 size={18} />
+                    </button>
                   </div>
                 )}
               </div>
