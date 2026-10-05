@@ -22,10 +22,10 @@ const isVideoUrl = (url) => {
 };
 
 const DEFAULT_DAILY_SONG = {
-  title: "Enchanted (Taylor's Version)",
-  album: 'Speak Now',
-  explanation: 'שיר אגדי שלוכד את רגע ההתאהבות הראשוני והתקווה שהצד השני מרגיש בדיוק אותו דבר. בחרנו בו היום בגלל הליריקה הקסומה וההפקה הנוסטלגית!',
-  link: 'https://open.spotify.com/search/Enchanted%20Taylor%27s%20Version',
+  title: "I Forgot That You Existed",
+  album: 'Lover',
+  explanation: 'שיר פותח קליל ומשחרר שמלמד אותנו איך לשחרר אנרגיה שלילית ולהמשיך הלאה בחיוך!',
+  link: 'https://spotify.com',
   image_url: ''
 };
 
@@ -224,7 +224,7 @@ export default function App() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isFeedbackBoardOpen, setIsFeedbackBoardOpen] = useState(false);
   const [isCreatingPost, setIsCreatingPost] = useState(false);
-  const [editingPostId, setEditingPostId] = useState(null); // זיהוי פוסט במצב עריכה
+  const [editingPostId, setEditingPostId] = useState(null);
   const [isUploadingMedia, setIsUploadingMedia] = useState(false);
   const [isExclusive, setIsExclusive] = useState(false);
   const [selectedImageModalPost, setSelectedImageModalPost] = useState(null);
@@ -271,7 +271,6 @@ export default function App() {
     return title.replace(/\[EXCLUSIVE_POST\]\s*/g, '').trim() || (lang === 'he' ? 'ללא כותרת' : 'Untitled');
   };
 
-  // פתיחת מצב עריכה לפוסט קיים
   const handleStartEditPost = (post) => {
     setEditingPostId(post.id);
     setPostCategory(post.category || 'discussions');
@@ -390,7 +389,6 @@ export default function App() {
 
   const isVisualCategory = postCategory === 'gallery' || postCategory === 'theories';
 
-  // יצירת פוסט חדש או עדכון פוסט קיים בהתאם ל-editingPostId
   const handleSavePost = async (e) => {
     e.preventDefault();
 
@@ -412,7 +410,6 @@ export default function App() {
 
     try {
       if (editingPostId) {
-        // עדכון פוסט קיים בשרת
         await API.put(`/posts/${editingPostId}`, {
           title: finalTitle,
           content: finalContent,
@@ -420,7 +417,6 @@ export default function App() {
           image_url: postImageUrl.trim() ? postImageUrl.trim() : null,
         });
       } else {
-        // יצירת פוסט חדש
         await API.post('/posts', {
           title: finalTitle,
           content: finalContent,
@@ -1250,7 +1246,6 @@ export default function App() {
         )}
       </main>
 
-      {/* יתר המודאלים (Feedback, Song, ImageModal וכד׳ נשארים ללא שינוי) */}
       {isFeedbackBoardOpen && isAdmin && (
         <div
           onClick={() => setIsFeedbackBoardOpen(false)}
@@ -1864,7 +1859,7 @@ export default function App() {
                   postId={selectedImageModalPost.id}
                   user={user}
                   onRequireAuth={() => setIsAuthOpen(true)}
-                  tt={t}
+                  t={t}
                 />
               </div>
             </div>
