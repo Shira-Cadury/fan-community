@@ -18,7 +18,7 @@ const CLOUDINARY_UPLOAD_PRESET = 'swift-preset';
 
 const isVideoUrl = (url) => {
   if (!url) return false;
-  return Boolean(url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i) || url.includes('/video/upload/'));
+  return Boolean(url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$ /i) || url.includes('/video/upload/'));
 };
 
 const DEFAULT_DAILY_SONG = {
@@ -131,7 +131,7 @@ const TRANSLATIONS = {
     reportComment: 'דיווח על תגובה',
     reportSuccess: 'הדיווח נשלח לבדיקת הנהלת הקהילה. תודה!',
     deletePost: 'מחיקת פוסט',
-    deletePostConfirm: 'Are you sure you want to delete this post?',
+    deletePostConfirm: 'Are you sure you want to delete post?',
     reply: 'הגב',
     replyPlaceholder: 'כתיבת תגובה...',
     sendReply: 'שלח',
@@ -259,7 +259,7 @@ export default function App() {
     { key: 'games', label: t.games, icon: '🎮' }
   ];
 
-  // בדיקת Deep Link בטעינת האתר הראשונית (בלתי תלוי בקטגוריה)
+  // בדיקת Deep Link בטעינת האתר הראשונית - שליפה ישירה של הפוסט הספציפי מהשרת
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -277,18 +277,17 @@ export default function App() {
       })
       .catch(() => {});
 
-    // בדיקה ישירה של ה-URL לזיהוי פוסט ממוקד בטעינה הראשונה
+    // שליפה ישירה של הפוסט הספציפי לפי ה-ID מה-URL
     const params = new URLSearchParams(window.location.search);
     const postIdParam = params.get('post');
     if (postIdParam) {
-      API.get('/posts')
+      API.get(`/posts/${postIdParam}`)
         .then((res) => {
-          const target = res.data.find(p => p.id.toString() === postIdParam.toString());
-          if (target) {
-            setSelectedImageModalPost(target);
+          if (res.data) {
+            setSelectedImageModalPost(res.data);
           }
         })
-        .catch((err) => console.error('Failed to resolve deep link post', err));
+        .catch((err) => console.error('Failed to fetch specific post for deep link', err));
     }
   }, []);
 
