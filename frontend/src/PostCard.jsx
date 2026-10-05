@@ -27,7 +27,6 @@ export default function PostCard({
   const [isAnimatingLike, setIsAnimatingLike] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   
-  // מונה תגובות דינמי שמתעדכן מהרכיב הפנימי
   const [commentsCount, setCommentsCount] = useState(post.comments_count || 0);
 
   const handleLikeClick = () => {
@@ -38,7 +37,8 @@ export default function PostCard({
 
   const handleShareClick = async () => {
     try {
-      const postUrl = `${window.location.origin}?post=${post.id}`;
+      const baseUrl = window.location.origin + window.location.pathname;
+      const postUrl = `${baseUrl}?post=${post.id}`;
       await navigator.clipboard.writeText(postUrl);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2500);
@@ -220,6 +220,7 @@ export default function PostCard({
         </div>
       )}
 
+      {/* שורת האינטראקציה: לייקים, תגובות ושיתוף יושבים יחד בשורה אופקית */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -260,7 +261,6 @@ export default function PostCard({
             {post.likes_count || 0} {t.likes}
           </button>
 
-          {/* כפתור תגובות יחד עם בועת המונה הדינמית */}
           <button
             onClick={() => setIsCommentsOpen(!isCommentsOpen)}
             style={{

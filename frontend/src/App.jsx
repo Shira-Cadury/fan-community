@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 import AuthModal from './AuthModal';
 import AdminModal from './AdminModal';
 import GamesHub from './GamesHub';
-import MerchHub from './MerchHub'; // הוספנו את קטלוג המרצ'נדייז
+import MerchHub from './MerchHub';
 import AdminFeedbackBoard from './AdminFeedbackBoard';
 import PostCard from './PostCard';
 import CommentsSection from './CommentsSection';
@@ -283,6 +283,16 @@ export default function App() {
       const url = selectedCategory === 'all' ? '/posts' : `/posts?category=${selectedCategory}`;
       const res = await API.get(url);
       setPosts(res.data);
+
+      // בדיקת Deep Link לפוסט ספציפי בטעינת האתר
+      const params = new URLSearchParams(window.location.search);
+      const postIdParam = params.get('post');
+      if (postIdParam && res.data.length > 0) {
+        const targetPost = res.data.find(p => p.id.toString() === postIdParam.toString());
+        if (targetPost) {
+          setSelectedImageModalPost(targetPost);
+        }
+      }
     } catch (err) {
       console.error('Failed to load posts', err);
     }
@@ -512,7 +522,6 @@ export default function App() {
       />
 
       <main style={{ maxWidth: '850px', width: '100%', margin: '0 auto', padding: '1.5rem 1rem', flex: 1 }}>
-        {/* Banner */}
         <section style={{
           background: currentTheme.bg,
           border: `1px solid ${currentTheme.border}`,
@@ -551,7 +560,6 @@ export default function App() {
           </p>
         </section>
 
-        {/* שורת שיר יומי וחיפוש */}
         <div style={{
           display: 'flex',
           gap: '0.75rem',
@@ -650,7 +658,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* שורת חיפוש ומיון עבור פוסטים בלבד */}
           {selectedCategory !== 'games' && selectedCategory !== 'merch' && (
             <div style={{
               display: 'flex',
@@ -776,7 +783,6 @@ export default function App() {
           )}
         </div>
 
-        {/* שורת קטגוריות */}
         <div style={{
           display: 'flex',
           gap: '0.65rem',
@@ -820,7 +826,6 @@ export default function App() {
           })}
         </div>
 
-        {/* טופס פוסט חדש - לא מופיע במשחקים או מרצ'נדייז */}
         {isCreatingPost && selectedCategory !== 'games' && selectedCategory !== 'merch' && (
           <form
             onSubmit={handleCreatePost}
@@ -973,8 +978,7 @@ export default function App() {
                       style={{
                         position: 'absolute',
                         top: '8px',
-                        left: lang === 'he' ? '8px' : 'auto',
-                        right: lang === 'he' ? 'auto' : '8px',
+                        [lang === 'he' ? 'left' : 'right']: '8px',
                         backgroundColor: 'rgba(0,0,0,0.6)',
                         color: '#fff',
                         border: 'none',
@@ -1042,7 +1046,6 @@ export default function App() {
           </form>
         )}
 
-        {/* תוכן ראשי: משחקים / מרצ'נדייז / גלריה או תיאוריות (גריד) / כל השאר (פוסטים רגילים) */}
         {selectedCategory === 'games' ? (
           <GamesHub lang={lang} />
         ) : selectedCategory === 'merch' ? (
@@ -1211,7 +1214,6 @@ export default function App() {
         )}
       </main>
 
-      {/* פופאפ מודל: לוח משימות ובקשות */}
       {isFeedbackBoardOpen && isAdmin && (
         <div
           onClick={() => setIsFeedbackBoardOpen(false)}
@@ -1266,7 +1268,6 @@ export default function App() {
         </div>
       )}
 
-      {/* חלון סיפור השיר היומי */}
       {isDailySongModalOpen && (
         <div
           onClick={() => setIsDailySongModalOpen(false)}
@@ -1421,7 +1422,6 @@ export default function App() {
         </div>
       )}
 
-      {/* חלון עריכת שיר יומי */}
       {isEditSongModalOpen && (
         <div
           onClick={() => setIsEditSongModalOpen(false)}
@@ -1664,7 +1664,6 @@ export default function App() {
         </div>
       )}
 
-      {/* חלון הגדלת תמונה/סרטון במודאל כולל תגובות מלאות */}
       {selectedImageModalPost && (
         <div
           onClick={() => setSelectedImageModalPost(null)}
@@ -1823,7 +1822,6 @@ export default function App() {
                 </button>
               </div>
 
-              {/* אזור התגובות המובנה בתוך המודאל */}
               <div style={{ borderTop: '1px dashed var(--border-delicate)', paddingTop: '1rem' }}>
                 <CommentsSection
                   postId={selectedImageModalPost.id}
