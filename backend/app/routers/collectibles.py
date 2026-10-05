@@ -65,3 +65,30 @@ def delete_collectible(
     db.delete(db_item)
     db.commit()
     return {"message": "הפריט נמחק בהצלחה"}
+
+@router.put("/{item_id}", response_model=schemas.CollectibleOut)
+def update_collectible(
+    item_id: int,
+    item_in: schemas.CollectibleCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    if current_user.role != models.UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="רק מנהלות מורשות לעדכן פריטי אספנות",
+        )
+    
+    item = db.query(models.Collectible).filter(models.Collectible.id == item_id).first()
+    if not item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="הפריט לא נמצא",
+        )
+    
+    for key, value in item_in.dict().items():
+        setattr(item, key, value)
+    
+    db.commit()
+    db.refresh(item)
+    return item
