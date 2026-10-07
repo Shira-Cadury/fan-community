@@ -39,17 +39,20 @@ def get_current_user_optional(authorization: Optional[str] = Header(None), db: S
 @router.get("", response_model=List[schemas.PostOut])
 def get_posts(
     category: Optional[str] = Query(None),
+    limit: int = Query(12, ge=1, le=50),  # מחזיר 12 פוסטים לבקשה לחסכון אדיר ברוחב פס
+    skip: int = Query(0, ge=0),           # דילוג לצורך טעינה נוספת (Pagination)
     db: Session = Depends(get_db),
     current_user: Optional[models.User] = Depends(get_current_user_optional),
 ):
     query = db.query(models.Post)
     if category and category != "all":
         query = query.filter(func.lower(models.Post.category) == category.lower())
-    posts = query.order_by(models.Post.created_at.desc()).all()
+    
+    # שליפת כמות מוגבלת לפי skip ו-limit
+    posts = query.order_by(models.Post.created_at.desc()).offset(skip).limit(limit).all()
 
     for p in posts:
         p.likes_count = len(p.likes)
-        # בדיקה האם המשתמש המחובר עשה לייק לפוסט זה
         if current_user:
             p.is_liked = any(like.user_id == current_user.id for like in p.likes)
         else:

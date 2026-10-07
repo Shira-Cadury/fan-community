@@ -85,6 +85,7 @@ const TRANSLATIONS = {
     signInToComment: 'Sign in to join the conversation',
     postComment: 'Send',
     noCommentsYet: 'No replies yet. Start the conversation!',
+    loadMore: 'Load More Posts ✨'
   },
   he: {
     tagline: '',
@@ -141,6 +142,7 @@ const TRANSLATIONS = {
     signInToComment: 'התחברי כדי להגיב',
     postComment: 'פרסם',
     noCommentsYet: 'עדיין אין תגובות. היי הראשונה להגיב!',
+    loadMore: 'טען פוסטים נוספים ✨'
   }
 };
 
@@ -311,19 +313,43 @@ export default function App() {
     }
   }, []);
 
-  const fetchPosts = async () => {
+  // פונקציית טעינת פוסטים מעודכנת עם Pagination ו-Cache מקומי
+  const fetchPosts = async (isLoadMore = false, currentSkip = 0) => {
     if (selectedCategory === 'games' || selectedCategory === 'merch') return;
+    
+    const cacheKey = `swift_posts_${selectedCategory}_${currentSkip}`;
+    const cachedTimeKey = `${cacheKey}_time`;
+    
+    if (!isLoadMore) {
+      const savedData = localStorage.getItem(cacheKey);
+      const savedTime = localStorage.getItem(cachedTimeKey);
+      if (savedData && savedTime && (Date.now() - Number(savedTime) < 5 * 60 * 1000)) {
+        setPosts(JSON.parse(savedData));
+        return;
+      }
+    }
+
     try {
-      const url = selectedCategory === 'all' ? '/posts' : `/posts?category=${selectedCategory}`;
+      const url = selectedCategory === 'all' 
+        ? `/posts?limit=12&skip=${currentSkip}` 
+        : `/posts?category=${selectedCategory}&limit=12&skip=${currentSkip}`;
+        
       const res = await API.get(url);
-      setPosts(res.data);
+      
+      if (isLoadMore) {
+        setPosts((prev) => [...prev, ...res.data]);
+      } else {
+        setPosts(res.data);
+        localStorage.setItem(cacheKey, JSON.stringify(res.data));
+        localStorage.setItem(cachedTimeKey, Date.now().toString());
+      }
     } catch (err) {
       console.error('Failed to load posts', err);
     }
   };
 
   useEffect(() => {
-    fetchPosts();
+    fetchPosts(false, 0);
   }, [selectedCategory]);
 
   const handleLogout = () => {
@@ -431,7 +457,7 @@ export default function App() {
       setIsExclusive(false);
       setEditingPostId(null);
       setIsCreatingPost(false);
-      fetchPosts();
+      fetchPosts(false, 0);
     } catch (err) {
       const detail = err.response?.data?.detail;
       if (Array.isArray(detail)) {
@@ -482,7 +508,7 @@ export default function App() {
       }
     } catch (err) {
       console.error('Failed to toggle like', err);
-      fetchPosts();
+      fetchPosts(false, 0);
     }
   };
 
@@ -1095,116 +1121,139 @@ export default function App() {
                 {searchQuery ? t.noSearchPosts : t.noPosts}
               </div>
             ) : (
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))',
-                gap: '4px'
-              }}>
-                {processedPosts.map((post) => {
-                  const postExclusive = checkIsExclusive(post);
-                  return (
-                    <div
-                      key={post.id}
-                      onClick={() => setSelectedImageModalPost(post)}
-                      style={{
-                        position: 'relative',
-                        borderRadius: '8px',
-                        overflow: 'hidden',
-                        aspectRatio: '1 / 1',
-                        backgroundColor: 'var(--bg-subtle)',
-                        border: postExclusive ? '1.5px solid #AB47BC' : '1px solid var(--border-delicate)',
-                        cursor: 'pointer',
-                        boxShadow: postExclusive ? '0 2px 8px rgba(171, 71, 188, 0.25)' : '0 1px 4px rgba(0,0,0,0.03)',
-                        transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'scale(1.03)';
-                        e.currentTarget.style.boxShadow = '0 4px 10px rgba(216, 112, 147, 0.15)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1)';
-                        e.currentTarget.style.boxShadow = postExclusive ? '0 2px 8px rgba(171, 71, 188, 0.25)' : '0 1px 4px rgba(0,0,0,0.03)';
-                      }}
-                    >
-                      {postExclusive && (
+              <>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))',
+                  gap: '4px'
+                }}>
+                  {processedPosts.map((post) => {
+                    const postExclusive = checkIsExclusive(post);
+                    return (
+                      <div
+                        key={post.id}
+                        onClick={() => setSelectedImageModalPost(post)}
+                        style={{
+                          position: 'relative',
+                          borderRadius: '8px',
+                          overflow: 'hidden',
+                          aspectRatio: '1 / 1',
+                          backgroundColor: 'var(--bg-subtle)',
+                          border: postExclusive ? '1.5px solid #AB47BC' : '1px solid var(--border-delicate)',
+                          cursor: 'pointer',
+                          boxShadow: postExclusive ? '0 2px 8px rgba(171, 71, 188, 0.25)' : '0 1px 4px rgba(0,0,0,0.03)',
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'scale(1.03)';
+                          e.currentTarget.style.boxShadow = '0 4px 10px rgba(216, 112, 147, 0.15)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'scale(1)';
+                          e.currentTarget.style.boxShadow = postExclusive ? '0 2px 8px rgba(171, 71, 188, 0.25)' : '0 1px 4px rgba(0,0,0,0.03)';
+                        }}
+                      >
+                        {postExclusive && (
+                          <div style={{
+                            position: 'absolute',
+                            top: '3px',
+                            [lang === 'he' ? 'right' : 'left']: '3px',
+                            backgroundColor: 'rgba(123, 31, 162, 0.88)',
+                            color: '#FFD700',
+                            fontSize: '0.52rem',
+                            fontWeight: 800,
+                            padding: '1px 4px',
+                            borderRadius: '4px',
+                            zIndex: 2,
+                            backdropFilter: 'blur(2px)',
+                            letterSpacing: '0.2px'
+                          }}>
+                            ★ {t.exclusiveBadge}
+                          </div>
+                        )}
+
+                        {post.image_url ? (
+                          isVideoUrl(post.image_url) ? (
+                            <video
+                              src={post.image_url}
+                              muted
+                              preload="metadata"
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                          ) : (
+                            <img
+                              src={post.image_url}
+                              alt={cleanDisplayTitle(post.title)}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                          )
+                        ) : (
+                          <div style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '0.25rem',
+                            textAlign: 'center',
+                            color: 'var(--text-muted)',
+                            fontSize: '0.65rem'
+                          }}>
+                            {cleanDisplayTitle(post.title)}
+                          </div>
+                        )}
+
                         <div style={{
                           position: 'absolute',
-                          top: '3px',
-                          [lang === 'he' ? 'right' : 'left']: '3px',
-                          backgroundColor: 'rgba(123, 31, 162, 0.88)',
-                          color: '#FFD700',
-                          fontSize: '0.52rem',
-                          fontWeight: 800,
-                          padding: '1px 4px',
-                          borderRadius: '4px',
-                          zIndex: 2,
-                          backdropFilter: 'blur(2px)',
-                          letterSpacing: '0.2px'
-                        }}>
-                          ★ {t.exclusiveBadge}
-                        </div>
-                      )}
-
-                      {post.image_url ? (
-                        isVideoUrl(post.image_url) ? (
-                          <video
-                            src={post.image_url}
-                            muted
-                            preload="metadata"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                        ) : (
-                          <img
-                            src={post.image_url}
-                            alt={cleanDisplayTitle(post.title)}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                        )
-                      ) : (
-                        <div style={{
-                          width: '100%',
-                          height: '100%',
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          background: 'linear-gradient(to top, rgba(0,0,0,0.65), transparent)',
+                          padding: '0.2rem 0.35rem',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '0.25rem',
-                          textAlign: 'center',
-                          color: 'var(--text-muted)',
+                          justifyContent: 'space-between',
+                          color: '#fff',
                           fontSize: '0.65rem'
                         }}>
-                          {cleanDisplayTitle(post.title)}
+                          <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '65%' }}>
+                            {cleanDisplayTitle(post.title)}
+                          </span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '0.62rem' }}>
+                            <Heart
+                              size={9}
+                              fill={post.is_liked ? '#fff' : 'none'}
+                              color="#fff"
+                            />
+                            {post.likes_count || 0}
+                          </span>
                         </div>
-                      )}
-
-                      <div style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        background: 'linear-gradient(to top, rgba(0,0,0,0.65), transparent)',
-                        padding: '0.2rem 0.35rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        color: '#fff',
-                        fontSize: '0.65rem'
-                      }}>
-                        <span style={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '65%' }}>
-                          {cleanDisplayTitle(post.title)}
-                        </span>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '0.62rem' }}>
-                          <Heart
-                            size={9}
-                            fill={post.is_liked ? '#fff' : 'none'}
-                            color="#fff"
-                          />
-                          {post.likes_count || 0}
-                        </span>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+
+                {posts.length >= 12 && (
+                  <div style={{ textAlign: 'center', margin: '2rem 0' }}>
+                    <button
+                      onClick={() => fetchPosts(true, posts.length)}
+                      style={{
+                        padding: '0.7rem 1.5rem',
+                        borderRadius: '20px',
+                        backgroundColor: 'var(--bg-creamy)',
+                        border: '1px solid var(--border-delicate)',
+                        color: 'var(--primary-rose-dark)',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
+                      }}
+                    >
+                      {t.loadMore}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         ) : (
@@ -1221,26 +1270,49 @@ export default function App() {
                 {searchQuery ? t.noSearchPosts : t.noPosts}
               </div>
             ) : (
-              processedPosts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  post={{
-                    ...post,
-                    title: cleanDisplayTitle(post.title),
-                    isExclusive: checkIsExclusive(post)
-                  }}
-                  user={user}
-                  isAdmin={isAdmin}
-                  lang={lang}
-                  t={t}
-                  catTheme={CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all}
-                  onToggleLike={handleToggleLike}
-                  onDeletePost={handleDeletePost}
-                  onEditPost={handleStartEditPost}
-                  onReportPost={handleReportPost}
-                  onRequireAuth={() => setIsAuthOpen(true)}
-                />
-              ))
+              <>
+                {processedPosts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={{
+                      ...post,
+                      title: cleanDisplayTitle(post.title),
+                      isExclusive: checkIsExclusive(post)
+                    }}
+                    user={user}
+                    isAdmin={isAdmin}
+                    lang={lang}
+                    t={t}
+                    catTheme={CATEGORY_THEMES[post.category] || CATEGORY_THEMES.all}
+                    onToggleLike={handleToggleLike}
+                    onDeletePost={handleDeletePost}
+                    onEditPost={handleStartEditPost}
+                    onReportPost={handleReportPost}
+                    onRequireAuth={() => setIsAuthOpen(true)}
+                  />
+                ))}
+
+                {posts.length >= 12 && (
+                  <div style={{ textAlign: 'center', margin: '2rem 0' }}>
+                    <button
+                      onClick={() => fetchPosts(true, posts.length)}
+                      style={{
+                        padding: '0.7rem 1.5rem',
+                        borderRadius: '20px',
+                        backgroundColor: 'var(--bg-creamy)',
+                        border: '1px solid var(--border-delicate)',
+                        color: 'var(--primary-rose-dark)',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
+                      }}
+                    >
+                      {t.loadMore}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </section>
         )}
