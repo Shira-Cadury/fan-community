@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel
+from mangum import Mangum
 
 from app.database import Base, engine, SessionLocal
 import app.models as models
@@ -74,3 +75,8 @@ app.include_router(collectibles.router)
 @app.get("/")
 def health_check():
     return {"status": "ok", "message": "Fan Community API is running"}
+
+# Vercel Serverless Handler
+handler = Mangum(app)
+
+
