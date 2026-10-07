@@ -1,10 +1,9 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://fan-community-delta.vercel.app',
+  baseURL: '/api',
 });
 
-// Attach JWT token automatically to every request if present
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {

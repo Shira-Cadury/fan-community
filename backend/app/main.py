@@ -10,7 +10,6 @@ import app.models as models
 import app.schemas as schemas
 from app.routers import auth, comments, likes, posts, reports, collectibles
 
-# Dependency for database session
 def get_db():
     db = SessionLocal()
     try:
@@ -18,7 +17,6 @@ def get_db():
     finally:
         db.close()
 
-# Create database tables automatically
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -27,7 +25,6 @@ app = FastAPI(
     description="Backend API for the Fan Community platform",
 )
 
-# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -36,7 +33,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Schema for Daily Song
 class DailySongSchema(BaseModel):
     title: str
     album: str
@@ -44,7 +40,6 @@ class DailySongSchema(BaseModel):
     link: Optional[str] = None
     image_url: Optional[str] = None
 
-# זיכרון זמני לשיר היומי (או שאפשר לשמור במסד הנתונים)
 current_daily_song = {
     "title": "Enchanted (Taylor's Version)",
     "album": "Speak Now",
@@ -53,30 +48,25 @@ current_daily_song = {
     "image_url": ""
 }
 
-@app.get("/daily-song")
+@app.get("/api/daily-song")
 def get_daily_song():
     return current_daily_song
 
-@app.post("/daily-song")
+@app.post("/api/daily-song")
 def update_daily_song(song: DailySongSchema):
     global current_daily_song
     current_daily_song = song.dict()
     return {"status": "success", "data": current_daily_song}
 
-# Register routers
-app.include_router(auth.router)
-app.include_router(posts.router)
-app.include_router(comments.router)
-app.include_router(likes.router)
-app.include_router(reports.router)
-app.include_router(collectibles.router)
+app.include_router(auth.router, prefix="/api")
+app.include_router(posts.router, prefix="/api")
+app.include_router(comments.router, prefix="/api")
+app.include_router(likes.router, prefix="/api")
+app.include_router(reports.router, prefix="/api")
+app.include_router(collectibles.router, prefix="/api")
 
-
-@app.get("/")
+@app.get("/api")
 def health_check():
     return {"status": "ok", "message": "Fan Community API is running"}
 
-# Vercel Serverless Handler
 handler = Mangum(app)
-
-

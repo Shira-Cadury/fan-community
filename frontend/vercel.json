@@ -1,6 +1,19 @@
 {
+  "functions": {
+    "backend/main.py": {
+      "maxDuration": 30
+    }
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/backend/main.py" },
+    { "source": "/posts", "destination": "/backend/main.py" },
+    { "source": "/posts/(.*)", "destination": "/backend/main.py" },
+    { "source": "/auth/(.*)", "destination": "/backend/main.py" },
+    { "source": "/comments/(.*)", "destination": "/backend/main.py" },
+    { "source": "/likes/(.*)", "destination": "/backend/main.py" },
+    { "source": "/reports/(.*)", "destination": "/backend/main.py" },
+    { "source": "/collectibles/(.*)", "destination": "/backend/main.py" },
+    { "source": "/daily-song", "destination": "/backend/main.py" },
     { "source": "(.*)", "destination": "/frontend/$1" }
   ]
 }
