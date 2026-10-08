@@ -5,7 +5,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from mangum import Mangum
 
-from backend.app.database import Base, engine, SessionLocal
+from .database import Base, engine, SessionLocal
 import app.models as models
 import app.schemas as schemas
 from app.routers import auth, comments, likes, posts, reports, collectibles
