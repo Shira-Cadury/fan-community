@@ -2,10 +2,8 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# אם קיים משתנה סביבה של ענן (PostgreSQL) נשתמש בו, אחרת נשתמש ב-SQLite המקומי
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./fan_community.db")
 
-# התאמה קטנה עבור Render (לפעמים מספקים postgres:// במקום postgresql://)
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 

@@ -2,9 +2,9 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app import models, schemas
-from app.database import get_db
-from app.routers.auth import get_current_user
+from . import models, schemas
+from .database import get_db
+from .routers.auth import get_current_user
 
 router = APIRouter(prefix="/posts", tags=["likes"])
 

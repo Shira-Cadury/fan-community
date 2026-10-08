@@ -6,8 +6,8 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from app import models, schemas
-from app.database import get_db
+from . import models, schemas
+from .database import get_db
 
 SECRET_KEY = "swift-secret-fan-community-super-secret-key"
 ALGORITHM = "HS256"

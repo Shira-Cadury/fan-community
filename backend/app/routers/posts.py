@@ -6,11 +6,10 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from deep_translator import GoogleTranslator
 
-from app import models, schemas
-from app.database import get_db
-from app.routers.auth import get_current_user
+from . import models, schemas
+from .database import get_db
+from .routers.auth import get_current_user, SECRET_KEY, ALGORITHM
 import jwt
-from app.routers.auth import SECRET_KEY, ALGORITHM
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 

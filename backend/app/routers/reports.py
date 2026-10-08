@@ -2,10 +2,10 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.deps import get_current_user
-from app.models import Comment, Post, Report, ReportStatus, User, UserRole
-from app.schemas import ReportCreate, ReportOut
+from .database import get_db
+from .deps import get_current_user
+from .models import Comment, Post, Report, ReportStatus, User, UserRole
+from .schemas import ReportCreate, ReportOut
 
 router = APIRouter(prefix="/reports", tags=["Reports"])
 
