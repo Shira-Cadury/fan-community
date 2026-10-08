@@ -6,9 +6,9 @@ from pydantic import BaseModel
 from mangum import Mangum
 
 from .database import Base, engine, SessionLocal
-import app.models as models
-import app.schemas as schemas
-from app.routers import auth, comments, likes, posts, reports, collectibles
+from . import models as models
+from . import schemas as schemas
+from .routers import auth, comments, likes, posts, reports, collectibles
 
 def get_db():
     db = SessionLocal()
