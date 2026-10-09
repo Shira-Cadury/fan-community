@@ -2,9 +2,9 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from . import models, schemas
-from .database import get_db
-from .routers.auth import get_current_user
+from .. import models, schemas
+from ..database import get_db
+from ..routers.auth import get_current_user
 
 router = APIRouter(prefix="/collectibles", tags=["collectibles"])
 
