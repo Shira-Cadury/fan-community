@@ -18,7 +18,7 @@ const CLOUDINARY_UPLOAD_PRESET = 'swift-preset';
 
 const isVideoUrl = (url) => {
   if (!url) return false;
-  return Boolean(url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i) || url.includes('/video/upload/'));
+  return Boolean(url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$|i/i) || url.includes('/video/upload/'));
 };
 
 const DEFAULT_DAILY_SONG = {
@@ -313,7 +313,6 @@ export default function App() {
     }
   }, []);
 
-  // פונקציית טעינת פוסטים מעודכנת עם Pagination ו-Cache מקומי
   const fetchPosts = async (isLoadMore = false, currentSkip = 0) => {
     if (selectedCategory === 'games' || selectedCategory === 'merch') return;
     
