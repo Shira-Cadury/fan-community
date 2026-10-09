@@ -24,7 +24,7 @@ const isVideoUrl = (url) => {
 const DEFAULT_DAILY_SONG = {
   title: "I Forgot That You Existed",
   album: 'Lover',
-  explanation: 'שיר פותח קליל ומשחרר שמלמד אותנו איך לשחרר אנרגיה שלילית ולהمשיך הלאה בחיוך!',
+  explanation: 'שיר פותח קליל ומשחרר שמלמד אותנו איך לשחרר אנרגיה שלילית ולהמשיך הלאה בחיוך!',
   link: 'https://spotify.com',
   image_url: ''
 };
@@ -315,18 +315,6 @@ export default function App() {
 
   const fetchPosts = async (isLoadMore = false, currentSkip = 0) => {
     if (selectedCategory === 'games' || selectedCategory === 'merch') return;
-    
-    const cacheKey = `swift_posts_${selectedCategory}_${currentSkip}`;
-    const cachedTimeKey = `${cacheKey}_time`;
-    
-    if (!isLoadMore) {
-      const savedData = localStorage.getItem(cacheKey);
-      const savedTime = localStorage.getItem(cachedTimeKey);
-      if (savedData && savedTime && (Date.now() - Number(savedTime) < 5 * 60 * 1000)) {
-        setPosts(JSON.parse(savedData));
-        return;
-      }
-    }
 
     try {
       const url = selectedCategory === 'all' 
@@ -339,8 +327,6 @@ export default function App() {
         setPosts((prev) => [...prev, ...res.data]);
       } else {
         setPosts(res.data);
-        localStorage.setItem(cacheKey, JSON.stringify(res.data));
-        localStorage.setItem(cachedTimeKey, Date.now().toString());
       }
     } catch (err) {
       console.error('Failed to load posts', err);
@@ -349,11 +335,12 @@ export default function App() {
 
   useEffect(() => {
     fetchPosts(false, 0);
-  }, [selectedCategory]);
+  }, [selectedCategory, user]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
+    fetchPosts(false, 0);
   };
 
   const handleMediaUploadToCloudinary = async (e, setTargetUrl) => {
@@ -500,19 +487,6 @@ export default function App() {
         );
 
       setPosts(updatePostsArray);
-
-      // עדכון ה-Cache ב-localStorage כך שהלייק נשמר גם בריענון
-      ['all', selectedCategory].forEach(cat => {
-        const cacheKey = `swift_posts_${cat}_0`;
-        const savedData = localStorage.getItem(cacheKey);
-        if (savedData) {
-          try {
-            const parsed = JSON.parse(savedData);
-            const updated = updatePostsArray(parsed);
-            localStorage.setItem(cacheKey, JSON.stringify(updated));
-          } catch (e) {}
-        }
-      });
 
       if (selectedImageModalPost && selectedImageModalPost.id === postId) {
         setSelectedImageModalPost((prev) => ({
