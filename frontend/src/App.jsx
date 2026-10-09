@@ -18,13 +18,13 @@ const CLOUDINARY_UPLOAD_PRESET = 'swift-preset';
 
 const isVideoUrl = (url) => {
   if (!url) return false;
-  return Boolean(url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$|i/i) || url.includes('/video/upload/'));
+  return Boolean(url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i) || url.includes('/video/upload/'));
 };
 
 const DEFAULT_DAILY_SONG = {
   title: "I Forgot That You Existed",
   album: 'Lover',
-  explanation: 'שיר פותח קליל ומשחרר שמלמד אותנו איך לשחרר אנרגיה שלילית ולהמשיך הלאה בחיוך!',
+  explanation: 'שיר פותח קליל ומשחרר שמלמד אותנו איך לשחרר אנרגיה שלילית ולהمשיך הלאה בחיוך!',
   link: 'https://spotify.com',
   image_url: ''
 };
@@ -491,13 +491,29 @@ export default function App() {
 
     try {
       const res = await API.post(`/posts/${postId}/like`);
-      setPosts((prevPosts) =>
+      
+      const updatePostsArray = (prevPosts) =>
         prevPosts.map((p) =>
           p.id === postId
             ? { ...p, likes_count: res.data.likes_count, is_liked: res.data.liked }
             : p
-        )
-      );
+        );
+
+      setPosts(updatePostsArray);
+
+      // עדכון ה-Cache ב-localStorage כך שהלייק נשמר גם בריענון
+      ['all', selectedCategory].forEach(cat => {
+        const cacheKey = `swift_posts_${cat}_0`;
+        const savedData = localStorage.getItem(cacheKey);
+        if (savedData) {
+          try {
+            const parsed = JSON.parse(savedData);
+            const updated = updatePostsArray(parsed);
+            localStorage.setItem(cacheKey, JSON.stringify(updated));
+          } catch (e) {}
+        }
+      });
+
       if (selectedImageModalPost && selectedImageModalPost.id === postId) {
         setSelectedImageModalPost((prev) => ({
           ...prev,
