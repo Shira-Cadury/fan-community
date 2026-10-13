@@ -71,7 +71,8 @@ class PostOut(PostBase):
     updated_at: Optional[datetime] = None
     author: UserOut
     likes_count: int = 0
-    is_liked: bool = False  # הוספנו את השדה החסר כאן!
+    is_liked: bool = False
+    comments_count: int = 0  
 
     class Config:
         from_attributes = True
