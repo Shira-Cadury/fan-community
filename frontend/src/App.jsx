@@ -1307,7 +1307,8 @@ export default function App() {
         )}
       </main>
 
-      {isFeedbackBoardOpen && isAdmin && (
+      {/* תוקן: הוסר תנאי ה-isAdmin כך שכל משתמש יכול לפתוח את חלון הפידבק והבאגים */}
+      {isFeedbackBoardOpen && (
         <div
           onClick={() => setIsFeedbackBoardOpen(false)}
           style={{
