@@ -63,13 +63,24 @@ export default function SwiftieLibrary({ lang, onBack }) {
 
   const currentQuote = LIBRARY_QUOTES[currentIdx];
 
-  // אתחול שלב חדש
+  // אתחול שלב חדש עם שילוב אותיות מבלבלות (Distractors) וכיווניות LTR
   useEffect(() => {
     if (!currentQuote) return;
     
-    // יצירת מערך אותיות מבולבל
-    const chars = currentQuote.word.split('');
-    const shuffled = chars.map((char, index) => ({ id: index, char }))
+    const wordChars = currentQuote.word.split('');
+    
+    // הגרלת 3 עד 4 אותיות מבלבלות אקראיות באנגלית
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numDistractors = Math.floor(Math.random() * 2) + 3; // 3 או 4 אותיות
+    const distractors = [];
+    for (let i = 0; i < numDistractors; i++) {
+      const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
+      distractors.push(randomChar);
+    }
+    
+    // שילוב אותיות המילה יחד עם האותיות המבלבלות וערבוב מוחלט
+    const allChars = [...wordChars, ...distractors];
+    const shuffled = allChars.map((char, index) => ({ id: index, char }))
                           .sort(() => Math.random() - 0.5);
     
     setAvailableLetters(shuffled);
@@ -87,7 +98,7 @@ export default function SwiftieLibrary({ lang, onBack }) {
     const newSelected = [...selectedLetters, letterObj];
     setSelectedLetters(newSelected);
 
-    // בדיקה אם המילה הושלמה
+    // בדיקה אם הושלם האורך של מילת הפתרון
     if (newSelected.length === currentQuote.word.length) {
       const formedWord = newSelected.map(l => l.char).join('');
       if (formedWord === currentQuote.word) {
@@ -102,11 +113,10 @@ export default function SwiftieLibrary({ lang, onBack }) {
           }
         }, 1500);
       } else {
-        // טעות - אפקט שקשוק וריקון
+        // טעות - אפקט שקשוק וריקון חזרה למאגר המבולבל
         setIsShake(true);
         setTimeout(() => {
           setIsShake(false);
-          // מחזיר הכל למצב המבולבל הקודם
           setAvailableLetters(prev => [...prev, ...newSelected].sort(() => Math.random() - 0.5));
           setSelectedLetters([]);
         }, 800);
@@ -152,7 +162,6 @@ export default function SwiftieLibrary({ lang, onBack }) {
     );
   }
 
-  // אנימציית ה-Shake לטעויות (מוגדרת כ-inline style/keyframes)
   const shakeAnimation = `
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -175,7 +184,7 @@ export default function SwiftieLibrary({ lang, onBack }) {
         </div>
       </div>
 
-      {/* העיצוב של "דף מספר עתיק" */}
+      {/* דף מספר עתיק */}
       <div style={{ 
         backgroundColor: '#FAF6ED', 
         borderRadius: '16px 24px 24px 16px', 
@@ -190,12 +199,10 @@ export default function SwiftieLibrary({ lang, onBack }) {
         justifyContent: 'center'
       }}>
         
-        {/* אייקון ספרייה עליון */}
         <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', opacity: 0.3 }}>
           <BookOpen size={40} color="#75500A" />
         </div>
 
-        {/* מידע על הציטוט */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#967A45', fontWeight: 700 }}>
             {currentQuote.album} • {isHe ? `ציטוט ${currentIdx + 1}/${LIBRARY_QUOTES.length}` : `Quote ${currentIdx + 1}/${LIBRARY_QUOTES.length}`}
@@ -227,12 +234,13 @@ export default function SwiftieLibrary({ lang, onBack }) {
           )}
         </div>
 
-        {/* שורת המילה להרכבה */}
+        {/* שורת המילה להרכבה - מוגדרת בכיווניות LTR קבועה */}
         <div style={{ 
           display: 'flex', 
           justifyContent: 'center', 
           gap: '0.5rem', 
           marginBottom: '2.5rem',
+          direction: 'ltr',
           animation: isShake ? 'shake 0.4s ease-in-out' : 'none'
         }}>
           {Array.from({ length: currentQuote.word.length }).map((_, i) => {
@@ -260,9 +268,9 @@ export default function SwiftieLibrary({ lang, onBack }) {
           })}
         </div>
 
-        {/* שורת האותיות המפוזרות לבחירה */}
+        {/* שורת האותיות המפוזרות (כולל אותיות מבלבלות) - LTR */}
         {!isSuccess && (
-          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.8rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.8rem', direction: 'ltr' }}>
             {availableLetters.map(letter => (
               <button
                 key={`avail-${letter.id}`}
@@ -293,7 +301,6 @@ export default function SwiftieLibrary({ lang, onBack }) {
           </div>
         )}
 
-        {/* הודעת הצלחה */}
         {isSuccess && (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#2E7D32', animation: 'fadeIn 0.4s' }}>
             <CheckCircle2 size={32} style={{ marginBottom: '0.5rem' }} />
