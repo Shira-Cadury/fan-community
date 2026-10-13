@@ -52,6 +52,7 @@ def get_posts(
 
     for p in posts:
         p.likes_count = len(p.likes)
+        p.comments_count = len(p.comments)  # חישוב והצגת כמות התגובות האמיתית בפיד
         if current_user:
             p.is_liked = any(like.user_id == current_user.id for like in p.likes)
         else:
@@ -91,6 +92,7 @@ def create_post(
     db.refresh(db_post)
     db_post.likes_count = 0
     db_post.is_liked = False
+    db_post.comments_count = 0  # איפוס מונה התגובות בפוסט חדש[cite: 12]
     return db_post
 
 
