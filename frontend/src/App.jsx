@@ -45,9 +45,9 @@ const TRANSLATIONS = {
     sortLatest: 'Latest',
     sortPopular: 'Popular',
     allTopics: 'All Topics',
-    discussions: 'Discussions',
-    theories: 'Theories & Analyses',
     news: 'News & Updates',
+    theories: 'Theories & Analyses',
+    discussions: 'Discussions',
     events: 'Events',
     gallery: 'Gallery',
     games: 'Games',
@@ -102,9 +102,9 @@ const TRANSLATIONS = {
     sortLatest: 'הכי חדשים',
     sortPopular: 'הכי אהובים',
     allTopics: 'כל הנושאים',
-    discussions: 'דיונים',
-    theories: 'תיאוריות וניתוחים',
     news: 'חדשות ועדכונים',
+    theories: 'תיאוריות וניתוחים',
+    discussions: 'דיונים',
     events: 'אירועים',
     gallery: 'גלריה',
     games: 'משחקים',
@@ -253,11 +253,12 @@ export default function App() {
   const isAdmin = user && (user.role === 'admin' || user.username?.toLowerCase() === 'shira');
   const currentTheme = CATEGORY_THEMES[selectedCategory] || CATEGORY_THEMES.all;
 
+  // סדר הקטגוריות החדש: כל הנושאים, חדשות ועדכונים, תאוריות וניתוחים, דיונים...
   const categories = [
     { key: 'all', label: t.allTopics, icon: '✨' },
-    { key: 'discussions', label: t.discussions, icon: '💭' },
+    { key: 'news', label: t.news, icon: '📢' },
     { key: 'theories', label: t.theories, icon: '🔍' },
-    { key: 'news', label: t.news, icon: '📰' },
+    { key: 'discussions', label: t.discussions, icon: '💬' },
     { key: 'events', label: t.events, icon: '📅' },
     { key: 'gallery', label: t.gallery, icon: '🎨' },
     { key: 'merch', label: t.merch, icon: '💎' },
@@ -1307,7 +1308,6 @@ export default function App() {
         )}
       </main>
 
-      {/* תוקן: הוסר תנאי ה-isAdmin כך שכל משתמש יכול לפתוח את חלון הפידבק והבאגים */}
       {isFeedbackBoardOpen && (
         <div
           onClick={() => setIsFeedbackBoardOpen(false)}
