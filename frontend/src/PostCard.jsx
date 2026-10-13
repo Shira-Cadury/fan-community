@@ -58,8 +58,7 @@ export default function PostCard({
 
     setIsLoadingTranslation(true);
     try {
-      const hasHebrew = /[\u0590-\u05FF]/.test(post.content);
-      const targetLang = hasHebrew ? 'en' : 'iw';
+      const targetLang = 'en';
 
       const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(post.content)}`;
       const res = await fetch(url);
@@ -74,7 +73,7 @@ export default function PostCard({
       }
     } catch (err) {
       console.error('Translation error:', err);
-      alert(isHe ? 'שגיאה בטעינת התרגום' : 'Failed to fetch translation');
+      alert('Failed to fetch translation');
     } finally {
       setIsLoadingTranslation(false);
     }
@@ -193,7 +192,7 @@ export default function PostCard({
       {post.content && post.content.trim() !== '' && (
         <div style={{ marginBottom: '1.25rem' }}>
           <p 
-            dir={isTranslated && /^[A-Za-z0-9\s.,!?'"()-]+$/.test(translatedContent?.slice(0, 30) || '') ? 'ltr' : undefined}
+            dir={isTranslated ? 'ltr' : undefined}
             style={{
               margin: '0 0 0.5rem 0',
               color: 'var(--text-dark)',
@@ -231,10 +230,10 @@ export default function PostCard({
             )}
             <span>
               {isLoadingTranslation
-                ? (isHe ? 'מתרגם...' : 'Translating...')
+                ? 'Translating...'
                 : isTranslated
-                ? (isHe ? 'הצג מקור' : 'See original')
-                : (isHe ? 'הצג תרגום' : 'See translation')}
+                ? 'Show Original'
+                : '🌐 Translate'}
             </span>
           </button>
         </div>
