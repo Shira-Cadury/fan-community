@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API from './api';
-import { Send, CornerDownRight, Trash2, Flag, ShieldCheck, Loader2 } from 'lucide-react';
+import { Send, CornerDownRight, Trash2, Flag, ShieldCheck, Loader2, Globe } from 'lucide-react';
 
 export default function CommentsSection({ postId, user, onRequireAuth, t, onCommentsCountUpdate }) {
   const [comments, setComments] = useState([]);
@@ -8,6 +8,10 @@ export default function CommentsSection({ postId, user, onRequireAuth, t, onComm
   const [newCommentText, setNewCommentText] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
+
+  const [translatedComments, setTranslatedComments] = useState({});
+  const [translatingIds, setTranslatingIds] = useState({});
+  const [isCommentTranslated, setIsCommentTranslated] = useState({});
 
   const loadComments = async () => {
     setIsLoading(true);
@@ -74,6 +78,31 @@ export default function CommentsSection({ postId, user, onRequireAuth, t, onComm
       alert(t ? t.reportSuccess : 'Report submitted successfully.');
     } catch (err) {
       alert(err.response?.data?.detail || 'Failed to submit report');
+    }
+  };
+
+  const handleTranslateComment = async (commentId, content) => {
+    if (translatedComments[commentId]) {
+      setIsCommentTranslated(prev => ({ ...prev, [commentId]: !prev[commentId] }));
+      return;
+    }
+    if (!content || !content.trim()) return;
+
+    setTranslatingIds(prev => ({ ...prev, [commentId]: true }));
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(content)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data && data[0]) {
+        const fullTranslation = data[0].map((item) => item[0]).join('');
+        setTranslatedComments(prev => ({ ...prev, [commentId]: fullTranslation }));
+        setIsCommentTranslated(prev => ({ ...prev, [commentId]: true }));
+      }
+    } catch (err) {
+      console.error('Translation error:', err);
+      alert('Failed to fetch translation');
+    } finally {
+      setTranslatingIds(prev => ({ ...prev, [commentId]: false }));
     }
   };
 
@@ -184,9 +213,51 @@ export default function CommentsSection({ postId, user, onRequireAuth, t, onComm
                   </div>
                 </div>
 
-                <p style={{ margin: 0, color: c.is_deleted ? 'var(--text-muted)' : 'var(--text-dark)', fontStyle: c.is_deleted ? 'italic' : 'normal' }}>
-                  {c.content}
+                <p 
+                  dir={isCommentTranslated[c.id] ? 'ltr' : undefined}
+                  style={{ 
+                    margin: 0, 
+                    color: c.is_deleted ? 'var(--text-muted)' : 'var(--text-dark)', 
+                    fontStyle: c.is_deleted ? 'italic' : 'normal',
+                    wordBreak: 'break-word'
+                  }}
+                >
+                  {isCommentTranslated[c.id] && translatedComments[c.id] ? translatedComments[c.id] : c.content}
                 </p>
+
+                {!c.is_deleted && c.content && c.content.trim() !== '' && (
+                  <button
+                    onClick={() => handleTranslateComment(c.id, c.content)}
+                    disabled={translatingIds[c.id]}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.3rem',
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--primary-rose-dark)',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      padding: '2px 0',
+                      marginTop: '0.3rem',
+                      opacity: 0.9
+                    }}
+                  >
+                    {translatingIds[c.id] ? (
+                      <Loader2 size={12} className="animate-spin" />
+                    ) : (
+                      <Globe size={12} />
+                    )}
+                    <span>
+                      {translatingIds[c.id]
+                        ? 'Translating...'
+                        : isCommentTranslated[c.id]
+                        ? 'Show Original'
+                        : '🌐 Translate'}
+                    </span>
+                  </button>
+                )}
 
                 {replyingTo === c.id && (
                   <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.4rem' }}>
