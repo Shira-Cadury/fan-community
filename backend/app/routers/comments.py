@@ -12,17 +12,18 @@ router = APIRouter(prefix="/posts/{post_id}/comments", tags=["comments"])
 
 @router.get("", response_model=List[schemas.CommentOut])
 def get_comments(post_id: int, db: Session = Depends(get_db)):
+    # שליפת התגובות ממוינות מהחדש לישן (descending) לחיסכון במשאבי עיבוד בצד הלקוח
     all_comments = (
         db.query(models.Comment)
         .filter(
             models.Comment.post_id == post_id,
             models.Comment.is_deleted == False,
         )
-        .order_by(models.Comment.created_at.asc())
+        .order_by(models.Comment.created_at.desc())
         .all()
     )
 
-    # בניית עץ התגובות ושיטוחו כך שכל תגובת-בת תופיע מיד מתחת לתגובת-האב שלה
+    # בניית עץ התגובות ושיטוחו כך שהתגובות החדשות מובילות בראש הרשימה
     root_comments = [c for c in all_comments if not c.parent_id]
     ordered_list = []
 

@@ -4,7 +4,7 @@ import { Send, CornerDownRight, Trash2, Flag, ShieldCheck, Loader2 } from 'lucid
 
 export default function CommentsSection({ postId, user, onRequireAuth, t, onCommentsCountUpdate }) {
   const [comments, setComments] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // סטייט חדש לניהול מצב טעינה
+  const [isLoading, setIsLoading] = useState(true);
   const [newCommentText, setNewCommentText] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
@@ -14,7 +14,6 @@ export default function CommentsSection({ postId, user, onRequireAuth, t, onComm
     try {
       const res = await API.get(`/posts/${postId}/comments`);
       setComments(res.data);
-      // מעדכן את האב בכמות התגובות הנוכחית
       if (onCommentsCountUpdate) {
         onCommentsCountUpdate(res.data.length);
       }
@@ -113,7 +112,6 @@ export default function CommentsSection({ postId, user, onRequireAuth, t, onComm
                       @{c.author?.username || 'member'}
                     </span>
 
-                    {/* תגית Admin מעוצבת למנהלות */}
                     {isCommentAdmin && (
                       <span style={{
                         display: 'inline-flex',
@@ -135,7 +133,6 @@ export default function CommentsSection({ postId, user, onRequireAuth, t, onComm
                   </div>
 
                   <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
-                    {/* כפתור תגובה */}
                     {commentDepth < 3 && user && (
                       <button
                         onClick={() => {
@@ -159,7 +156,6 @@ export default function CommentsSection({ postId, user, onRequireAuth, t, onComm
                       </button>
                     )}
 
-                    {/* דיווח על תגובה */}
                     <button
                       onClick={() => handleReportComment(c.id)}
                       title={t ? t.reportComment : 'Report comment'}
@@ -176,7 +172,6 @@ export default function CommentsSection({ postId, user, onRequireAuth, t, onComm
                       <Flag size={12} />
                     </button>
 
-                    {/* מחיקת תגובה - מוגבלת למנהלים בלבד */}
                     {user && user.role === 'admin' && !c.is_deleted && (
                       <button
                         onClick={() => handleDelete(c.id)}
@@ -193,7 +188,6 @@ export default function CommentsSection({ postId, user, onRequireAuth, t, onComm
                   {c.content}
                 </p>
 
-                {/* תיבת מענה לתגובה ספציפית */}
                 {replyingTo === c.id && (
                   <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.4rem' }}>
                     <input
