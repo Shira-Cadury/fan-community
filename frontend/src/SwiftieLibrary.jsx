@@ -50,6 +50,7 @@ export default function SwiftieLibrary({ lang, onBack }) {
   const isHe = lang === 'he';
   const BackIcon = isHe ? ArrowRight : ArrowLeft;
 
+  const [shuffledQuotes, setShuffledQuotes] = useState([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [score, setScore] = useState(0);
   
@@ -61,9 +62,15 @@ export default function SwiftieLibrary({ lang, onBack }) {
   const [showHint, setShowHint] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
 
-  const currentQuote = LIBRARY_QUOTES[currentIdx];
+  // ערבוב ראשוני של הציטוטים בעליית הקומפוננטה
+  useEffect(() => {
+    const randomized = [...LIBRARY_QUOTES].sort(() => Math.random() - 0.5);
+    setShuffledQuotes(randomized);
+  }, []);
 
-  // אתחול שלב חדש עם שילוב אותיות מבלבלות (Distractors) וכיווניות LTR
+  const currentQuote = shuffledQuotes[currentIdx];
+
+  // אתחול שלב חדש עם אותיות מבלבלות (Distractors) וכיווניות LTR
   useEffect(() => {
     if (!currentQuote) return;
     
@@ -71,14 +78,14 @@ export default function SwiftieLibrary({ lang, onBack }) {
     
     // הגרלת 3 עד 4 אותיות מבלבלות אקראיות באנגלית
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numDistractors = Math.floor(Math.random() * 2) + 3; // 3 או 4 אותיות
+    const numDistractors = Math.floor(Math.random() * 2) + 3;
     const distractors = [];
     for (let i = 0; i < numDistractors; i++) {
       const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
       distractors.push(randomChar);
     }
     
-    // שילוב אותיות המילה יחד עם האותיות המבלבלות וערבוב מוחלט
+    // שילוב אותיות המילה יחד עם המבלבלות וערבוב מוחלט
     const allChars = [...wordChars, ...distractors];
     const shuffled = allChars.map((char, index) => ({ id: index, char }))
                           .sort(() => Math.random() - 0.5);
@@ -93,27 +100,23 @@ export default function SwiftieLibrary({ lang, onBack }) {
   const handleLetterClick = (letterObj) => {
     if (isSuccess || isShake) return;
 
-    // העברה מהזמינים לנבחרים
     setAvailableLetters(prev => prev.filter(l => l.id !== letterObj.id));
     const newSelected = [...selectedLetters, letterObj];
     setSelectedLetters(newSelected);
 
-    // בדיקה אם הושלם האורך של מילת הפתרון
     if (newSelected.length === currentQuote.word.length) {
       const formedWord = newSelected.map(l => l.char).join('');
       if (formedWord === currentQuote.word) {
-        // הצלחה!
         setIsSuccess(true);
         setScore(prev => prev + 10);
         setTimeout(() => {
-          if (currentIdx + 1 < LIBRARY_QUOTES.length) {
+          if (currentIdx + 1 < shuffledQuotes.length) {
             setCurrentIdx(prev => prev + 1);
           } else {
             setIsGameOver(true);
           }
         }, 1500);
       } else {
-        // טעות - אפקט שקשוק וריקון חזרה למאגר המבולבל
         setIsShake(true);
         setTimeout(() => {
           setIsShake(false);
@@ -126,16 +129,20 @@ export default function SwiftieLibrary({ lang, onBack }) {
 
   const handleSelectedLetterClick = (letterObj) => {
     if (isSuccess || isShake) return;
-    // החזרה מהנבחרים לזמינים
     setSelectedLetters(prev => prev.filter(l => l.id !== letterObj.id));
     setAvailableLetters(prev => [...prev, letterObj]);
   };
 
   const handleRestart = () => {
+    // ערבוב מחדש של הציטוטים בכל משחק חדש
+    const randomized = [...LIBRARY_QUOTES].sort(() => Math.random() - 0.5);
+    setShuffledQuotes(randomized);
     setCurrentIdx(0);
     setScore(0);
     setIsGameOver(false);
   };
+
+  if (!currentQuote) return null;
 
   if (isGameOver) {
     return (
@@ -184,7 +191,6 @@ export default function SwiftieLibrary({ lang, onBack }) {
         </div>
       </div>
 
-      {/* דף מספר עתיק */}
       <div style={{ 
         backgroundColor: '#FAF6ED', 
         borderRadius: '16px 24px 24px 16px', 
@@ -205,7 +211,7 @@ export default function SwiftieLibrary({ lang, onBack }) {
 
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '2px', color: '#967A45', fontWeight: 700 }}>
-            {currentQuote.album} • {isHe ? `ציטוט ${currentIdx + 1}/${LIBRARY_QUOTES.length}` : `Quote ${currentIdx + 1}/${LIBRARY_QUOTES.length}`}
+            {currentQuote.album} • {isHe ? `ציטוט ${currentIdx + 1}/${shuffledQuotes.length}` : `Quote ${currentIdx + 1}/${shuffledQuotes.length}`}
           </span>
           
           <h3 style={{ 
@@ -234,7 +240,6 @@ export default function SwiftieLibrary({ lang, onBack }) {
           )}
         </div>
 
-        {/* שורת המילה להרכבה - מוגדרת בכיווניות LTR קבועה */}
         <div style={{ 
           display: 'flex', 
           justifyContent: 'center', 
@@ -268,7 +273,6 @@ export default function SwiftieLibrary({ lang, onBack }) {
           })}
         </div>
 
-        {/* שורת האותיות המפוזרות (כולל אותיות מבלבלות) - LTR */}
         {!isSuccess && (
           <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.8rem', direction: 'ltr' }}>
             {availableLetters.map(letter => (
