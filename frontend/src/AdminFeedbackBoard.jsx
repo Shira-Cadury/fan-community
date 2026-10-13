@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PlusCircle, CheckCircle, Trash2, ShieldCheck } from 'lucide-react';
+import { PlusCircle, CheckCircle, Trash2, ShieldCheck, MessageSquarePlus } from 'lucide-react';
 
 const CATEGORY_LABELS = {
   he: {
@@ -7,21 +7,23 @@ const CATEGORY_LABELS = {
     content: '📝 שינוי תוכן ושירים',
     games: '🎮 הערות למשחקים',
     bug: '🐛 תקלה / באג',
-    other: '💡 כללי'
+    other: '💡 כללי',
+    idea: '💡 רעיונות לשיפור האתר'
   },
   en: {
     design: '🎨 Design & UI',
     content: '📝 Content & Songs',
     games: '🎮 Games Feedback',
     bug: '🐛 Bug / Issue',
-    other: '💡 General'
+    other: '💡 General',
+    idea: '💡 Site Improvement Idea'
   }
 };
 
 export default function AdminFeedbackBoard({ user, lang }) {
   const isHe = lang === 'he';
   const categories = CATEGORY_LABELS[lang] || CATEGORY_LABELS.he;
-  const canManage = user?.username?.toLowerCase() === 'shira';
+  const canManage = user?.username?.toLowerCase() === 'shira' || user?.role === 'admin';
 
   const [notes, setNotes] = useState(() => {
     const saved = localStorage.getItem('swift_admin_notes');
@@ -30,7 +32,7 @@ export default function AdminFeedbackBoard({ user, lang }) {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [type, setType] = useState('design');
+  const [type, setType] = useState(canManage ? 'design' : 'bug');
 
   useEffect(() => {
     localStorage.setItem('swift_admin_notes', JSON.stringify(notes));
@@ -42,8 +44,8 @@ export default function AdminFeedbackBoard({ user, lang }) {
 
     const newNote = {
       id: Date.now(),
-      author: user?.username || (isHe ? 'מנהלת' : 'Admin'),
-      type,
+      author: user?.username || (isHe ? 'משתמש' : 'Member'),
+      type: canManage ? type : (type === 'idea' ? 'idea' : 'bug'),
       title: title.trim(),
       content: content.trim(),
       status: 'open',
@@ -69,7 +71,7 @@ export default function AdminFeedbackBoard({ user, lang }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-      {/* כרטיסיית כותרת קצרה ונקייה */}
+      {/* כרטיסיית כותרת */}
       <div style={{
         backgroundColor: 'var(--bg-card)',
         border: '1px solid var(--border-delicate)',
@@ -83,17 +85,21 @@ export default function AdminFeedbackBoard({ user, lang }) {
         gap: '0.5rem'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary-rose-dark)' }}>
-          <ShieldCheck size={20} />
+          {canManage ? <ShieldCheck size={20} /> : <MessageSquarePlus size={20} />}
           <h3 style={{ margin: 0, fontSize: '1.15rem', fontFamily: '"Georgia", serif' }}>
-            {isHe ? 'לוח ניהול ומשימות' : 'Admin Tasks Board'}
+            {canManage 
+              ? (isHe ? 'לוח ניהול ומשימות' : 'Admin Tasks Board')
+              : (isHe ? 'דיווח באגים והצעות לשיפור' : 'Report Bugs & Ideas')}
           </h3>
         </div>
         <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-          {isHe ? 'בקשות לשינויים, תיקונים ותוספות' : 'Requests, fixes and updates'}
+          {canManage 
+            ? (isHe ? 'בקשות לשינויים, תיקונים ותוספות' : 'Requests, fixes and updates')
+            : (isHe ? 'עזרו לנו לשפר את האתר!' : 'Help us improve the site!')}
         </span>
       </div>
 
-      {/* טופס הוספת בקשה */}
+      {/* טופס הוספת פנייה */}
       <form
         onSubmit={handleAddNote}
         style={{
@@ -120,11 +126,21 @@ export default function AdminFeedbackBoard({ user, lang }) {
               minWidth: '170px'
             }}
           >
-            <option value="design">{categories.design}</option>
-            <option value="content">{categories.content}</option>
-            <option value="games">{categories.games}</option>
-            <option value="bug">{categories.bug}</option>
-            <option value="other">{categories.other}</option>
+            {canManage ? (
+              <>
+                <option value="design">{categories.design}</option>
+                <option value="content">{categories.content}</option>
+                <option value="games">{categories.games}</option>
+                <option value="bug">{categories.bug}</option>
+                <option value="idea">{categories.idea}</option>
+                <option value="other">{categories.other}</option>
+              </>
+            ) : (
+              <>
+                <option value="bug">{categories.bug}</option>
+                <option value="idea">{categories.idea}</option>
+              </>
+            )}
           </select>
 
           <input
@@ -148,7 +164,7 @@ export default function AdminFeedbackBoard({ user, lang }) {
         <textarea
           rows={3}
           required
-          placeholder={isHe ? 'פירוט השינוי או התקלה...' : 'Details...'}
+          placeholder={isHe ? 'פירוט ההצעה או התיאור של הבאג...' : 'Details...'}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           style={{
@@ -179,12 +195,12 @@ export default function AdminFeedbackBoard({ user, lang }) {
             }}
           >
             <PlusCircle size={15} />
-            {isHe ? 'הוספה ללוח' : 'Add Note'}
+            {isHe ? 'שליחת פנייה' : 'Submit'}
           </button>
         </div>
       </form>
 
-      {/* רשימת הבקשות */}
+      {/* רשימת הפניות */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         {notes.length === 0 ? (
           <div style={{

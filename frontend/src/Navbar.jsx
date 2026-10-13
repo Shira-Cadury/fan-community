@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Sparkles, LogIn, LogOut, PlusCircle, 
-  ShieldCheck, ClipboardList, Globe, MessageCircle 
+  ShieldCheck, MessageSquarePlus, Globe, MessageCircle 
 } from 'lucide-react';
 
 export default function Navbar({
@@ -115,30 +115,29 @@ export default function Navbar({
             <span>{t.newPost}</span>
           </button>
 
-          {/* כפתור לוח משימות למנהלת */}
-          {isAdmin && (
-            <button
-              onClick={onOpenFeedbackBoard}
-              title={isHe ? 'לוח משימות ובקשות' : 'Tasks Board'}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.3rem',
-                padding: '0.45rem 0.75rem',
-                borderRadius: '16px',
-                backgroundColor: 'var(--bg-creamy)',
-                border: '1px solid var(--border-delicate)',
-                color: 'var(--text-dark)',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
-            >
-              <ClipboardList size={14} />
-            </button>
-          )}
+          {/* כפתור דיווח באגים והצעות (פתוח לכולם) */}
+          <button
+            onClick={onOpenFeedbackBoard}
+            title={isHe ? 'דיווח באגים והצעות לשיפור' : 'Report Bugs & Ideas'}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.3rem',
+              padding: '0.45rem 0.75rem',
+              borderRadius: '16px',
+              backgroundColor: 'var(--bg-creamy)',
+              border: '1px solid var(--border-delicate)',
+              color: 'var(--text-dark)',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              cursor: 'pointer'
+            }}
+          >
+            <MessageSquarePlus size={14} />
+            <span>{isHe ? 'באגים והצעות' : 'Feedback'}</span>
+          </button>
 
-          {/* כפתור פאנל ניהול */}
+          {/* כפתור פאנל ניהול (למנהלת בלבד) */}
           {isAdmin && (
             <button
               onClick={onOpenAdmin}
