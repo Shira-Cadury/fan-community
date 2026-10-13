@@ -22,6 +22,7 @@ export default function PostCard({
 }) {
   const isHe = lang === 'he';
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+  const [translatedTitle, setTranslatedTitle] = useState(null);
   const [translatedContent, setTranslatedContent] = useState(null);
   const [isTranslated, setIsTranslated] = useState(false);
   const [isLoadingTranslation, setIsLoadingTranslation] = useState(false);
@@ -49,24 +50,43 @@ export default function PostCard({
   };
 
   const handleTranslate = async () => {
-    if (translatedContent) {
+    if (translatedContent || translatedTitle) {
       setIsTranslated(!isTranslated);
       return;
     }
 
-    if (!post.content || !post.content.trim()) return;
+    const hasTitle = post.title && post.title !== 'Untitled';
+    const hasContent = post.content && post.content.trim() !== '';
+
+    if (!hasTitle && !hasContent) return;
 
     setIsLoadingTranslation(true);
     try {
       const targetLang = 'en';
+      const separator = ' [***] ';
+      
+      let textParts = [];
+      if (hasTitle) textParts.push(post.title);
+      if (hasContent) textParts.push(post.content);
 
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(post.content)}`;
+      const combinedText = textParts.join(separator);
+
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(combinedText)}`;
       const res = await fetch(url);
       const data = await res.json();
 
       if (data && data[0]) {
-        const fullTranslation = data[0].map((item) => item[0]).join('');
-        setTranslatedContent(fullTranslation);
+        const translatedFull = data[0].map((item) => item[0]).join('');
+        
+        if (hasTitle && hasContent) {
+          const parts = translatedFull.split(/\[\s*\*\*\*\s*\]/);
+          setTranslatedTitle(parts[0]?.trim() || post.title);
+          setTranslatedContent(parts[1]?.trim() || post.content);
+        } else if (hasTitle) {
+          setTranslatedTitle(translatedFull.trim());
+        } else {
+          setTranslatedContent(translatedFull.trim());
+        }
         setIsTranslated(true);
       } else {
         throw new Error('Empty response');
@@ -149,14 +169,18 @@ export default function PostCard({
       </div>
 
       {post.title && post.title !== 'Untitled' && (
-        <h3 style={{
-          margin: '0 0 0.6rem 0',
-          color: 'var(--text-dark)',
-          fontSize: '1.35rem',
-          fontFamily: '"Georgia", serif',
-          lineHeight: '1.3'
-        }}>
-          {post.title}
+        <h3 
+          dir={isTranslated ? 'ltr' : undefined}
+          style={{
+            margin: '0 0 0.6rem 0',
+            color: 'var(--text-dark)',
+            fontSize: '1.35rem',
+            fontFamily: '"Georgia", serif',
+            lineHeight: '1.3',
+            wordBreak: 'break-word'
+          }}
+        >
+          {isTranslated && translatedTitle ? translatedTitle : post.title}
         </h3>
       )}
 
@@ -205,7 +229,12 @@ export default function PostCard({
           >
             {isTranslated && translatedContent ? translatedContent : post.content}
           </p>
+        </div>
+      )}
 
+      {/* כפתור תרגום משותף לכותרת ולתוכן */}
+      {((post.title && post.title !== 'Untitled') || (post.content && post.content.trim() !== '')) && (
+        <div style={{ marginBottom: '1.25rem' }}>
           <button
             onClick={handleTranslate}
             disabled={isLoadingTranslation}
