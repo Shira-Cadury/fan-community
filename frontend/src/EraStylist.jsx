@@ -28,17 +28,17 @@ const TABS = [
 
 const WARDROBE = {
   hair: [
-    { id: 'h_lover', name: 'Pink Dip-Dye Hair', era: 'lover', emoji: '🌸', style: { top: '38px', fontSize: '55px', zIndex: 15 } },
-    { id: 'h_fearless', name: 'Long Curls', era: 'fearless', emoji: '👱‍♀️', style: { top: '35px', fontSize: '65px', zIndex: 15 } },
-    { id: 'h_speak', name: 'Elegant Wavy Hair', era: 'speak_now', emoji: '👩‍🰰', style: { top: '36px', fontSize: '60px', zIndex: 15 } },
-    { id: 'h_1989', name: 'Short Bob', era: '1989', emoji: '👩‍🦱', style: { top: '38px', fontSize: '55px', zIndex: 15 } },
-    { id: 'h_folklore', name: 'Braided Hair', era: 'folklore', emoji: '👧', style: { top: '36px', fontSize: '60px', zIndex: 15 } },
+    { id: 'h_lover', name: 'Pink Dip-Dye Hair', era: 'lover', emoji: '🌸', style: { top: '35px', fontSize: '55px', zIndex: 15 } },
+    { id: 'h_fearless', name: 'Long Curls', era: 'fearless', emoji: '👱‍♀️', style: { top: '32px', fontSize: '65px', zIndex: 15 } },
+    { id: 'h_speak', name: 'Elegant Wavy Hair', era: 'speak_now', emoji: '👩‍🰰', style: { top: '33px', fontSize: '60px', zIndex: 15 } },
+    { id: 'h_1989', name: 'Short Bob', era: '1989', emoji: '👩‍🦱', style: { top: '35px', fontSize: '55px', zIndex: 15 } },
+    { id: 'h_folklore', name: 'Braided Hair', era: 'folklore', emoji: '👧', style: { top: '33px', fontSize: '60px', zIndex: 15 } },
   ],
   makeup: [
-    { id: 'm_lover', name: 'Heart Glitter Eyes', era: 'lover', emoji: '💖', style: { top: '55px', fontSize: '28px', zIndex: 18 } },
-    { id: 'm_red', name: 'Classic Red Lips', era: 'red', emoji: '💋', style: { top: '70px', fontSize: '24px', zIndex: 18 } },
-    { id: 'm_rep', name: 'Dark Smoked Glam', era: 'reputation', emoji: '🖤', style: { top: '58px', fontSize: '28px', zIndex: 18 } },
-    { id: 'm_mid', name: 'Midnight Sparkle', era: 'midnights', emoji: '✨', style: { top: '55px', fontSize: '28px', zIndex: 18 } },
+    { id: 'm_lover', name: 'Heart Glitter Eyes', era: 'lover', emoji: '💖', style: { top: '50px', fontSize: '28px', zIndex: 18 } },
+    { id: 'm_red', name: 'Classic Red Lips', era: 'red', emoji: '💋', style: { top: '65px', fontSize: '24px', zIndex: 18 } },
+    { id: 'm_rep', name: 'Dark Smoked Glam', era: 'reputation', emoji: '🖤', style: { top: '52px', fontSize: '28px', zIndex: 18 } },
+    { id: 'm_mid', name: 'Midnight Sparkle', era: 'midnights', emoji: '✨', style: { top: '50px', fontSize: '28px', zIndex: 18 } },
   ],
   outfits: [
     { id: 'o_lover', name: 'Lover Bodysuit', era: 'lover', emoji: '🩰', style: { top: '110px', fontSize: '115px', zIndex: 20 } },
@@ -58,8 +58,8 @@ const WARDROBE = {
   ],
   accessories: [
     { id: 'a_scarf', name: 'Red Scarf', era: 'red', emoji: '🧣', style: { top: '90px', fontSize: '55px', zIndex: 25 } },
-    { id: 'a_glasses', name: 'White Sunglasses', era: '1989', emoji: '🕶️', style: { top: '53px', fontSize: '40px', zIndex: 28 } },
-    { id: 'a_fedora', name: 'Fedora Hat', era: 'red', emoji: '🎩', style: { top: '20px', fontSize: '50px', zIndex: 28 } },
+    { id: 'a_glasses', name: 'White Sunglasses', era: '1989', emoji: '🕶️', style: { top: '50px', fontSize: '40px', zIndex: 28 } },
+    { id: 'a_fedora', name: 'Fedora Hat', era: 'red', emoji: '🎩', style: { top: '15px', fontSize: '50px', zIndex: 28 } },
     { id: 'a_bracelet', name: 'Friendship Bracelet', era: 'lover', emoji: '📿', style: { top: '175px', left: '80px', fontSize: '35px', zIndex: 22 } },
   ],
   props: [
@@ -115,7 +115,7 @@ export default function EraStylist({ lang, onBack }) {
 
     let percentage = totalChosen > 0 ? Math.round((matches / totalChosen) * 100) : 0;
     if (totalChosen === 0) percentage = 0;
-    else if (percentage === 0) percentage = 35; // בונוס קטן לעידוד
+    else if (percentage === 0) percentage = 35;
 
     setScoreResult(percentage);
 
@@ -156,7 +156,7 @@ export default function EraStylist({ lang, onBack }) {
 
       setShareSuccess(true);
     } catch (err) {
-      alert('השמירה נכשלה, وדאי שאת מחוברת לחשבון.');
+      alert('השמירה נכשלה, ודאי שאת מחוברת לחשבון.');
     } finally {
       setIsSharing(false);
     }
@@ -224,7 +224,6 @@ export default function EraStylist({ lang, onBack }) {
         </button>
       </div>
 
-      {/* באנר המשימה היומי */}
       <div style={{
         background: 'linear-gradient(135deg, #FFF8E7 0%, #FFF3E0 100%)',
         border: '1.5px solid #FFE3A8',
@@ -247,7 +246,7 @@ export default function EraStylist({ lang, onBack }) {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', backgroundColor: 'var(--bg-card)', borderRadius: '24px', padding: '2rem', border: '1px solid var(--border-delicate)', boxShadow: '0 4px 18px rgba(0,0,0,0.03)' }}>
         
-        {/* אזור הדמות המלאה (Full Figure) */}
+        {/* אזור הדמות המלאה (Full Figure עם פרצוף משודרג ומתוק) */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
           <div 
             id="avatar-capture-area" 
@@ -259,20 +258,33 @@ export default function EraStylist({ lang, onBack }) {
               boxShadow: 'inset 0 0 20px rgba(0,0,0,0.02)'
             }}
           >
-            {/* שכבת בסיס: דמות מלאה (ראש, גוף, ידיים ושתי רגליים - z-index: 1) */}
+            {/* שכבת בסיס: דמות מלאה (ראש מעוצב, גוף, ידיים ושתי רגליים - z-index: 1) */}
             <div style={{ position: 'absolute', bottom: '10px', width: '90px', height: '360px', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              {/* ראש */}
-              <div style={{ width: '70px', height: '75px', backgroundColor: '#EAD1C5', borderRadius: '50%', position: 'relative', border: '2px solid #D5B8A9' }}>
-                {/* תווי פנים עדינים */}
-                <div style={{ position: 'absolute', top: '32px', left: '16px', width: '8px', height: '6px', backgroundColor: '#A77B63', borderRadius: '50%' }} />
-                <div style={{ position: 'absolute', top: '32px', right: '16px', width: '8px', height: '6px', backgroundColor: '#A77B63', borderRadius: '50%' }} />
-                <div style={{ position: 'absolute', top: '50px', left: '28px', width: '14px', height: '6px', borderBottom: '2px solid #C88981', borderRadius: '50%' }} />
+              
+              {/* ראש משודרג עם פנים מתוקות וסומק */}
+              <div style={{ width: '74px', height: '80px', backgroundColor: '#EAD1C5', borderRadius: '50% 50% 45% 45%', position: 'relative', border: '2px solid #D5B8A9', boxShadow: 'inset 0 -4px 8px rgba(0,0,0,0.03)' }}>
+                {/* סומק לחיים עדין ורוד */}
+                <div style={{ position: 'absolute', top: '42px', left: '10px', width: '12px', height: '7px', backgroundColor: 'rgba(232, 140, 150, 0.4)', borderRadius: '50%' }} />
+                <div style={{ position: 'absolute', top: '42px', right: '10px', width: '12px', height: '7px', backgroundColor: 'rgba(232, 140, 150, 0.4)', borderRadius: '50%' }} />
+                
+                {/* עיניים מתוקות עם ברק */}
+                <div style={{ position: 'absolute', top: '33px', left: '18px', width: '7px', height: '9px', backgroundColor: '#5A3E36', borderRadius: '50%' }}>
+                  <div style={{ position: 'absolute', top: '1px', left: '1px', width: '2px', height: '2px', backgroundColor: '#fff', borderRadius: '50%' }} />
+                </div>
+                <div style={{ position: 'absolute', top: '33px', right: '18px', width: '7px', height: '9px', backgroundColor: '#5A3E36', borderRadius: '50%' }}>
+                  <div style={{ position: 'absolute', top: '1px', left: '1px', width: '2px', height: '2px', backgroundColor: '#fff', borderRadius: '50%' }} />
+                </div>
+
+                {/* חיוך עדין ומתוק */}
+                <div style={{ position: 'absolute', top: '50px', left: '30px', width: '14px', height: '7px', borderBottom: '2.5px solid #C88981', borderRadius: '0 0 10px 10px' }} />
               </div>
+
               {/* גוף וזרועות */}
               <div style={{ width: '85px', height: '140px', backgroundColor: '#EAD1C5', borderRadius: '30px 30px 10px 10px', position: 'relative', marginTop: '-4px', border: '2px solid #D5B8A9' }}>
                 <div style={{ position: 'absolute', top: '10px', left: '-18px', width: '18px', height: '100px', backgroundColor: '#EAD1C5', borderRadius: '10px', transform: 'rotate(12deg)' }} />
                 <div style={{ position: 'absolute', top: '10px', right: '-18px', width: '18px', height: '100px', backgroundColor: '#EAD1C5', borderRadius: '10px', transform: 'rotate(-12deg)' }} />
               </div>
+
               {/* שתי רגליים ברורות */}
               <div style={{ display: 'flex', gap: '14px', marginTop: '-2px' }}>
                 <div style={{ width: '28px', height: '130px', backgroundColor: '#EAD1C5', borderRadius: '10px', border: '2px solid #D5B8A9' }} />
@@ -313,7 +325,7 @@ export default function EraStylist({ lang, onBack }) {
                 onClick={() => setActiveTab(tab.id)}
                 style={{
                   padding: '0.45rem 0.75rem', borderRadius: '12px', border: 'none', background: activeTab === tab.id ? 'var(--primary-rose)' : 'transparent',
-                  color: activeTab === tab.id ? '#fff' : 'var(--text-muted)', fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s'
+                  color: activeTab === tab.id ? '#fff' : 'var(--text-muted)', fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2'
                 }}
               >
                 {tab.icon} {tab.label}
