@@ -349,3 +349,4 @@ export default function CommentsSection({ postId, user, onRequireAuth, t, onComm
     </div>
   );
 }
+

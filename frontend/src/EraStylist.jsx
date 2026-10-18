@@ -19,55 +19,61 @@ const ERAS_CHALLENGES = [
 
 const TABS = [
   { id: 'hair', label: 'שיער', icon: '💇‍♀️' },
-  { id: 'makeup', label: 'איפור', icon: '💄' },
   { id: 'outfits', label: 'בגדים', icon: '👗' },
   { id: 'shoes', label: 'נעליים', icon: '👢' },
   { id: 'accessories', label: 'אקססוריז', icon: '💎' },
   { id: 'props', label: 'חפצים', icon: '🎸' }
 ];
 
+// מיפוי הפריטים מתוך 6 קובצי הקולאז' (wardrobe1.jpg עד wardrobe6.jpg)
 const WARDROBE = {
   hair: [
-    { id: 'h_lover', name: 'Pink Dip-Dye Hair', era: 'lover', emoji: '🌸', style: { top: '18px', left: '50%', transform: 'translateX(-50%)', fontSize: '50px', zIndex: 15 } },
-    { id: 'h_fearless', name: 'Long Curls', era: 'fearless', emoji: '👱‍♀️', style: { top: '15px', left: '50%', transform: 'translateX(-50%)', fontSize: '58px', zIndex: 15 } },
-    { id: 'h_speak', name: 'Elegant Wavy Hair', era: 'speak_now', emoji: '👩‍🰰', style: { top: '16px', left: '50%', transform: 'translateX(-50%)', fontSize: '55px', zIndex: 15 } },
-    { id: 'h_1989', name: 'Short Bob', era: '1989', emoji: '👩‍🦱', style: { top: '18px', left: '50%', transform: 'translateX(-50%)', fontSize: '50px', zIndex: 15 } },
-    { id: 'h_folklore', name: 'Braided Hair', era: 'folklore', emoji: '👧', style: { top: '16px', left: '50%', transform: 'translateX(-50%)', fontSize: '55px', zIndex: 15 } },
-  ],
-  makeup: [
-    { id: 'm_lover', name: 'Heart Glitter Eyes', era: 'lover', emoji: '💖', style: { top: '42px', left: '50%', transform: 'translateX(-50%)', fontSize: '22px', zIndex: 18 } },
-    { id: 'm_red', name: 'Classic Red Lips', era: 'red', emoji: '💋', style: { top: '54px', left: '50%', transform: 'translateX(-50%)', fontSize: '20px', zIndex: 18 } },
-    { id: 'm_rep', name: 'Dark Smoked Glam', era: 'reputation', emoji: '🖤', style: { top: '44px', left: '50%', transform: 'translateX(-50%)', fontSize: '22px', zIndex: 18 } },
-    { id: 'm_mid', name: 'Midnight Sparkle', era: 'midnights', emoji: '✨', style: { top: '42px', left: '50%', transform: 'translateX(-50%)', fontSize: '22px', zIndex: 18 } },
+    { id: 'h_1989', name: '1989 Blonde Hair', era: '1989', image: '/wardrobe1.jpg', crop: { top: '0%', left: '10%', width: '38%', height: '22%' }, avatarStyle: { top: '20px', left: '50%', transform: 'translateX(-50%)', width: '90px', zIndex: 15 } },
+    { id: 'h_lover', name: 'Pink Dip-Dye Hair', era: 'lover', image: '/wardrobe1.jpg', crop: { top: '50%', left: '38%', width: '28%', height: '22%' }, avatarStyle: { top: '22px', left: '50%', transform: 'translateX(-50%)', width: '85px', zIndex: 15 } },
+    { id: 'h_fearless', name: 'Fearless Curls', era: 'fearless', image: '/wardrobe2.jpg', crop: { top: '5%', left: '15%', width: '30%', height: '25%' }, avatarStyle: { top: '18px', left: '50%', transform: 'translateX(-50%)', width: '90px', zIndex: 15 } },
   ],
   outfits: [
-    { id: 'o_lover', name: 'Lover Bodysuit', era: 'lover', emoji: '🩰', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '100px', zIndex: 20 } },
-    { id: 'o_fearless', name: 'Gold Fringe Dress', era: 'fearless', emoji: '✨', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '100px', zIndex: 20 } },
-    { id: 'o_speak', name: 'Purple Ballgown', era: 'speak_now', emoji: '💜', style: { top: '85px', left: '50%', transform: 'translateX(-50%)', fontSize: '110px', zIndex: 20 } },
-    { id: 'o_red', name: 'Red Era Tee', era: 'red', emoji: '👕', style: { top: '95px', left: '50%', transform: 'translateX(-50%)', fontSize: '95px', zIndex: 20 } },
-    { id: 'o_1989', name: 'Sequins & Skirt', era: '1989', emoji: '🧥', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '100px', zIndex: 20 } },
-    { id: 'o_rep', name: 'Reputation Bodysuit', era: 'reputation', emoji: '🖤', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '100px', zIndex: 20 } },
-    { id: 'o_folklore', name: 'Cottagecore Dress', era: 'folklore', emoji: '🌿', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '105px', zIndex: 20 } },
-    { id: 'o_mid', name: 'Midnight Blue Suit', era: 'midnights', emoji: '🌙', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '100px', zIndex: 20 } },
+    { id: 'o_1989', name: '1989 Blue Set', era: '1989', image: '/wardrobe1.jpg', crop: { top: '8%', left: '10%', width: '40%', height: '35%' }, avatarStyle: { top: '95px', left: '50%', transform: 'translateX(-50%)', width: '130px', zIndex: 20 } },
+    { id: 'o_rep', name: 'Reputation Bodysuit', era: 'reputation', image: '/wardrobe1.jpg', crop: { top: '0%', left: '58%', width: '40%', height: '35%' }, avatarStyle: { top: '95px', left: '50%', transform: 'translateX(-50%)', width: '120px', zIndex: 20 } },
+    { id: 'o_lover', name: 'Lover Fringe Jacket', era: 'lover', image: '/wardrobe1.jpg', crop: { top: '55%', left: '5%', width: '43%', height: '38%' }, avatarStyle: { top: '100px', left: '50%', transform: 'translateX(-50%)', width: '140px', zIndex: 20 } },
+    { id: 'o_folklore', name: 'Folklore Flannel', era: 'folklore', image: '/wardrobe1.jpg', crop: { top: '55%', left: '55%', width: '42%', height: '38%' }, avatarStyle: { top: '100px', left: '50%', transform: 'translateX(-50%)', width: '135px', zIndex: 20 } },
+    { id: 'o_speak', name: 'Speak Now Ballgown', era: 'speak_now', image: '/wardrobe2.jpg', crop: { top: '35%', left: '10%', width: '45%', height: '40%' }, avatarStyle: { top: '85px', left: '50%', transform: 'translateX(-50%)', width: '145px', zIndex: 20 } },
   ],
   shoes: [
-    { id: 's_cowboy', name: 'Cowboy Boots', era: 'fearless', emoji: '👢', style: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', fontSize: '36px', zIndex: 12 } },
-    { id: 's_heels', name: 'Red Heels', era: 'red', emoji: '👠', style: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', fontSize: '34px', zIndex: 12 } },
-    { id: 's_sneakers', name: 'City Sneakers', era: '1989', emoji: '👟', style: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', fontSize: '34px', zIndex: 12 } },
-    { id: 's_highboots', name: 'Thigh High Boots', era: 'reputation', emoji: '🥾', style: { bottom: '12px', left: '50%', transform: 'translateX(-50%)', fontSize: '38px', zIndex: 12 } },
+    { id: 's_sneakers', name: 'White Sneakers', era: '1989', image: '/wardrobe1.jpg', crop: { top: '38%', left: '13%', width: '17%', height: '14%' }, avatarStyle: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', width: '60px', zIndex: 12 } },
+    { id: 's_highboots', name: 'Reputation Boots', era: 'reputation', image: '/wardrobe1.jpg', crop: { top: '31%', left: '65%', width: '25%', height: '23%' }, avatarStyle: { bottom: '10px', left: '50%', transform: 'translateX(-50%)', width: '70px', zIndex: 12 } },
+    { id: 's_boots', name: 'Brown Boots', era: 'fearless', image: '/wardrobe1.jpg', crop: { top: '88%', left: '68%', width: '24%', height: '12%' }, avatarStyle: { bottom: '12px', left: '50%', transform: 'translateX(-50%)', width: '65px', zIndex: 12 } },
+    { id: 's_heels', name: 'Red Heels', era: 'red', image: '/wardrobe3.jpg', crop: { top: '60%', left: '60%', width: '25%', height: '20%' }, avatarStyle: { bottom: '12px', left: '50%', transform: 'translateX(-50%)', width: '60px', zIndex: 12 } },
   ],
   accessories: [
-    { id: 'a_scarf', name: 'Red Scarf', era: 'red', emoji: '🧣', style: { top: '80px', left: '50%', transform: 'translateX(-50%)', fontSize: '50px', zIndex: 25 } },
-    { id: 'a_glasses', name: 'White Sunglasses', era: '1989', emoji: '🕶️', style: { top: '40px', left: '50%', transform: 'translateX(-50%)', fontSize: '36px', zIndex: 28 } },
-    { id: 'a_fedora', name: 'Fedora Hat', era: 'red', emoji: '🎩', style: { top: '5px', left: '50%', transform: 'translateX(-50%)', fontSize: '48px', zIndex: 28 } },
-    { id: 'a_bracelet', name: 'Friendship Bracelet', era: 'lover', emoji: '📿', style: { top: '160px', left: '62%', transform: 'translateX(-50%)', fontSize: '32px', zIndex: 22 } },
+    { id: 'a_hat', name: 'Red Fedora Hat', era: 'red', image: '/wardrobe1.jpg', crop: { top: '0%', left: '65%', width: '25%', height: '15%' }, avatarStyle: { top: '10px', left: '50%', transform: 'translateX(-50%)', width: '75px', zIndex: 28 } },
+    { id: 'a_necklace', name: 'Heart Necklace', era: 'lover', image: '/wardrobe1.jpg', crop: { top: '52%', left: '55%', width: '12%', height: '13%' }, avatarStyle: { top: '85px', left: '50%', transform: 'translateX(-50%)', width: '35px', zIndex: 22 } },
+    { id: 'a_scarf', name: 'Red Scarf', era: 'red', image: '/wardrobe3.jpg', crop: { top: '10%', left: '10%', width: '35%', height: '30%' }, avatarStyle: { top: '80px', left: '50%', transform: 'translateX(-50%)', width: '85px', zIndex: 25 } },
   ],
   props: [
-    { id: 'p_guitar_pink', name: 'Pink Guitar', era: 'lover', emoji: '🎸', style: { top: '120px', right: '15px', fontSize: '70px', transform: 'rotate(-15deg)', zIndex: 30 } },
-    { id: 'p_guitar_ac', name: 'Acoustic Guitar', era: 'folklore', emoji: '🪕', style: { top: '120px', right: '15px', fontSize: '70px', transform: 'rotate(-15deg)', zIndex: 30 } },
-    { id: 'p_mic', name: 'Sparkly Mic', era: '1989', emoji: '🎤', style: { top: '85px', right: '30px', fontSize: '48px', zIndex: 30 } },
-    { id: 'p_snake', name: 'Snake Effect', era: 'reputation', emoji: '🐍', style: { top: '110px', left: '15px', fontSize: '55px', zIndex: 30 } },
+    { id: 'p_mic', name: 'Sparkly Mic', era: '1989', image: '/wardrobe1.jpg', crop: { top: '40%', left: '52%', width: '15%', height: '13%' }, avatarStyle: { top: '110px', right: '20px', width: '50px', zIndex: 30 } },
+    { id: 'p_guitar', name: 'Acoustic Guitar', era: 'folklore', image: '/wardrobe1.jpg', crop: { top: '70%', left: '33%', width: '30%', height: '30%' }, avatarStyle: { top: '130px', right: '10px', width: '90px', transform: 'rotate(-15deg)', zIndex: 30 } },
   ]
+};
+
+// רכיב עזר שחותך אוטומטית את הפריט מתוך התמונה הנכונה
+const CollageItemView = ({ item, style }) => {
+  return (
+    <div style={{ position: 'relative', overflow: 'hidden', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}>
+      <img 
+        src={item.image || '/wardrobe1.jpg'} 
+        alt={item.name}
+        style={{
+          position: 'absolute',
+          top: `-${item.crop.top}`,
+          left: `-${item.crop.left}`,
+          width: '450%',
+          maxWidth: 'none',
+          pointerEvents: 'none'
+        }}
+      />
+    </div>
+  );
 };
 
 export default function EraStylist({ lang, onBack }) {
@@ -80,7 +86,6 @@ export default function EraStylist({ lang, onBack }) {
   
   const [selections, setSelections] = useState({
     hair: null,
-    makeup: null,
     outfits: null,
     shoes: null,
     accessories: null,
@@ -149,7 +154,7 @@ export default function EraStylist({ lang, onBack }) {
       
       await API.post('/posts', {
         title: `הלוק שלי לאתגר ${challenge.titleHe} (${scoreResult}% התאמה)! ✨`,
-        content: 'עיצבתי דמות מושלמת ברוח ה-Eras, מה דעתכן?',
+        content: 'עיצבתי דמות מושלמת ברוח ה-Eras מהפריטים החדשים בארון!',
         category: 'gallery',
         image_url: uploadData.secure_url
       });
@@ -246,7 +251,7 @@ export default function EraStylist({ lang, onBack }) {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', backgroundColor: 'var(--bg-card)', borderRadius: '24px', padding: '2rem', border: '1px solid var(--border-delicate)', boxShadow: '0 4px 18px rgba(0,0,0,0.03)' }}>
         
-        {/* אזור הדמות המלאה המעוצבת */}
+        {/* אזור הדוגמנית */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
           <div 
             id="avatar-capture-area" 
@@ -258,31 +263,27 @@ export default function EraStylist({ lang, onBack }) {
               boxShadow: 'inset 0 0 20px rgba(0,0,0,0.02)'
             }}
           >
-            {/* דוגמנית וקטורית (SVG) חלקה ופרופורציונלית */}
+            {/* בובת דוגמנית וקטורית (SVG) */}
             <svg width="140" height="420" viewBox="0 0 140 420" style={{ position: 'absolute', bottom: '10px', zIndex: 1 }}>
-              {/* רגליים */}
               <path d="M 48 200 L 52 400 L 66 400 L 60 200 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" strokeLinejoin="round" />
               <path d="M 92 200 L 88 400 L 74 400 L 80 200 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" strokeLinejoin="round" />
-              {/* גוף וירכיים */}
               <path d="M 44 120 Q 40 165 48 200 L 92 200 Q 100 165 96 120 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" strokeLinejoin="round" />
-              {/* מותניים וחזה */}
               <path d="M 46 120 Q 50 75 45 52 L 95 52 Q 90 75 94 120 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" strokeLinejoin="round" />
-              {/* צוואר */}
               <rect x="62" y="30" width="16" height="25" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" rx="3" />
-              {/* ראש */}
               <ellipse cx="70" cy="16" rx="21" ry="25" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" />
-              {/* ידיים */}
               <path d="M 45 58 Q 24 115 20 185" fill="none" stroke="#EAD1C5" strokeWidth="11" strokeLinecap="round" />
               <path d="M 95 58 Q 116 115 120 185" fill="none" stroke="#EAD1C5" strokeWidth="11" strokeLinecap="round" />
             </svg>
 
-            {/* שכבות הלבשה מדויקות בגדלים פרופורציונליים */}
-            {selections.hair && <div style={{ position: 'absolute', ...selections.hair.style }}>{selections.hair.emoji}</div>}
-            {selections.makeup && <div style={{ position: 'absolute', ...selections.makeup.style }}>{selections.makeup.emoji}</div>}
-            {selections.outfits && <div style={{ position: 'absolute', ...selections.outfits.style }}>{selections.outfits.emoji}</div>}
-            {selections.shoes && <div style={{ position: 'absolute', ...selections.shoes.style }}>{selections.shoes.emoji}</div>}
-            {selections.accessories && <div style={{ position: 'absolute', ...selections.accessories.style }}>{selections.accessories.emoji}</div>}
-            {selections.props && <div style={{ position: 'absolute', ...selections.props.style }}>{selections.props.emoji}</div>}
+            {/* שכבות הפריטים הנבחרים */}
+            {Object.entries(selections).map(([cat, item]) => {
+              if (!item) return null;
+              return (
+                <div key={cat} style={{ position: 'absolute', ...item.avatarStyle }}>
+                  <CollageItemView item={item} style={{ height: item.avatarStyle.width || '100px' }} />
+                </div>
+              );
+            })}
           </div>
 
           <button 
@@ -299,7 +300,7 @@ export default function EraStylist({ lang, onBack }) {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-dark)', fontFamily: '"Georgia", serif', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Wand2 size={22} color="var(--primary-rose)" />
-            {isHe ? 'ארון הבגדים וה-Eras' : 'The Wardrobe & Eras'}
+            {isHe ? 'ארון הבגדים החדש מהקולאז\'' : 'The New Collage Wardrobe'}
           </h3>
 
           <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '1.25rem', borderBottom: '2px solid var(--bg-subtle)', paddingBottom: '0.5rem', overflowX: 'auto', scrollbarWidth: 'none' }}>
@@ -318,7 +319,7 @@ export default function EraStylist({ lang, onBack }) {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(75px, 1fr))', gap: '0.75rem', maxHeight: '310px', overflowY: 'auto', paddingRight: '4px' }}>
-            {WARDROBE[activeTab].map(item => {
+            {WARDROBE[activeTab]?.map(item => {
               const isSelected = selections[activeTab]?.id === item.id;
               return (
                 <button
@@ -327,13 +328,13 @@ export default function EraStylist({ lang, onBack }) {
                   style={{
                     aspectRatio: '1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                     backgroundColor: isSelected ? '#FFF0F5' : 'var(--bg-creamy)', border: `2px solid ${isSelected ? 'var(--primary-rose)' : 'var(--border-delicate)'}`,
-                    borderRadius: '16px', cursor: 'pointer', fontSize: '2rem', transition: 'transform 0.1s', position: 'relative'
+                    borderRadius: '16px', cursor: 'pointer', overflow: 'hidden', transition: 'transform 0.1s', position: 'relative'
                   }}
                   onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
                   onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                 >
-                  {isSelected && <CheckCircle2 size={16} color="var(--primary-rose)" style={{ position: 'absolute', top: '4px', right: '4px' }} />}
-                  {item.emoji}
+                  {isSelected && <CheckCircle2 size={16} color="var(--primary-rose)" style={{ position: 'absolute', top: '4px', right: '4px', zIndex: 10 }} />}
+                  <CollageItemView item={item} />
                 </button>
               );
             })}
