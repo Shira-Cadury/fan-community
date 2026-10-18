@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import API from './api';
-import { ArrowRight, ArrowLeft, Camera, Share2, CheckCircle2, Loader2, Sparkles, Wand2, Trophy, RotateCcw } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Camera, Share2, CheckCircle2, Loader2, Sparkles, Wand2, Trophy } from 'lucide-react';
 
 const CLOUDINARY_CLOUD_NAME = 'gvdwsxay';
 const CLOUDINARY_UPLOAD_PRESET = 'swift-preset';
@@ -28,45 +28,45 @@ const TABS = [
 
 const WARDROBE = {
   hair: [
-    { id: 'h_lover', name: 'Pink Dip-Dye Hair', era: 'lover', emoji: '🌸', style: { top: '25px', left: '50%', transform: 'translateX(-50%)', fontSize: '60px', zIndex: 15 } },
-    { id: 'h_fearless', name: 'Long Curls', era: 'fearless', emoji: '👱‍♀️', style: { top: '22px', left: '50%', transform: 'translateX(-50%)', fontSize: '70px', zIndex: 15 } },
-    { id: 'h_speak', name: 'Elegant Wavy Hair', era: 'speak_now', emoji: '👩‍🰰', style: { top: '23px', left: '50%', transform: 'translateX(-50%)', fontSize: '65px', zIndex: 15 } },
-    { id: 'h_1989', name: 'Short Bob', era: '1989', emoji: '👩‍🦱', style: { top: '25px', left: '50%', transform: 'translateX(-50%)', fontSize: '60px', zIndex: 15 } },
-    { id: 'h_folklore', name: 'Braided Hair', era: 'folklore', emoji: '👧', style: { top: '23px', left: '50%', transform: 'translateX(-50%)', fontSize: '65px', zIndex: 15 } },
+    { id: 'h_lover', name: 'Pink Dip-Dye Hair', era: 'lover', emoji: '🌸', style: { top: '18px', left: '50%', transform: 'translateX(-50%)', fontSize: '50px', zIndex: 15 } },
+    { id: 'h_fearless', name: 'Long Curls', era: 'fearless', emoji: '👱‍♀️', style: { top: '15px', left: '50%', transform: 'translateX(-50%)', fontSize: '58px', zIndex: 15 } },
+    { id: 'h_speak', name: 'Elegant Wavy Hair', era: 'speak_now', emoji: '👩‍🰰', style: { top: '16px', left: '50%', transform: 'translateX(-50%)', fontSize: '55px', zIndex: 15 } },
+    { id: 'h_1989', name: 'Short Bob', era: '1989', emoji: '👩‍🦱', style: { top: '18px', left: '50%', transform: 'translateX(-50%)', fontSize: '50px', zIndex: 15 } },
+    { id: 'h_folklore', name: 'Braided Hair', era: 'folklore', emoji: '👧', style: { top: '16px', left: '50%', transform: 'translateX(-50%)', fontSize: '55px', zIndex: 15 } },
   ],
   makeup: [
-    { id: 'm_lover', name: 'Heart Glitter Eyes', era: 'lover', emoji: '💖', style: { top: '48px', left: '50%', transform: 'translateX(-50%)', fontSize: '28px', zIndex: 18 } },
-    { id: 'm_red', name: 'Classic Red Lips', era: 'red', emoji: '💋', style: { top: '60px', left: '50%', transform: 'translateX(-50%)', fontSize: '24px', zIndex: 18 } },
-    { id: 'm_rep', name: 'Dark Smoked Glam', era: 'reputation', emoji: '🖤', style: { top: '50px', left: '50%', transform: 'translateX(-50%)', fontSize: '28px', zIndex: 18 } },
-    { id: 'm_mid', name: 'Midnight Sparkle', era: 'midnights', emoji: '✨', style: { top: '48px', left: '50%', transform: 'translateX(-50%)', fontSize: '28px', zIndex: 18 } },
+    { id: 'm_lover', name: 'Heart Glitter Eyes', era: 'lover', emoji: '💖', style: { top: '42px', left: '50%', transform: 'translateX(-50%)', fontSize: '22px', zIndex: 18 } },
+    { id: 'm_red', name: 'Classic Red Lips', era: 'red', emoji: '💋', style: { top: '54px', left: '50%', transform: 'translateX(-50%)', fontSize: '20px', zIndex: 18 } },
+    { id: 'm_rep', name: 'Dark Smoked Glam', era: 'reputation', emoji: '🖤', style: { top: '44px', left: '50%', transform: 'translateX(-50%)', fontSize: '22px', zIndex: 18 } },
+    { id: 'm_mid', name: 'Midnight Sparkle', era: 'midnights', emoji: '✨', style: { top: '42px', left: '50%', transform: 'translateX(-50%)', fontSize: '22px', zIndex: 18 } },
   ],
   outfits: [
-    { id: 'o_lover', name: 'Lover Bodysuit', era: 'lover', emoji: '🩰', style: { top: '100px', left: '50%', transform: 'translateX(-50%)', fontSize: '120px', zIndex: 20 } },
-    { id: 'o_fearless', name: 'Gold Fringe Dress', era: 'fearless', emoji: '✨', style: { top: '100px', left: '50%', transform: 'translateX(-50%)', fontSize: '120px', zIndex: 20 } },
-    { id: 'o_speak', name: 'Purple Ballgown', era: 'speak_now', emoji: '💜', style: { top: '95px', left: '50%', transform: 'translateX(-50%)', fontSize: '130px', zIndex: 20 } },
-    { id: 'o_red', name: 'Red Era Tee', era: 'red', emoji: '👕', style: { top: '105px', left: '50%', transform: 'translateX(-50%)', fontSize: '110px', zIndex: 20 } },
-    { id: 'o_1989', name: 'Sequins & Skirt', era: '1989', emoji: '🧥', style: { top: '100px', left: '50%', transform: 'translateX(-50%)', fontSize: '120px', zIndex: 20 } },
-    { id: 'o_rep', name: 'Reputation Bodysuit', era: 'reputation', emoji: '🖤', style: { top: '100px', left: '50%', transform: 'translateX(-50%)', fontSize: '120px', zIndex: 20 } },
-    { id: 'o_folklore', name: 'Cottagecore Dress', era: 'folklore', emoji: '🌿', style: { top: '100px', left: '50%', transform: 'translateX(-50%)', fontSize: '125px', zIndex: 20 } },
-    { id: 'o_mid', name: 'Midnight Blue Suit', era: 'midnights', emoji: '🌙', style: { top: '100px', left: '50%', transform: 'translateX(-50%)', fontSize: '120px', zIndex: 20 } },
+    { id: 'o_lover', name: 'Lover Bodysuit', era: 'lover', emoji: '🩰', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '100px', zIndex: 20 } },
+    { id: 'o_fearless', name: 'Gold Fringe Dress', era: 'fearless', emoji: '✨', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '100px', zIndex: 20 } },
+    { id: 'o_speak', name: 'Purple Ballgown', era: 'speak_now', emoji: '💜', style: { top: '85px', left: '50%', transform: 'translateX(-50%)', fontSize: '110px', zIndex: 20 } },
+    { id: 'o_red', name: 'Red Era Tee', era: 'red', emoji: '👕', style: { top: '95px', left: '50%', transform: 'translateX(-50%)', fontSize: '95px', zIndex: 20 } },
+    { id: 'o_1989', name: 'Sequins & Skirt', era: '1989', emoji: '🧥', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '100px', zIndex: 20 } },
+    { id: 'o_rep', name: 'Reputation Bodysuit', era: 'reputation', emoji: '🖤', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '100px', zIndex: 20 } },
+    { id: 'o_folklore', name: 'Cottagecore Dress', era: 'folklore', emoji: '🌿', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '105px', zIndex: 20 } },
+    { id: 'o_mid', name: 'Midnight Blue Suit', era: 'midnights', emoji: '🌙', style: { top: '90px', left: '50%', transform: 'translateX(-50%)', fontSize: '100px', zIndex: 20 } },
   ],
   shoes: [
-    { id: 's_cowboy', name: 'Cowboy Boots', era: 'fearless', emoji: '👢', style: { bottom: '10px', left: '50%', transform: 'translateX(-50%)', fontSize: '60px', zIndex: 12 } },
-    { id: 's_heels', name: 'Red Heels', era: 'red', emoji: '👠', style: { bottom: '10px', left: '50%', transform: 'translateX(-50%)', fontSize: '55px', zIndex: 12 } },
-    { id: 's_sneakers', name: 'City Sneakers', era: '1989', emoji: '👟', style: { bottom: '10px', left: '50%', transform: 'translateX(-50%)', fontSize: '55px', zIndex: 12 } },
-    { id: 's_highboots', name: 'Thigh High Boots', era: 'reputation', emoji: '🥾', style: { bottom: '8px', left: '50%', transform: 'translateX(-50%)', fontSize: '65px', zIndex: 12 } },
+    { id: 's_cowboy', name: 'Cowboy Boots', era: 'fearless', emoji: '👢', style: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', fontSize: '36px', zIndex: 12 } },
+    { id: 's_heels', name: 'Red Heels', era: 'red', emoji: '👠', style: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', fontSize: '34px', zIndex: 12 } },
+    { id: 's_sneakers', name: 'City Sneakers', era: '1989', emoji: '👟', style: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', fontSize: '34px', zIndex: 12 } },
+    { id: 's_highboots', name: 'Thigh High Boots', era: 'reputation', emoji: '🥾', style: { bottom: '12px', left: '50%', transform: 'translateX(-50%)', fontSize: '38px', zIndex: 12 } },
   ],
   accessories: [
-    { id: 'a_scarf', name: 'Red Scarf', era: 'red', emoji: '🧣', style: { top: '85px', left: '50%', transform: 'translateX(-50%)', fontSize: '60px', zIndex: 25 } },
-    { id: 'a_glasses', name: 'White Sunglasses', era: '1989', emoji: '🕶️', style: { top: '45px', left: '50%', transform: 'translateX(-50%)', fontSize: '42px', zIndex: 28 } },
-    { id: 'a_fedora', name: 'Fedora Hat', era: 'red', emoji: '🎩', style: { top: '10px', left: '50%', transform: 'translateX(-50%)', fontSize: '55px', zIndex: 28 } },
-    { id: 'a_bracelet', name: 'Friendship Bracelet', era: 'lover', emoji: '📿', style: { top: '170px', left: '60%', transform: 'translateX(-50%)', fontSize: '38px', zIndex: 22 } },
+    { id: 'a_scarf', name: 'Red Scarf', era: 'red', emoji: '🧣', style: { top: '80px', left: '50%', transform: 'translateX(-50%)', fontSize: '50px', zIndex: 25 } },
+    { id: 'a_glasses', name: 'White Sunglasses', era: '1989', emoji: '🕶️', style: { top: '40px', left: '50%', transform: 'translateX(-50%)', fontSize: '36px', zIndex: 28 } },
+    { id: 'a_fedora', name: 'Fedora Hat', era: 'red', emoji: '🎩', style: { top: '5px', left: '50%', transform: 'translateX(-50%)', fontSize: '48px', zIndex: 28 } },
+    { id: 'a_bracelet', name: 'Friendship Bracelet', era: 'lover', emoji: '📿', style: { top: '160px', left: '62%', transform: 'translateX(-50%)', fontSize: '32px', zIndex: 22 } },
   ],
   props: [
-    { id: 'p_guitar_pink', name: 'Pink Guitar', era: 'lover', emoji: '🎸', style: { top: '130px', right: '15px', fontSize: '80px', transform: 'rotate(-15deg)', zIndex: 30 } },
-    { id: 'p_guitar_ac', name: 'Acoustic Guitar', era: 'folklore', emoji: '🪕', style: { top: '130px', right: '15px', fontSize: '80px', transform: 'rotate(-15deg)', zIndex: 30 } },
-    { id: 'p_mic', name: 'Sparkly Mic', era: '1989', emoji: '🎤', style: { top: '90px', right: '35px', fontSize: '55px', zIndex: 30 } },
-    { id: 'p_snake', name: 'Snake Effect', era: 'reputation', emoji: '🐍', style: { top: '120px', left: '15px', fontSize: '65px', zIndex: 30 } },
+    { id: 'p_guitar_pink', name: 'Pink Guitar', era: 'lover', emoji: '🎸', style: { top: '120px', right: '15px', fontSize: '70px', transform: 'rotate(-15deg)', zIndex: 30 } },
+    { id: 'p_guitar_ac', name: 'Acoustic Guitar', era: 'folklore', emoji: '🪕', style: { top: '120px', right: '15px', fontSize: '70px', transform: 'rotate(-15deg)', zIndex: 30 } },
+    { id: 'p_mic', name: 'Sparkly Mic', era: '1989', emoji: '🎤', style: { top: '85px', right: '30px', fontSize: '48px', zIndex: 30 } },
+    { id: 'p_snake', name: 'Snake Effect', era: 'reputation', emoji: '🐍', style: { top: '110px', left: '15px', fontSize: '55px', zIndex: 30 } },
   ]
 };
 
@@ -246,7 +246,7 @@ export default function EraStylist({ lang, onBack }) {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', backgroundColor: 'var(--bg-card)', borderRadius: '24px', padding: '2rem', border: '1px solid var(--border-delicate)', boxShadow: '0 4px 18px rgba(0,0,0,0.03)' }}>
         
-        {/* אזור הדמות המלאה המעוצבת (SVG Model Silhouette) */}
+        {/* אזור הדמות המלאה המעוצבת */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
           <div 
             id="avatar-capture-area" 
@@ -258,25 +258,25 @@ export default function EraStylist({ lang, onBack }) {
               boxShadow: 'inset 0 0 20px rgba(0,0,0,0.02)'
             }}
           >
-            {/* גוף דוגמנית וקטורי (SVG) אלגנטי ופרופורציונלי כבסיס */}
-            <svg width="150" height="420" viewBox="0 0 150 420" style={{ position: 'absolute', bottom: '10px', zIndex: 1 }}>
+            {/* דוגמנית וקטורית (SVG) חלקה ופרופורציונלית */}
+            <svg width="140" height="420" viewBox="0 0 140 420" style={{ position: 'absolute', bottom: '10px', zIndex: 1 }}>
               {/* רגליים */}
-              <path d="M 52 210 L 56 400 L 71 400 L 64 210 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="2" strokeLinejoin="round" />
-              <path d="M 98 210 L 94 400 L 79 400 L 86 210 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="2" strokeLinejoin="round" />
+              <path d="M 48 200 L 52 400 L 66 400 L 60 200 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" strokeLinejoin="round" />
+              <path d="M 92 200 L 88 400 L 74 400 L 80 200 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" strokeLinejoin="round" />
               {/* גוף וירכיים */}
-              <path d="M 46 125 Q 42 170 52 210 L 98 210 Q 108 170 104 125 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="2" strokeLinejoin="round" />
+              <path d="M 44 120 Q 40 165 48 200 L 92 200 Q 100 165 96 120 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" strokeLinejoin="round" />
               {/* מותניים וחזה */}
-              <path d="M 49 125 Q 52 80 47 55 L 103 55 Q 98 80 101 125 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="2" strokeLinejoin="round" />
+              <path d="M 46 120 Q 50 75 45 52 L 95 52 Q 90 75 94 120 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" strokeLinejoin="round" />
               {/* צוואר */}
-              <rect x="66" y="32" width="18" height="26" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="2" rx="4" />
-              {/* ראש נשי מעוצב */}
-              <ellipse cx="75" cy="18" rx="23" ry="27" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="2" />
-              {/* ידיים דקות ואלגנטיות */}
-              <path d="M 47 62 Q 25 120 20 190" fill="none" stroke="#EAD1C5" strokeWidth="12" strokeLinecap="round" />
-              <path d="M 103 62 Q 125 120 130 190" fill="none" stroke="#EAD1C5" strokeWidth="12" strokeLinecap="round" />
+              <rect x="62" y="30" width="16" height="25" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" rx="3" />
+              {/* ראש */}
+              <ellipse cx="70" cy="16" rx="21" ry="25" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" />
+              {/* ידיים */}
+              <path d="M 45 58 Q 24 115 20 185" fill="none" stroke="#EAD1C5" strokeWidth="11" strokeLinecap="round" />
+              <path d="M 95 58 Q 116 115 120 185" fill="none" stroke="#EAD1C5" strokeWidth="11" strokeLinecap="round" />
             </svg>
 
-            {/* שכבות הלבשה דינמיות המיושרות למרכז באופן מדויק */}
+            {/* שכבות הלבשה מדויקות בגדלים פרופורציונליים */}
             {selections.hair && <div style={{ position: 'absolute', ...selections.hair.style }}>{selections.hair.emoji}</div>}
             {selections.makeup && <div style={{ position: 'absolute', ...selections.makeup.style }}>{selections.makeup.emoji}</div>}
             {selections.outfits && <div style={{ position: 'absolute', ...selections.outfits.style }}>{selections.outfits.emoji}</div>}
@@ -295,7 +295,7 @@ export default function EraStylist({ lang, onBack }) {
           </button>
         </div>
 
-        {/* ארון הבגדים המורחב */}
+        {/* ארון הבגדים */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-dark)', fontFamily: '"Georgia", serif', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Wand2 size={22} color="var(--primary-rose)" />
