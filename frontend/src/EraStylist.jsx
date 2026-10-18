@@ -25,54 +25,46 @@ const TABS = [
   { id: 'props', label: 'חפצים', icon: '🎸' }
 ];
 
-// מיפוי הפריטים מתוך 6 קובצי הקולאז' (wardrobe1.jpg עד wardrobe6.jpg)
+// מיפוי מדויק של כל פריט מתוך גיליון הקולאז' (x, y, w, h באחוזים מתוך התמונה)
 const WARDROBE = {
   hair: [
-    { id: 'h_1989', name: '1989 Blonde Hair', era: '1989', image: '/wardrobe1.jpg', crop: { top: '0%', left: '10%', width: '38%', height: '22%' }, avatarStyle: { top: '20px', left: '50%', transform: 'translateX(-50%)', width: '90px', zIndex: 15 } },
-    { id: 'h_lover', name: 'Pink Dip-Dye Hair', era: 'lover', image: '/wardrobe1.jpg', crop: { top: '50%', left: '38%', width: '28%', height: '22%' }, avatarStyle: { top: '22px', left: '50%', transform: 'translateX(-50%)', width: '85px', zIndex: 15 } },
-    { id: 'h_fearless', name: 'Fearless Curls', era: 'fearless', image: '/wardrobe2.jpg', crop: { top: '5%', left: '15%', width: '30%', height: '25%' }, avatarStyle: { top: '18px', left: '50%', transform: 'translateX(-50%)', width: '90px', zIndex: 15 } },
+    { id: 'h_blonde', name: '1989 Blonde Hair', era: '1989', image: '/wardrobe1.jpg', crop: { x: 10, y: 2, w: 32, h: 22 } },
+    { id: 'h_lover', name: 'Pink Dip-Dye Hair', era: 'lover', image: '/wardrobe1.jpg', crop: { x: 37, y: 49, w: 22, h: 18 } },
   ],
   outfits: [
-    { id: 'o_1989', name: '1989 Blue Set', era: '1989', image: '/wardrobe1.jpg', crop: { top: '8%', left: '10%', width: '40%', height: '35%' }, avatarStyle: { top: '95px', left: '50%', transform: 'translateX(-50%)', width: '130px', zIndex: 20 } },
-    { id: 'o_rep', name: 'Reputation Bodysuit', era: 'reputation', image: '/wardrobe1.jpg', crop: { top: '0%', left: '58%', width: '40%', height: '35%' }, avatarStyle: { top: '95px', left: '50%', transform: 'translateX(-50%)', width: '120px', zIndex: 20 } },
-    { id: 'o_lover', name: 'Lover Fringe Jacket', era: 'lover', image: '/wardrobe1.jpg', crop: { top: '55%', left: '5%', width: '43%', height: '38%' }, avatarStyle: { top: '100px', left: '50%', transform: 'translateX(-50%)', width: '140px', zIndex: 20 } },
-    { id: 'o_folklore', name: 'Folklore Flannel', era: 'folklore', image: '/wardrobe1.jpg', crop: { top: '55%', left: '55%', width: '42%', height: '38%' }, avatarStyle: { top: '100px', left: '50%', transform: 'translateX(-50%)', width: '135px', zIndex: 20 } },
-    { id: 'o_speak', name: 'Speak Now Ballgown', era: 'speak_now', image: '/wardrobe2.jpg', crop: { top: '35%', left: '10%', width: '45%', height: '40%' }, avatarStyle: { top: '85px', left: '50%', transform: 'translateX(-50%)', width: '145px', zIndex: 20 } },
+    { id: 'o_1989', name: '1989 Blue Set', era: '1989', image: '/wardrobe1.jpg', crop: { x: 9, y: 21, w: 32, h: 22 }, avatarStyle: { top: '95px', left: '50%', transform: 'translateX(-50%)', width: '130px', zIndex: 20 } },
+    { id: 'o_rep', name: 'Reputation Bodysuit', era: 'reputation', image: '/wardrobe1.jpg', crop: { x: 58, y: 11, w: 36, h: 28 }, avatarStyle: { top: '95px', left: '50%', transform: 'translateX(-50%)', width: '120px', zIndex: 20 } },
+    { id: 'o_lover', name: 'Lover Fringe Jacket', era: 'lover', image: '/wardrobe1.jpg', crop: { x: 5, y: 55, w: 38, h: 36 }, avatarStyle: { top: '100px', left: '50%', transform: 'translateX(-50%)', width: '140px', zIndex: 20 } },
+    { id: 'o_folklore', name: 'Folklore Flannel', era: 'folklore', image: '/wardrobe1.jpg', crop: { x: 58, y: 55, w: 38, h: 32 }, avatarStyle: { top: '100px', left: '50%', transform: 'translateX(-50%)', width: '135px', zIndex: 20 } },
   ],
   shoes: [
-    { id: 's_sneakers', name: 'White Sneakers', era: '1989', image: '/wardrobe1.jpg', crop: { top: '38%', left: '13%', width: '17%', height: '14%' }, avatarStyle: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', width: '60px', zIndex: 12 } },
-    { id: 's_highboots', name: 'Reputation Boots', era: 'reputation', image: '/wardrobe1.jpg', crop: { top: '31%', left: '65%', width: '25%', height: '23%' }, avatarStyle: { bottom: '10px', left: '50%', transform: 'translateX(-50%)', width: '70px', zIndex: 12 } },
-    { id: 's_boots', name: 'Brown Boots', era: 'fearless', image: '/wardrobe1.jpg', crop: { top: '88%', left: '68%', width: '24%', height: '12%' }, avatarStyle: { bottom: '12px', left: '50%', transform: 'translateX(-50%)', width: '65px', zIndex: 12 } },
-    { id: 's_heels', name: 'Red Heels', era: 'red', image: '/wardrobe3.jpg', crop: { top: '60%', left: '60%', width: '25%', height: '20%' }, avatarStyle: { bottom: '12px', left: '50%', transform: 'translateX(-50%)', width: '60px', zIndex: 12 } },
+    { id: 's_sneakers', name: 'White Sneakers', era: '1989', image: '/wardrobe1.jpg', crop: { x: 13, y: 41, w: 16, h: 13 }, avatarStyle: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', width: '60px', zIndex: 12 } },
+    { id: 's_highboots', name: 'Reputation Boots', era: 'reputation', image: '/wardrobe1.jpg', crop: { x: 65, y: 30, w: 24, h: 24 }, avatarStyle: { bottom: '10px', left: '50%', transform: 'translateX(-50%)', width: '70px', zIndex: 12 } },
+    { id: 's_boots', name: 'Brown Boots', era: 'fearless', image: '/wardrobe1.jpg', crop: { x: 68, y: 86, w: 24, h: 14 }, avatarStyle: { bottom: '12px', left: '50%', transform: 'translateX(-50%)', width: '65px', zIndex: 12 } },
   ],
   accessories: [
-    { id: 'a_hat', name: 'Red Fedora Hat', era: 'red', image: '/wardrobe1.jpg', crop: { top: '0%', left: '65%', width: '25%', height: '15%' }, avatarStyle: { top: '10px', left: '50%', transform: 'translateX(-50%)', width: '75px', zIndex: 28 } },
-    { id: 'a_necklace', name: 'Heart Necklace', era: 'lover', image: '/wardrobe1.jpg', crop: { top: '52%', left: '55%', width: '12%', height: '13%' }, avatarStyle: { top: '85px', left: '50%', transform: 'translateX(-50%)', width: '35px', zIndex: 22 } },
-    { id: 'a_scarf', name: 'Red Scarf', era: 'red', image: '/wardrobe3.jpg', crop: { top: '10%', left: '10%', width: '35%', height: '30%' }, avatarStyle: { top: '80px', left: '50%', transform: 'translateX(-50%)', width: '85px', zIndex: 25 } },
+    { id: 'a_hat', name: 'Red Fez Hat', era: 'red', image: '/wardrobe1.jpg', crop: { x: 68, y: 0, w: 20, h: 14 }, avatarStyle: { top: '10px', left: '50%', transform: 'translateX(-50%)', width: '75px', zIndex: 28 } },
+    { id: 'a_necklace', name: 'Heart Necklace', era: 'lover', image: '/wardrobe1.jpg', crop: { x: 52, y: 50, w: 14, h: 14 }, avatarStyle: { top: '85px', left: '50%', transform: 'translateX(-50%)', width: '35px', zIndex: 22 } },
   ],
   props: [
-    { id: 'p_mic', name: 'Sparkly Mic', era: '1989', image: '/wardrobe1.jpg', crop: { top: '40%', left: '52%', width: '15%', height: '13%' }, avatarStyle: { top: '110px', right: '20px', width: '50px', zIndex: 30 } },
-    { id: 'p_guitar', name: 'Acoustic Guitar', era: 'folklore', image: '/wardrobe1.jpg', crop: { top: '70%', left: '33%', width: '30%', height: '30%' }, avatarStyle: { top: '130px', right: '10px', width: '90px', transform: 'rotate(-15deg)', zIndex: 30 } },
+    { id: 'p_mic', name: 'Sparkly Mic', era: '1989', image: '/wardrobe1.jpg', crop: { x: 52, y: 38, w: 13, h: 13 }, avatarStyle: { top: '110px', right: '20px', width: '50px', zIndex: 30 } },
+    { id: 'p_guitar', name: 'Acoustic Guitar', era: 'folklore', image: '/wardrobe1.jpg', crop: { x: 33, y: 68, w: 30, h: 30 }, avatarStyle: { top: '130px', right: '10px', width: '90px', transform: 'rotate(-15deg)', zIndex: 30 } },
   ]
 };
 
-// רכיב עזר שחותך אוטומטית את הפריט מתוך התמונה הנכונה
+// רכיב חיתוך מדויק באמצעות CSS Background
 const CollageItemView = ({ item, style }) => {
+  const { x, y, w, h } = item.crop;
   return (
-    <div style={{ position: 'relative', overflow: 'hidden', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}>
-      <img 
-        src={item.image || '/wardrobe1.jpg'} 
-        alt={item.name}
-        style={{
-          position: 'absolute',
-          top: `-${item.crop.top}`,
-          left: `-${item.crop.left}`,
-          width: '450%',
-          maxWidth: 'none',
-          pointerEvents: 'none'
-        }}
-      />
-    </div>
+    <div style={{
+      width: '100%',
+      height: '100%',
+      backgroundImage: `url(${item.image})`,
+      backgroundPosition: `${x === 0 ? 0 : (x / (100 - w)) * 100}% ${y === 0 ? 0 : (y / (100 - h)) * 100}%`,
+      backgroundSize: `${10000 / w}% ${10000 / h}%`,
+      backgroundRepeat: 'no-repeat',
+      ...style
+    }} />
   );
 };
 
@@ -161,7 +153,7 @@ export default function EraStylist({ lang, onBack }) {
 
       setShareSuccess(true);
     } catch (err) {
-      alert('השמירה נכשלה, وדאי שאת מחוברת לחשבון.');
+      alert('השמירה נכשלה, ודאי שאת מחוברת לחשבון.');
     } finally {
       setIsSharing(false);
     }
