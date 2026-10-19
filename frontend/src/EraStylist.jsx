@@ -25,56 +25,46 @@ const TABS = [
   { id: 'props', label: 'חפצים', icon: '🎸' }
 ];
 
-// מיפוי הפריטים ישירות מתוך קובצי התמונות שהעלית (wardrobe1.jpg - wardrobe6.jpg)
+// מפת קואורדינטות מדויקת לחיתוך פריטים בודדים מתוך הגיליונות הטוריים
 const WARDROBE = {
   hair: [
-    { id: 'h_1989', era: '1989', image: '/wardrobe1.jpg', avatarStyle: { top: '15px', left: '50%', transform: 'translateX(-50%)', width: '90px', zIndex: 15 } },
-    { id: 'h_lover', era: 'lover', image: '/wardrobe2.jpg', avatarStyle: { top: '18px', left: '50%', transform: 'translateX(-50%)', width: '88px', zIndex: 15 } },
-    { id: 'h_fearless', era: 'fearless', image: '/wardrobe3.jpg', avatarStyle: { top: '15px', left: '50%', transform: 'translateX(-50%)', width: '92px', zIndex: 15 } },
+    { id: 'h_1989', era: '1989', sheet: '/wardrobe1.jpg', posX: '10%', posY: '2%', scale: '350%', avatarStyle: { top: '10px', left: '50%', transform: 'translateX(-50%)', width: '90px', height: '90px', zIndex: 15 } },
+    { id: 'h_speak', era: 'speak_now', sheet: '/wardrobe2.jpg', posX: '85%', posY: '2%', scale: '350%', avatarStyle: { top: '10px', left: '50%', transform: 'translateX(-50%)', width: '90px', height: '90px', zIndex: 15 } },
+    { id: 'h_lover', era: 'lover', sheet: '/wardrobe1.jpg', posX: '85%', posY: '1%', scale: '350%', avatarStyle: { top: '10px', left: '50%', transform: 'translateX(-50%)', width: '90px', height: '90px', zIndex: 15 } },
   ],
   outfits: [
-    { id: 'o_1989', era: '1989', image: '/wardrobe1.jpg', avatarStyle: { top: '90px', left: '50%', transform: 'translateX(-50%)', width: '130px', zIndex: 20 } },
-    { id: 'o_rep', era: 'reputation', image: '/wardrobe2.jpg', avatarStyle: { top: '90px', left: '50%', transform: 'translateX(-50%)', width: '125px', zIndex: 20 } },
-    { id: 'o_lover', era: 'lover', image: '/wardrobe3.jpg', avatarStyle: { top: '95px', left: '50%', transform: 'translateX(-50%)', width: '135px', zIndex: 20 } },
-    { id: 'o_red', era: 'red', image: '/wardrobe4.jpg', avatarStyle: { top: '92px', left: '50%', transform: 'translateX(-50%)', width: '125px', zIndex: 20 } },
-    { id: 'o_folklore', era: 'folklore', image: '/wardrobe5.jpg', avatarStyle: { top: '95px', left: '50%', transform: 'translateX(-50%)', width: '130px', zIndex: 20 } },
-    { id: 'o_speak', era: 'speak_now', image: '/wardrobe6.jpg', avatarStyle: { top: '85px', left: '50%', transform: 'translateX(-50%)', width: '140px', zIndex: 20 } },
+    { id: 'o_folklore_green', era: 'folklore', sheet: '/wardrobe2.jpg', posX: '8%', posY: '5%', scale: '380%', avatarStyle: { top: '80px', left: '50%', transform: 'translateX(-50%)', width: '130px', height: '180px', zIndex: 20 } },
+    { id: 'o_speak_purple', era: 'speak_now', sheet: '/wardrobe2.jpg', posX: '88%', posY: '6%', scale: '380%', avatarStyle: { top: '75px', left: '50%', transform: 'translateX(-50%)', width: '140px', height: '200px', zIndex: 20 } },
+    { id: 'o_1989_blue', era: '1989', sheet: '/wardrobe2.jpg', posX: '50%', posY: '45%', scale: '380%', avatarStyle: { top: '90px', left: '50%', transform: 'translateX(-50%)', width: '120px', height: '160px', zIndex: 20 } },
+    { id: 'o_rep_black', era: 'reputation', sheet: '/wardrobe2.jpg', posX: '88%', posY: '45%', scale: '380%', avatarStyle: { top: '90px', left: '50%', transform: 'translateX(-50%)', width: '120px', height: '170px', zIndex: 20 } },
+    { id: 'o_lover_pink', era: 'lover', sheet: '/wardrobe2.jpg', posX: '8%', posY: '68%', scale: '380%', avatarStyle: { top: '90px', left: '50%', transform: 'translateX(-50%)', width: '130px', height: '170px', zIndex: 20 } },
+    { id: 'o_midnights_blue', era: 'midnights', sheet: '/wardrobe2.jpg', posX: '8%', posY: '88%', scale: '380%', avatarStyle: { top: '85px', left: '50%', transform: 'translateX(-50%)', width: '125px', height: '175px', zIndex: 20 } },
   ],
   shoes: [
-    { id: 's_sneakers', era: '1989', image: '/wardrobe1.jpg', avatarStyle: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', width: '65px', zIndex: 12 } },
-    { id: 's_highboots', era: 'reputation', image: '/wardrobe2.jpg', avatarStyle: { bottom: '10px', left: '50%', transform: 'translateX(-50%)', width: '70px', zIndex: 12 } },
-    { id: 's_boots', era: 'fearless', image: '/wardrobe3.jpg', avatarStyle: { bottom: '12px', left: '50%', transform: 'translateX(-50%)', width: '68px', zIndex: 12 } },
+    { id: 's_fearless_boots', era: 'fearless', sheet: '/wardrobe2.jpg', posX: '30%', posY: '10%', scale: '450%', avatarStyle: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', width: '70px', height: '60px', zIndex: 12 } },
+    { id: 's_red_heels', era: 'red', sheet: '/wardrobe2.jpg', posX: '30%', posY: '52%', scale: '450%', avatarStyle: { bottom: '12px', left: '50%', transform: 'translateX(-50%)', width: '65px', height: '55px', zIndex: 12 } },
   ],
   accessories: [
-    { id: 'a_hat', era: 'red', image: '/wardrobe4.jpg', avatarStyle: { top: '5px', left: '50%', transform: 'translateX(-50%)', width: '80px', zIndex: 28 } },
-    { id: 'a_glasses', era: '1989', image: '/wardrobe1.jpg', avatarStyle: { top: '42px', left: '50%', transform: 'translateX(-50%)', width: '45px', zIndex: 28 } },
+    { id: 'a_red_hat', era: 'red', sheet: '/wardrobe2.jpg', posX: '28%', posY: '40%', scale: '450%', avatarStyle: { top: '5px', left: '50%', transform: 'translateX(-50%)', width: '80px', height: '50px', zIndex: 28 } },
   ],
   props: [
-    { id: 'p_guitar', era: 'fearless', image: '/wardrobe3.jpg', avatarStyle: { top: '130px', right: '10px', width: '95px', transform: 'rotate(-15deg)', zIndex: 30 } },
-    { id: 'p_mic', era: '1989', image: '/wardrobe1.jpg', avatarStyle: { top: '110px', right: '20px', width: '45px', zIndex: 30 } },
+    { id: 'p_guitar_brown', era: 'fearless', sheet: '/wardrobe2.jpg', posX: '30%', posY: '16%', scale: '400%', avatarStyle: { top: '120px', right: '5px', width: '80px', height: '140px', zIndex: 30 } },
+    { id: 'p_guitar_purple', era: 'speak_now', sheet: '/wardrobe2.jpg', posX: '75%', posY: '16%', scale: '400%', avatarStyle: { top: '120px', right: '5px', width: '80px', height: '140px', zIndex: 30 } },
   ]
 };
 
-// הצגת התמונה המקורית שהועלתה בריבוע הארון ובבובה
-const RawImageItem = ({ src, alt, style }) => {
+// רכיב החיתוך המבודד לפריט בודד
+const CroppedItemView = ({ item, customStyle }) => {
   return (
-    <img 
-      src={src} 
-      alt={alt || 'Wardrobe Item'} 
-      style={{ 
-        width: '100%', 
-        height: '100%', 
-        objectFit: 'contain', 
-        pointerEvents: 'none',
-        ...style 
-      }} 
-      onError={(e) => {
-        // גיבוי למקרה שהסיומת עדיין .jpeg בדפדפן
-        if (src.endsWith('.jpg')) {
-          e.target.src = src.replace('.jpg', '.jpg.jpeg');
-        }
-      }}
-    />
+    <div style={{
+      width: '100%',
+      height: '100%',
+      backgroundImage: `url(${item.sheet})`,
+      backgroundPosition: `${item.posX} ${item.posY}`,
+      backgroundSize: item.scale,
+      backgroundRepeat: 'no-repeat',
+      ...customStyle
+    }} />
   );
 };
 
@@ -274,12 +264,12 @@ export default function EraStylist({ lang, onBack }) {
               <path d="M 95 58 Q 116 115 120 185" fill="none" stroke="#EAD1C5" strokeWidth="11" strokeLinecap="round" />
             </svg>
 
-            {/* הלבשת התמונות המקוריות על הבובה בצורה דינמית */}
+            {/* מלביש רק את הפריטים הנבחרים שנחתכו */}
             {Object.entries(selections).map(([cat, item]) => {
               if (!item) return null;
               return (
                 <div key={cat} style={{ position: 'absolute', ...item.avatarStyle }}>
-                  <RawImageItem src={item.image} />
+                  <CroppedItemView item={item} />
                 </div>
               );
             })}
@@ -295,7 +285,7 @@ export default function EraStylist({ lang, onBack }) {
           </button>
         </div>
 
-        {/* ארון הבגדים – מציג ישירות את התמונות בריבועים */}
+        {/* ארון הבגדים - מציג פריטים בודדים מתוך הגיליון */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-dark)', fontFamily: '"Georgia", serif', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Wand2 size={22} color="var(--primary-rose)" />
@@ -317,7 +307,7 @@ export default function EraStylist({ lang, onBack }) {
             ))}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))', gap: '0.75rem', maxHeight: '320px', overflowY: 'auto', paddingRight: '4px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(85px, 1fr))', gap: '0.75rem', maxHeight: '320px', overflowY: 'auto', paddingRight: '4px' }}>
             {WARDROBE[activeTab]?.map(item => {
               const isSelected = selections[activeTab]?.id === item.id;
               return (
@@ -328,13 +318,13 @@ export default function EraStylist({ lang, onBack }) {
                     aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     backgroundColor: isSelected ? '#FFF0F5' : '#FFFFFF', 
                     border: `2px solid ${isSelected ? 'var(--primary-rose)' : 'var(--border-delicate)'}`,
-                    borderRadius: '16px', cursor: 'pointer', transition: 'all 0.15s ease', position: 'relative', padding: '8px', overflow: 'hidden'
+                    borderRadius: '16px', cursor: 'pointer', transition: 'all 0.15s ease', position: 'relative', padding: '6px', overflow: 'hidden'
                   }}
                   onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
                   onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                 >
                   {isSelected && <CheckCircle2 size={16} color="var(--primary-rose)" style={{ position: 'absolute', top: '4px', right: '4px', zIndex: 10 }} />}
-                  <RawImageItem src={item.image} />
+                  <CroppedItemView item={item} />
                 </button>
               );
             })}
