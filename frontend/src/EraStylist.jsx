@@ -25,69 +25,57 @@ const TABS = [
   { id: 'props', label: 'חפצים', icon: '🎸' }
 ];
 
-// ארון בגדים מעוצב מבוסס פריטים נקיים לכל ריבוע
+// מיפוי הפריטים ישירות מתוך קובצי התמונות שהעלית (wardrobe1.jpg - wardrobe6.jpg)
 const WARDROBE = {
   hair: [
-    { id: 'h_1989', name: '1989 Blonde Bob', era: '1989', color: '#F7D070', style: 'short' },
-    { id: 'h_lover', name: 'Lover Pink Dip-Dye', era: 'lover', color: '#FFB7C5', style: 'waves' },
-    { id: 'h_fearless', name: 'Fearless Golden Curls', era: 'fearless', color: '#E3A857', style: 'curls' },
-    { id: 'h_rep', name: 'Reputation Dark Slick', era: 'reputation', color: '#3A2E2B', style: 'straight' },
-    { id: 'h_folklore', name: 'Folklore Braids', era: 'folklore', color: '#C8A2C8', style: 'braid' },
+    { id: 'h_1989', era: '1989', image: '/wardrobe1.jpg', avatarStyle: { top: '15px', left: '50%', transform: 'translateX(-50%)', width: '90px', zIndex: 15 } },
+    { id: 'h_lover', era: 'lover', image: '/wardrobe2.jpg', avatarStyle: { top: '18px', left: '50%', transform: 'translateX(-50%)', width: '88px', zIndex: 15 } },
+    { id: 'h_fearless', era: 'fearless', image: '/wardrobe3.jpg', avatarStyle: { top: '15px', left: '50%', transform: 'translateX(-50%)', width: '92px', zIndex: 15 } },
   ],
   outfits: [
-    { id: 'o_1989', name: '1989 Two-Piece Blue', era: '1989', color: '#4FC3F7', type: 'two-piece' },
-    { id: 'o_rep', name: 'Reputation Black Snake Dress', era: 'reputation', color: '#212121', type: 'bodysuit' },
-    { id: 'o_lover', name: 'Lover Pink Pastel Jacket', era: 'lover', color: '#F48FB1', type: 'jacket' },
-    { id: 'o_speak', name: 'Speak Now Purple Dress', era: 'speak_now', color: '#AB47BC', type: 'gown' },
-    { id: 'o_red', name: 'Red Era Striped Shirt & Shorts', era: 'red', color: '#E53935', type: 'casual' },
-    { id: 'o_folklore', name: 'Folklore White Cottage Dress', era: 'folklore', color: '#F5F5F5', type: 'cottage' },
+    { id: 'o_1989', era: '1989', image: '/wardrobe1.jpg', avatarStyle: { top: '90px', left: '50%', transform: 'translateX(-50%)', width: '130px', zIndex: 20 } },
+    { id: 'o_rep', era: 'reputation', image: '/wardrobe2.jpg', avatarStyle: { top: '90px', left: '50%', transform: 'translateX(-50%)', width: '125px', zIndex: 20 } },
+    { id: 'o_lover', era: 'lover', image: '/wardrobe3.jpg', avatarStyle: { top: '95px', left: '50%', transform: 'translateX(-50%)', width: '135px', zIndex: 20 } },
+    { id: 'o_red', era: 'red', image: '/wardrobe4.jpg', avatarStyle: { top: '92px', left: '50%', transform: 'translateX(-50%)', width: '125px', zIndex: 20 } },
+    { id: 'o_folklore', era: 'folklore', image: '/wardrobe5.jpg', avatarStyle: { top: '95px', left: '50%', transform: 'translateX(-50%)', width: '130px', zIndex: 20 } },
+    { id: 'o_speak', era: 'speak_now', image: '/wardrobe6.jpg', avatarStyle: { top: '85px', left: '50%', transform: 'translateX(-50%)', width: '140px', zIndex: 20 } },
   ],
   shoes: [
-    { id: 's_sneakers', name: '1989 White Sneakers', era: '1989', color: '#FFFFFF', icon: '👟' },
-    { id: 's_repboots', name: 'Reputation Thigh-High Boots', era: 'reputation', color: '#1A1A1A', icon: '👢' },
-    { id: 's_cowboy', name: 'Fearless Gold Cowboy Boots', era: 'fearless', color: '#FFD700', icon: '🤠' },
-    { id: 's_redheels', name: 'Red High Heels', era: 'red', color: '#D32F2F', icon: '👠' },
+    { id: 's_sneakers', era: '1989', image: '/wardrobe1.jpg', avatarStyle: { bottom: '15px', left: '50%', transform: 'translateX(-50%)', width: '65px', zIndex: 12 } },
+    { id: 's_highboots', era: 'reputation', image: '/wardrobe2.jpg', avatarStyle: { bottom: '10px', left: '50%', transform: 'translateX(-50%)', width: '70px', zIndex: 12 } },
+    { id: 's_boots', era: 'fearless', image: '/wardrobe3.jpg', avatarStyle: { bottom: '12px', left: '50%', transform: 'translateX(-50%)', width: '68px', zIndex: 12 } },
   ],
   accessories: [
-    { id: 'a_fedora', name: 'Red Fedora Hat', era: 'red', color: '#B71C1C', icon: '🎩' },
-    { id: 'a_glasses', name: '1989 Sunglasses', era: '1989', color: '#FFFFFF', icon: '🕶️' },
-    { id: 'a_heart', name: 'Lover Heart Glasses', era: 'lover', color: '#FF69B4', icon: '👓' },
-    { id: 'a_snake', name: 'Reputation Snake Ring', era: 'reputation', color: '#424242', icon: '🐍' },
+    { id: 'a_hat', era: 'red', image: '/wardrobe4.jpg', avatarStyle: { top: '5px', left: '50%', transform: 'translateX(-50%)', width: '80px', zIndex: 28 } },
+    { id: 'a_glasses', era: '1989', image: '/wardrobe1.jpg', avatarStyle: { top: '42px', left: '50%', transform: 'translateX(-50%)', width: '45px', zIndex: 28 } },
   ],
   props: [
-    { id: 'p_guitar', name: 'Fearless Acoustic Guitar', era: 'fearless', color: '#CD853F', icon: '🎸' },
-    { id: 'p_mic', name: '1989 Sparkly Mic', era: '1989', color: '#E0E0E0', icon: '🎙️' },
-    { id: 'p_cat', name: 'Olivia the Cat', era: 'lover', color: '#FFFFFF', icon: '🐱' },
+    { id: 'p_guitar', era: 'fearless', image: '/wardrobe3.jpg', avatarStyle: { top: '130px', right: '10px', width: '95px', transform: 'rotate(-15deg)', zIndex: 30 } },
+    { id: 'p_mic', era: '1989', image: '/wardrobe1.jpg', avatarStyle: { top: '110px', right: '20px', width: '45px', zIndex: 30 } },
   ]
 };
 
-// רכיב ציור הבגדים והפריטים על הבובה
-const RenderOutfitLayer = ({ selection }) => {
-  if (!selection) return null;
-
-  // הלבשת בגד
-  if (selection.type === 'gown') {
-    return (
-      <path d="M 45 110 L 95 110 L 115 340 L 25 340 Z" fill={selection.color} stroke="#7B1FA2" strokeWidth="2" style={{ position: 'absolute', zIndex: 20 }} />
-    );
-  }
-  if (selection.type === 'bodysuit') {
-    return (
-      <g style={{ position: 'absolute', zIndex: 20 }}>
-        <path d="M 46 115 Q 70 125 94 115 L 90 230 L 50 230 Z" fill={selection.color} stroke="#000" strokeWidth="2" />
-        <path d="M 50 230 L 45 330 L 60 330 L 65 230 Z" fill={selection.color} />
-      </g>
-    );
-  }
-  if (selection.type === 'two-piece' || selection.type === 'casual' || selection.type === 'jacket' || selection.type === 'cottage') {
-    return (
-      <g style={{ position: 'absolute', zIndex: 20 }}>
-        <path d="M 45 115 L 95 115 L 92 170 L 48 170 Z" fill={selection.color} stroke="#333" strokeWidth="1.5" />
-        <path d="M 48 180 L 92 180 L 95 240 L 45 240 Z" fill={selection.color} stroke="#333" strokeWidth="1.5" />
-      </g>
-    );
-  }
-  return null;
+// הצגת התמונה המקורית שהועלתה בריבוע הארון ובבובה
+const RawImageItem = ({ src, alt, style }) => {
+  return (
+    <img 
+      src={src} 
+      alt={alt || 'Wardrobe Item'} 
+      style={{ 
+        width: '100%', 
+        height: '100%', 
+        objectFit: 'contain', 
+        pointerEvents: 'none',
+        ...style 
+      }} 
+      onError={(e) => {
+        // גיבוי למקרה שהסיומת עדיין .jpeg בדפדפן
+        if (src.endsWith('.jpg')) {
+          e.target.src = src.replace('.jpg', '.jpg.jpeg');
+        }
+      }}
+    />
+  );
 };
 
 export default function EraStylist({ lang, onBack }) {
@@ -165,7 +153,7 @@ export default function EraStylist({ lang, onBack }) {
       
       await API.post('/posts', {
         title: `הלוק שלי לאתגר ${challenge.titleHe} (${scoreResult}% התאמה)! ✨`,
-        content: 'עיצבתי דמות מושלמת ברוח ה-Eras!',
+        content: 'עיצבתי דמות מושלמת ברוח ה-Eras מהפריטים בארון!',
         category: 'gallery',
         image_url: uploadData.secure_url
       });
@@ -274,7 +262,7 @@ export default function EraStylist({ lang, onBack }) {
               boxShadow: 'inset 0 0 20px rgba(0,0,0,0.02)'
             }}
           >
-            {/* בובת דוגמנית וקטורית בסיסית */}
+            {/* בובת דוגמנית וקטורית */}
             <svg width="140" height="420" viewBox="0 0 140 420" style={{ position: 'absolute', bottom: '10px', zIndex: 1 }}>
               <path d="M 48 200 L 52 400 L 66 400 L 60 200 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" />
               <path d="M 92 200 L 88 400 L 74 400 L 80 200 Z" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" />
@@ -284,36 +272,17 @@ export default function EraStylist({ lang, onBack }) {
               <ellipse cx="70" cy="16" rx="21" ry="25" fill="#EAD1C5" stroke="#D5B8A9" strokeWidth="1.5" />
               <path d="M 45 58 Q 24 115 20 185" fill="none" stroke="#EAD1C5" strokeWidth="11" strokeLinecap="round" />
               <path d="M 95 58 Q 116 115 120 185" fill="none" stroke="#EAD1C5" strokeWidth="11" strokeLinecap="round" />
-
-              {/* שכבת בגד נבחר */}
-              <RenderOutfitLayer selection={selections.outfits} />
-
-              {/* שכבת שיער נבחר */}
-              {selections.hair && (
-                <path d="M 42 10 Q 70 -10 98 10 Q 105 35 98 60 Q 70 40 42 60 Z" fill={selections.hair.color} style={{ zIndex: 30 }} />
-              )}
             </svg>
 
-            {/* נעליים */}
-            {selections.shoes && (
-              <div style={{ position: 'absolute', bottom: '15px', fontSize: '2rem', zIndex: 25 }}>
-                {selections.shoes.icon}
-              </div>
-            )}
-
-            {/* אקססוריז */}
-            {selections.accessories && (
-              <div style={{ position: 'absolute', top: '25px', fontSize: '2.2rem', zIndex: 35 }}>
-                {selections.accessories.icon}
-              </div>
-            )}
-
-            {/* חפץ ביד */}
-            {selections.props && (
-              <div style={{ position: 'absolute', top: '150px', right: '35px', fontSize: '2.5rem', zIndex: 40, transform: 'rotate(-15deg)' }}>
-                {selections.props.icon}
-              </div>
-            )}
+            {/* הלבשת התמונות המקוריות על הבובה בצורה דינמית */}
+            {Object.entries(selections).map(([cat, item]) => {
+              if (!item) return null;
+              return (
+                <div key={cat} style={{ position: 'absolute', ...item.avatarStyle }}>
+                  <RawImageItem src={item.image} />
+                </div>
+              );
+            })}
           </div>
 
           <button 
@@ -326,11 +295,11 @@ export default function EraStylist({ lang, onBack }) {
           </button>
         </div>
 
-        {/* ארון הבגדים והאקססוריז */}
+        {/* ארון הבגדים – מציג ישירות את התמונות בריבועים */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-dark)', fontFamily: '"Georgia", serif', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Wand2 size={22} color="var(--primary-rose)" />
-            {isHe ? 'ארון הבגדים והסטיילינג' : 'The Wardrobe'}
+            {isHe ? 'ארון הבגדים' : 'Wardrobe'}
           </h3>
 
           <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '1.25rem', borderBottom: '2px solid var(--bg-subtle)', paddingBottom: '0.5rem', overflowX: 'auto', scrollbarWidth: 'none' }}>
@@ -348,7 +317,7 @@ export default function EraStylist({ lang, onBack }) {
             ))}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(85px, 1fr))', gap: '0.75rem', maxHeight: '310px', overflowY: 'auto', paddingRight: '4px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))', gap: '0.75rem', maxHeight: '320px', overflowY: 'auto', paddingRight: '4px' }}>
             {WARDROBE[activeTab]?.map(item => {
               const isSelected = selections[activeTab]?.id === item.id;
               return (
@@ -356,24 +325,16 @@ export default function EraStylist({ lang, onBack }) {
                   key={item.id}
                   onClick={() => handleSelectItem(activeTab, item)}
                   style={{
-                    aspectRatio: '1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px',
-                    backgroundColor: isSelected ? '#FFF0F5' : 'var(--bg-creamy)', border: `2px solid ${isSelected ? 'var(--primary-rose)' : 'var(--border-delicate)'}`,
-                    borderRadius: '16px', cursor: 'pointer', transition: 'all 0.15s ease', position: 'relative', padding: '6px'
+                    aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    backgroundColor: isSelected ? '#FFF0F5' : '#FFFFFF', 
+                    border: `2px solid ${isSelected ? 'var(--primary-rose)' : 'var(--border-delicate)'}`,
+                    borderRadius: '16px', cursor: 'pointer', transition: 'all 0.15s ease', position: 'relative', padding: '8px', overflow: 'hidden'
                   }}
                   onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
                   onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
                 >
                   {isSelected && <CheckCircle2 size={16} color="var(--primary-rose)" style={{ position: 'absolute', top: '4px', right: '4px', zIndex: 10 }} />}
-                  
-                  {item.icon ? (
-                    <span style={{ fontSize: '1.8rem' }}>{item.icon}</span>
-                  ) : item.color ? (
-                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: item.color, border: '2px solid #fff', boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }} />
-                  ) : null}
-
-                  <span style={{ fontSize: '0.65rem', color: 'var(--text-dark)', fontWeight: 600, textAlign: 'center', lineHeight: '1.1' }}>
-                    {item.name}
-                  </span>
+                  <RawImageItem src={item.image} />
                 </button>
               );
             })}
